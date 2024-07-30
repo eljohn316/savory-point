@@ -283,8 +283,6 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
     });
   }
 
-  console.log({ errors });
-
   return (
     <form ref={formRef} action={formAction} onSubmit={handleSubmit}>
       {/* {state.message && (
@@ -425,9 +423,9 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
         </button>
         <button
           type="submit"
-          disabled={!isPending}
+          disabled={isPending}
           className={cn(
-            !isPending &&
+            isPending &&
               'inline-flex items-center gap-x-2 disabled:bg-emerald-500 disabled:cursor-not-allowed disabled:hover:bg-emerald-500 disabled:text-gray-100',
             'rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600'
           )}>
