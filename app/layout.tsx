@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 
 import { Toaster } from '@/components/ui/toaster';
+import { CookiesProvider } from 'next-client-cookies/server';
 
 const fontSans = Inter({ subsets: ['latin'] });
 
@@ -21,10 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={fontSans.className}>
-        {children}
-        <Toaster />
-      </body>
+      <CookiesProvider>
+        <body className={fontSans.className}>
+          {children}
+          <Toaster />
+        </body>
+      </CookiesProvider>
     </html>
   );
 }

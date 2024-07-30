@@ -14,6 +14,22 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+model Ingredient {
+  id         Int    @id @default(autoincrement())
+  ingredient String
+
+  Recipe   Recipe? @relation(fields: [recipeId], references: [id])
+  recipeId String?
+}
+
+model Instruction {
+  id          Int    @id @default(autoincrement())
+  instruction String
+
+  Recipe   Recipe? @relation(fields: [recipeId], references: [id])
+  recipeId String?
+}
+
 model Recipe {
   id          String   @id @default(uuid())
   title       String   @unique
@@ -24,4 +40,7 @@ model Recipe {
   slug        String
   uploadedOn  DateTime @default(now())
   updatedOn   DateTime @updatedAt
+
+  ingredients  Ingredient[]
+  instructions Instruction[]
 }
