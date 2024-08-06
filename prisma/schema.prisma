@@ -32,6 +32,7 @@ model Instruction {
 
 model Recipe {
   id          String   @id @default(uuid())
+  imageUrl    String?
   title       String   @unique
   about       String
   servings    Int

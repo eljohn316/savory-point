@@ -1,15 +1,21 @@
 'use client';
 
-import React, { forwardRef, useRef, useTransition } from 'react';
-
+import React, { forwardRef, useRef, useState, useTransition } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useFormState } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import { Loader2, PlusIcon, XIcon } from 'lucide-react';
+import {
+  ChevronLeft,
+  ImageIcon,
+  Loader2,
+  XCircleIcon,
+  XIcon
+} from 'lucide-react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
-import { schema } from '../schema';
+import { schema } from '../lib/schema';
 
 const Label = ({
   children,
@@ -57,7 +63,7 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
   function TextareaInput({ error, className, ...props }, ref) {
     return (
       <textarea
-        rows={4}
+        rows={5}
         className={cn(
           error
             ? 'text-red-600 ring-red-600 placeholder:text-red-600 focus:ring-red-600'
@@ -75,25 +81,13 @@ type TSchema = z.infer<typeof schema>;
 
 interface CreateRecipeFormProps {
   action: (
-    prevState: {
-      success: boolean | null;
-      message: string;
-      errors?: {
-        [key: string]: string;
-      };
-    },
+    prevState: { errors?: string[]; message?: string },
     data: FormData
-  ) => Promise<{
-    success: boolean | null;
-    message: string;
-    errors?: {
-      [key: string]: string;
-    };
-  }>;
+  ) => Promise<{ errors?: string[]; message?: string }>;
 }
 
 interface FieldWrapperProps {
-  className: string;
+  className?: string;
   label: string;
   children: React.ReactElement;
   error?: string;
@@ -123,106 +117,140 @@ function FieldWrapper({
 }
 
 interface FieldListWrapperProps {
+  className?: string;
   onAddField: () => void;
   children: React.ReactNode;
 }
 
-function FieldListWrapper({ onAddField, children }: FieldListWrapperProps) {
+function FieldListWrapper({
+  className,
+  onAddField,
+  children
+}: FieldListWrapperProps) {
   return (
-    <div>
-      <div className="space-y-6">{children}</div>
-      <div className="relative mt-6">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t border-gray-300" />
-        </div>
-        <div className="relative flex justify-center">
-          <button
-            type="button"
-            className="relative rounded-md bg-white p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-            onClick={onAddField}>
-            <PlusIcon className="h-[18px] w-[18px]" aria-hidden="true" />
-          </button>
-        </div>
+    <div className={className}>
+      <div className="space-y-4">{children}</div>
+      <div className="mt-8">
+        <button
+          type="button"
+          className="w-full inline-flex items-center justify-center px-4 py-2 text-emerald-700 text-sm font-medium border-2 border-dashed border-emerald-500 rounded-md hover:bg-emerald-50"
+          onClick={onAddField}>
+          Add item
+        </button>
       </div>
     </div>
   );
 }
 
-interface FieldListItemProps {
-  label: string;
-  children: React.ReactElement;
-  error?: string;
-}
-
-function FieldListItem({ label, children, error }: FieldListItemProps) {
-  const id = children.props.id;
-
-  if (!id) throw new Error('Field must have an id attribute');
-
-  return (
-    <div>
-      <Label htmlFor={id}>{label}</Label>
-      <div className="mt-2">{children}</div>
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-interface IngredientInputProps
+interface InputWithActionProps
   extends React.ComponentPropsWithoutRef<typeof Input> {
-  onClick: () => void;
+  onAction: () => void;
+  showAction: boolean;
 }
 
-const IngredientInput = forwardRef<HTMLInputElement, IngredientInputProps>(
-  function IngredientInput({ onClick, error, ...props }, ref) {
+const InputWithAction = forwardRef<HTMLInputElement, InputWithActionProps>(
+  function InputWithAction(
+    { onAction, showAction, error, type, className, ...props },
+    ref
+  ) {
     return (
-      <div className="relative pr-8">
-        <Input type="text" error={error} ref={ref} {...props} />
-        <div className="absolute inset-y-0 right-0 flex items-center">
-          <button
-            type="button"
-            className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-            onClick={onClick}>
-            <span className="sr-only">Remove</span>
-            <XIcon className="size-5" aria-hidden="true" />
-          </button>
-        </div>
+      <div className="relative">
+        <Input
+          type="text"
+          className={cn(showAction && 'pr-8')}
+          error={error}
+          ref={ref}
+          {...props}
+        />
+        {showAction && (
+          <div
+            className={cn(
+              error ? 'border-red-600' : 'border-gray-300',
+              'absolute inset-y-0 right-0 px-2 my-1 flex items-center border-l'
+            )}>
+            <button
+              type="button"
+              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+              onClick={onAction}>
+              <span className="sr-only">Remove</span>
+              <XIcon className="size-5" aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 );
 
-interface InstructionInputProps
+interface TextInputWithActionProps
   extends React.ComponentPropsWithoutRef<typeof TextareaInput> {
-  onClick: () => void;
+  onAction: () => void;
+  showAction: boolean;
 }
 
-const InstructionInput = forwardRef<HTMLTextAreaElement, InstructionInputProps>(
-  function IngredientInput({ onClick, error, ...props }, ref) {
-    return (
-      <div className="relative pr-8">
-        <TextareaInput error={error} ref={ref} {...props} />
-        <div className="absolute top-0 right-0 flex items-center">
+const TextInputWithAction = forwardRef<
+  HTMLTextAreaElement,
+  TextInputWithActionProps
+>(function TextInputWithAction({ onAction, showAction, error, ...props }, ref) {
+  return (
+    <div className="relative">
+      <TextareaInput
+        className={cn(showAction && 'pr-8')}
+        error={error}
+        ref={ref}
+        {...props}
+      />
+      {showAction && (
+        <div
+          className={cn(
+            error ? 'border-red-600' : 'border-gray-300',
+            'absolute inset-y-0 right-0 px-2 my-1 flex items-center border-l'
+          )}>
           <button
             type="button"
             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-            onClick={onClick}>
+            onClick={onAction}>
             <span className="sr-only">Remove</span>
             <XIcon className="size-5" aria-hidden="true" />
           </button>
         </div>
+      )}
+    </div>
+  );
+});
+
+function ErrorAlert({
+  message,
+  errors
+}: {
+  message: string;
+  errors?: string[];
+}) {
+  return (
+    <div className="rounded-md bg-red-50 p-4">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <XCircleIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+        </div>
+        <div className="ml-3">
+          <h3 className="text-sm font-medium text-red-800">{message}</h3>
+          <div className="mt-2 text-sm text-red-700">
+            <ul role="list" className="list-disc space-y-1 pl-5">
+              {typeof errors !== 'undefined' &&
+                errors.map((err, i) => <li key={i}>{err}</li>)}
+            </ul>
+          </div>
+        </div>
       </div>
-    );
-  }
-);
+    </div>
+  );
+}
 
 export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const router = useRouter();
-
   const [isPending, startTransition] = useTransition();
-  const [state, formAction] = useFormState(action, {
-    success: null,
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [result, formAction] = useFormState(action, {
     message: ''
   });
 
@@ -283,157 +311,217 @@ export function CreateRecipeForm({ action }: CreateRecipeFormProps) {
     });
   }
 
+  function handleSetImagePreview(e: React.ChangeEvent<HTMLInputElement>) {
+    const ACCEPTED_FILES = ['image/png', 'image/jpg', 'image/jpeg'];
+    const files = e.target.files;
+
+    if (!files) return;
+
+    const file = files[0];
+
+    if (ACCEPTED_FILES.includes(file.type)) {
+      const fileReader = new FileReader();
+
+      fileReader.addEventListener('load', () => {
+        setImagePreview(fileReader.result as string);
+      });
+
+      fileReader.readAsDataURL(file);
+    }
+  }
+
   return (
     <form ref={formRef} action={formAction} onSubmit={handleSubmit}>
-      {/* {state.message && (
-        <div>
-          {state.message} <br /> {JSON.stringify(state.errors)}
-        </div>
-      )} */}
-      <div className="space-y-14">
-        <div className="grid sm:grid-cols-3 sm:gap-x-6 gap-y-8">
-          <FieldWrapper
-            className="sm:col-span-2"
-            label="Title"
-            error={errors.title?.message}>
-            <Input
-              type="text"
-              id="title"
-              disabled={isPending}
-              error={errors.title?.message}
-              {...form.register('title')}
-            />
-          </FieldWrapper>
-
-          <FieldWrapper
-            className="sm:col-span-3"
-            label="About"
-            error={errors.about?.message}>
-            <TextareaInput
-              id="about"
-              disabled={isPending}
-              error={errors.about?.message}
-              {...form.register('about')}
-            />
-          </FieldWrapper>
-
-          <div className="space-y-8 sm:space-y-0 sm:col-span-3 sm:flex sm:gap-x-6">
-            <FieldWrapper
-              className="flex-1"
-              label="Prep time"
-              error={errors.prepTime?.message}>
-              <Input
-                type="number"
-                id="prep-time"
-                disabled={isPending}
-                error={errors.prepTime?.message}
-                {...form.register('prepTime')}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              className="flex-1"
-              label="Cooking time"
-              error={errors.cookingTime?.message}>
-              <Input
-                type="number"
-                id="cooking-time"
-                disabled={isPending}
-                error={errors.cookingTime?.message}
-                {...form.register('cookingTime')}
-              />
-            </FieldWrapper>
-
-            <FieldWrapper
-              className="flex-1"
-              label="Servings"
-              error={errors.servings?.message}>
-              <Input
-                type="number"
-                id="servings"
-                disabled={isPending}
-                error={errors.servings?.message}
-                {...form.register('servings')}
-              />
-            </FieldWrapper>
-          </div>
-        </div>
-        <div className="space-y-10">
-          <FieldListWrapper onAddField={handleAddIngredient}>
-            <div className="mb-4">
-              <h3 className="font-base font-medium text-emerald-700">
-                Recipe Ingredients
-              </h3>
-            </div>
-
-            {ingredientFields.map((field, index) => (
-              <FieldListItem key={field.id} label={`Ingredients ${field.num}`}>
-                <IngredientInput
-                  id={`ingredient-${field.num}`}
-                  error={errors.ingredients?.[index]?.ingredient?.message}
-                  onClick={() => removeIngredient(index)}
-                  {...form.register(`ingredients.${index}.ingredient` as const)}
-                />
-              </FieldListItem>
-            ))}
-
-            {errors.ingredients?.root?.message && (
-              <p className="text-sm text-red-600">
-                {errors.ingredients?.root?.message}
-              </p>
+      <div className="h-20 bg-white fixed inset-x-0 top-0 z-10 flex items-center shadow">
+        <div className="flex-1 max-w-6xl mx-auto flex justify-between px-4 lg:px-6">
+          <Link
+            href="/"
+            className="-ml-1 inline-flex items-center gap-x-1 text-sm font-medium text-emerald-700 hover:text-emerald-900">
+            <ChevronLeft className="size-[18px]" aria-hidden="true" />
+            Return
+          </Link>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="inline-flex items-center gap-x-2 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:hover:bg-emerald-600 disabled:opacity-70">
+            {isPending ? (
+              <>
+                {'Creating recipe'}
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              </>
+            ) : (
+              'Create recipe'
             )}
-          </FieldListWrapper>
-
-          <FieldListWrapper onAddField={handleAddInstruction}>
-            <div className="mb-4">
-              <h3 className="font-base font-medium text-emerald-700">
-                Recipe Instructions
-              </h3>
-            </div>
-
-            {instructionFields.map((field, index) => (
-              <FieldListItem key={field.id} label={`Instruction ${field.num}`}>
-                <InstructionInput
-                  id={`instruction-${field.num}`}
-                  disabled={isPending}
-                  error={errors.instructions?.[index]?.instruction?.message}
-                  onClick={() => removeInstruction(index)}
-                  {...form.register(
-                    `instructions.${index}.instruction` as const
-                  )}
-                />
-              </FieldListItem>
-            ))}
-
-            {errors.instructions?.root?.message && (
-              <p className="text-sm text-red-600">
-                {errors.instructions?.root?.message}
-              </p>
-            )}
-          </FieldListWrapper>
+          </button>
         </div>
       </div>
 
-      <div className="mt-12 flex justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-medium leading-6 text-gray-900"
-          onClick={() => router.push('/')}>
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isPending}
-          className={cn(
-            isPending &&
-              'inline-flex items-center gap-x-2 disabled:bg-emerald-500 disabled:cursor-not-allowed disabled:hover:bg-emerald-500 disabled:text-gray-100',
-            'rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600'
-          )}>
-          {isPending ? 'Creating recipe' : 'Create recipe'}
-          {isPending && (
-            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-          )}
-        </button>
+      <div className="pt-28 pb-12 max-w-6xl mx-auto px-4 lg:px-6">
+        <div className="mb-6">
+          <h3 className="font-semibold text-gray-700 text-xl">Create recipe</h3>
+        </div>
+        <div className="space-y-8 lg:space-y-0 lg:flex lg:gap-x-10">
+          <div className="space-y-14">
+            <div className="space-y-4 lg:space-y-6 lg:min-w-0 lg:flex-1">
+              {result.message && (
+                <ErrorAlert message={result.message} errors={result.errors} />
+              )}
+              <FieldWrapper label="Title" error={errors.title?.message}>
+                <Input
+                  type="text"
+                  id="title"
+                  disabled={isPending}
+                  error={errors.title?.message}
+                  {...form.register('title')}
+                />
+              </FieldWrapper>
+
+              <div className="space-y-4 sm:space-y-0 sm:flex sm:gap-x-6">
+                <FieldWrapper
+                  className="flex-1"
+                  label="Prep time"
+                  error={errors.prepTime?.message}>
+                  <Input
+                    type="number"
+                    id="prep-time"
+                    disabled={isPending}
+                    error={errors.prepTime?.message}
+                    {...form.register('prepTime')}
+                  />
+                </FieldWrapper>
+
+                <FieldWrapper
+                  className="flex-1"
+                  label="Cooking time"
+                  error={errors.cookingTime?.message}>
+                  <Input
+                    type="number"
+                    id="cooking-time"
+                    disabled={isPending}
+                    error={errors.cookingTime?.message}
+                    {...form.register('cookingTime')}
+                  />
+                </FieldWrapper>
+
+                <FieldWrapper
+                  className="flex-1"
+                  label="Servings"
+                  error={errors.servings?.message}>
+                  <Input
+                    type="number"
+                    id="servings"
+                    disabled={isPending}
+                    error={errors.servings?.message}
+                    {...form.register('servings')}
+                  />
+                </FieldWrapper>
+              </div>
+
+              <FieldWrapper label="About" error={errors.about?.message}>
+                <TextareaInput
+                  id="about"
+                  disabled={isPending}
+                  error={errors.about?.message}
+                  {...form.register('about')}
+                />
+              </FieldWrapper>
+            </div>
+
+            <div className="space-y-20">
+              <FieldListWrapper onAddField={handleAddIngredient}>
+                {ingredientFields.map((field, index) => (
+                  <FieldWrapper
+                    key={field.id}
+                    label={`Ingredient ${field.num}`}
+                    error={errors.ingredients?.[index]?.ingredient?.message}>
+                    <InputWithAction
+                      id={`ingredient-${field.num}`}
+                      disabled={isPending}
+                      error={errors.ingredients?.[index]?.ingredient?.message}
+                      onAction={() => removeIngredient(index)}
+                      showAction={ingredientFields.length > 1}
+                      {...form.register(
+                        `ingredients.${index}.ingredient` as const
+                      )}
+                    />
+                  </FieldWrapper>
+                ))}
+              </FieldListWrapper>
+
+              <FieldListWrapper onAddField={handleAddInstruction}>
+                {instructionFields.map((field, index) => (
+                  <FieldWrapper
+                    key={field.id}
+                    label={`Instruction ${field.num}`}
+                    error={errors.instructions?.[index]?.instruction?.message}>
+                    <TextInputWithAction
+                      id={`instruction-${field.num}`}
+                      disabled={isPending}
+                      showAction={
+                        instructionFields.length === index + 1 &&
+                        instructionFields.length > 1
+                      }
+                      error={errors.instructions?.[index]?.instruction?.message}
+                      onAction={() => removeInstruction(index)}
+                      {...form.register(
+                        `instructions.${index}.instruction` as const
+                      )}
+                    />
+                  </FieldWrapper>
+                ))}
+              </FieldListWrapper>
+            </div>
+          </div>
+          <div className="max-w-96 lg:w-96 lg:shrink-0">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
+              Image
+            </label>
+            <div
+              className={cn(
+                errors.image?.message ? 'border-red-600' : 'border-gray-300',
+                'mt-2 h-80 border-2 border-dashed rounded-lg flex p-2'
+              )}>
+              {imagePreview ? (
+                <div className="flex-1 relative">
+                  <Image
+                    src={imagePreview}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    className="w-full h-auto object-cover rounded-lg"
+                  />
+                </div>
+              ) : (
+                <div className="m-auto">
+                  <ImageIcon
+                    className="size-12 text-gray-300"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                </div>
+              )}
+            </div>
+            {errors.image?.message && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.image.message}
+              </p>
+            )}
+            <label
+              htmlFor="file-upload"
+              className="mt-4 cursor-pointer inline-flex w-full items-center justify-center gap-x-1.5 px-4 py-2 text-emerald-600 text-sm font-medium border-2 border-dashed border-emerald-500 rounded-md hover:bg-emerald-50">
+              <ImageIcon className="size-5" aria-hidden="true" />
+              <span>Choose a photo</span>
+              <input
+                type="file"
+                id="file-upload"
+                className="sr-only"
+                {...form.register('image', {
+                  onChange: handleSetImagePreview
+                })}
+              />
+            </label>
+          </div>
+        </div>
       </div>
     </form>
   );
