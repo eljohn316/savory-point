@@ -5,10 +5,10 @@ export default async function Home() {
   const recipes = await db.recipe.findMany({
     select: {
       id: true,
-      imageUrl: true,
       title: true
     }
   });
+
   console.log(recipes);
 
   return (

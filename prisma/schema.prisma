@@ -30,9 +30,17 @@ model Instruction {
   recipeId String?
 }
 
+model Image {
+  id       Int    @id @default(autoincrement())
+  url      String
+  publicId String
+
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId String @unique
+}
+
 model Recipe {
   id          String   @id @default(uuid())
-  imageUrl    String?
   title       String   @unique
   about       String
   servings    Int
@@ -42,6 +50,7 @@ model Recipe {
   uploadedOn  DateTime @default(now())
   updatedOn   DateTime @updatedAt
 
+  image        Image?
   ingredients  Ingredient[]
   instructions Instruction[]
 }

@@ -6,13 +6,14 @@ import { redirect } from 'next/navigation';
 import { uploadImageToCloudinary } from '@/lib/cloudinary';
 import { db } from '@/lib/db';
 import { getImageUri, validateRecipeFields } from './helpers';
+import { UploadApiResponse } from 'cloudinary';
 
 type UploadRecipeImageResponse =
   | {
       success: false;
       message: string;
     }
-  | { success: true; data: string };
+  | { success: true; data: UploadApiResponse };
 
 async function uploadRecipeImage(
   file: File
@@ -29,7 +30,7 @@ async function uploadRecipeImage(
 
   return {
     success: true,
-    data: uploadResult.result.secure_url
+    data: uploadResult.result
   };
 }
 
@@ -53,7 +54,12 @@ export async function createRecipe(
 
   await db.recipe.create({
     data: {
-      imageUrl: uploadResult.data,
+      image: {
+        create: {
+          url: uploadResult.data.secure_url,
+          publicId: uploadResult.data.public_id
+        }
+      },
       title: validationResult.data.title,
       about: validationResult.data.about,
       servings: validationResult.data.servings,
