@@ -21,7 +21,7 @@ interface RecipeItemProps {
 }
 
 export async function RecipeListItem({ recipe, className }: RecipeItemProps) {
-  const dataUrl = await generateDataUrl(recipe.image!.publicId);
+  // const dataUrl = await generateDataUrl(recipe.image!.publicId);
 
   return (
     <article className={cn(className, 'md:flex md:gap-x-6 md:items-center')}>
