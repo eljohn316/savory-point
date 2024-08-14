@@ -1,23 +1,23 @@
-import { db } from '@/lib/db';
-import console from 'console';
+import { Suspense } from 'react';
+import { SearchInput } from './search-input';
+import { RecipeList } from './recipe-list';
+import { RecipeListSkeleton } from './recipe-list-skeleton';
+import { RecipeListHeader } from './recipe-list-header';
 
-export default async function Home() {
-  const recipes = await db.recipe.findMany({
-    select: {
-      id: true,
-      title: true
-    }
-  });
+interface PageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
 
-  console.log(recipes);
-
+export default function Page({ searchParams }: PageProps) {
   return (
-    <div className="max-w-5xl mx-auto px-4 lg:px-6 mt-20">
-      <div className="text-center">
-        <h3 className="font-bold text-lg text-emerald-700">Todo</h3>
-        <p className="text-base text-gray-700">Home page UI next</p>
-        <div className="mt-5">{JSON.stringify(recipes, null, 2)}</div>
+    <>
+      <SearchInput />
+      <div className="mt-8 divide-y divide-gray-200">
+        <RecipeListHeader />
+        <Suspense fallback={<RecipeListSkeleton />}>
+          <RecipeList searchParams={searchParams} />
+        </Suspense>
       </div>
-    </div>
+    </>
   );
 }
