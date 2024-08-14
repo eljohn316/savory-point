@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useRef, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, SearchIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 
 export function SearchInput() {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const search = useSearchParams().get('search');
-  const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
@@ -21,7 +23,7 @@ export function SearchInput() {
       if (inputRef.current) inputRef.current.blur();
 
       startTransition(() => {
-        router.push(`/recipes?search=${search}`);
+        router.push(`${pathname}?search=${search}`);
       });
     }
     return;
