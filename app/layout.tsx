@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
-import { CookiesProvider } from 'next-client-cookies/server';
-import { Toaster } from '@/components/ui/toaster';
 
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 const fontSans = Quicksand({ subsets: ['latin'] });
 
@@ -21,12 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <CookiesProvider>
-        <body className={fontSans.className}>
-          {children}
-          <Toaster />
-        </body>
-      </CookiesProvider>
+      <body className={fontSans.className}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

@@ -1,100 +1,85 @@
-import Link from 'next/link';
+import Image from 'next/image';
+import { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
-import { RECIPES_PER_PAGE } from './config';
-import { RecipeListItem } from './recipe-list-item';
-import { RecipePagination } from './recipe-pagination';
-import { Button } from '@/components/ui/button';
-import { MoveLeft } from 'lucide-react';
 
-export function RecipeListWrapper({ children }: { children: React.ReactNode }) {
+type Recipe = Prisma.RecipeGetPayload<{
+  select: {
+    id: true;
+    imageUrl: true;
+    title: true;
+    slug: true;
+    about: true;
+    uploader: {
+      select: {
+        image: true;
+        firstName: true;
+        lastName: true;
+      };
+    };
+  };
+}>;
+
+export async function RecipeList() {
+  const recipes = await db.recipe.findMany({
+    select: {
+      id: true,
+      imageUrl: true,
+      title: true,
+      slug: true,
+      about: true,
+      uploader: {
+        select: {
+          image: true,
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
+  });
+
   return (
-    <div className="py-5 grid grid-cols-1 sm:py-6 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-8 md:grid-cols-1 md:gap-0 divide-y divide-gray-200 sm:divide-y-0 md:divide-y md:divide-gray-200">
-      {children}
+    <div className="divide-y divide-gray-200">
+      {recipes.map((recipe) => (
+        <RecipeListItem key={recipe.id} recipe={recipe} />
+      ))}
     </div>
   );
 }
 
-interface RecipeListProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export async function RecipeList({ searchParams }: RecipeListProps) {
-  const search = searchParams.search as string | undefined;
-  const sort = searchParams.sort as 'asc' | 'desc' | undefined;
-  const page = typeof searchParams.page === 'string' ? +searchParams.page : 1;
-
-  const [recipes, recipesCount] = await Promise.all([
-    db.recipe.findMany({
-      where: {
-        title: {
-          contains: search,
-          mode: 'insensitive'
-        }
-      },
-      orderBy: {
-        uploadedOn: sort ?? 'desc'
-      },
-      skip: RECIPES_PER_PAGE * (page - 1),
-      take: RECIPES_PER_PAGE,
-      select: {
-        id: true,
-        title: true,
-        about: true,
-        image: {
-          select: {
-            publicId: true,
-            url: true
-          }
-        },
-        uploadedOn: true,
-        slug: true
-      }
-    }),
-    db.recipe.count({
-      where: {
-        title: {
-          contains: search,
-          mode: 'insensitive'
-        }
-      }
-    })
-  ]);
-
-  if (recipesCount === 0) {
-    return (
-      <div className="pt-6 text-center">
-        <h3 className="text-2xl font-bold leading-10">No results found</h3>
-        <p className="mt-1 mb-4 text-base font-medium text-gray-700">
-          We could not find the recipe you&apos;re looking for.
-        </p>
-        <Button
-          variant="link"
-          className="gap-x-2 text-base font-semibold"
-          asChild>
-          <Link href="/recipes">
-            <MoveLeft className="size-5" aria-hidden="true" />
-            Back to recipes
-          </Link>
-        </Button>
-      </div>
-    );
-  }
-
+function RecipeListItem({ recipe }: { recipe: Recipe }) {
   return (
-    <>
-      <RecipeListWrapper>
-        {recipes.map((recipe) => (
-          <RecipeListItem
-            key={recipe.id}
-            recipe={recipe}
-            className="py-6 first-of-type:pt-0 last-of-type:pb-0 sm:p-0 md:py-6 md:first-of-type:pt-0 md:last-of-type:pb-0"
+    <div className="py-5 first:pt-0 last:pb-0 sm:flex sm:items-center">
+      <div className="bg-gray-200 h-48 shrink-0 relative overflow-hidden rounded-md sm:size-36 sm:mr-4">
+        {recipe.imageUrl && (
+          <Image
+            src={recipe.imageUrl}
+            alt={`${recipe.title}`}
+            fill
+            sizes="(min-width: 640px) 50vw"
+            className="object-cover"
           />
-        ))}
-      </RecipeListWrapper>
-
-      <div className="pt-5">
-        <RecipePagination recipesCount={recipesCount} currentPage={page} />
+        )}
       </div>
-    </>
+      <div className="mt-4 sm:mt-0">
+        <h3 className="text-lg font-bold truncate">{recipe.title}</h3>
+        <p className="mt-1 line-clamp-2">{recipe.about}</p>
+        <div className="mt-3 flex items-center gap-x-3">
+          <div className="shrink-0">
+            {recipe.uploader?.image && (
+              <Image
+                src={recipe.uploader.image}
+                alt="User profile photo"
+                height={32}
+                width={32}
+                className="size-8 rounded-full"
+              />
+            )}
+          </div>
+          <div className="text-sm text-gray-500 font-medium">
+            {recipe.uploader?.firstName} {recipe.uploader?.lastName}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

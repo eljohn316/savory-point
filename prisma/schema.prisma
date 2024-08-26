@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,43 +8,72 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+model Recipe {
+  id          String   @id @default(uuid())
+  imageUrl    String?
+  title       String   @unique
+  about       String
+  servings    Int
+  cookingTime Int
+  prepTime    Int
+  readyTime   Int
+  slug        String
+  sourceUrl   String?
+  creditsText String?
+  sourceName  String?
+  uploadedOn  DateTime @default(now())
+  updatedOn   DateTime @updatedAt
+
+  uploader   User?   @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
+  uploaderId String?
+
+  ingredients  Ingredient[]
+  instructions Instruction[]
+}
+
 model Ingredient {
   id         Int    @id @default(autoincrement())
   ingredient String
 
-  Recipe   Recipe? @relation(fields: [recipeId], references: [id])
-  recipeId String?
+  recipe   Recipe @relation(references: [id], fields: [recipeId], onDelete: Cascade)
+  recipeId String
 }
 
 model Instruction {
   id          Int    @id @default(autoincrement())
   instruction String
 
-  Recipe   Recipe? @relation(fields: [recipeId], references: [id])
-  recipeId String?
+  recipe   Recipe @relation(references: [id], fields: [recipeId], onDelete: Cascade)
+  recipeId String
 }
 
-model Image {
-  id       Int    @id @default(autoincrement())
-  url      String
-  publicId String
+model User {
+  id            String   @id @default(uuid())
+  image         String?
+  firstName     String
+  lastName      String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  password      String
+  dateJoined    DateTime @default(now())
 
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
-  recipeId String @unique
+  sessions              Session[]
+  emailVerificationCode EmailVerificationCode[]
+  recipes               Recipe[]
 }
 
-model Recipe {
-  id          String   @id @default(uuid())
-  title       String   @unique
-  about       String
-  servings    Int
-  cookingTime Int
-  prepTime    Int
-  slug        String
-  uploadedOn  DateTime @default(now())
-  updatedOn   DateTime @updatedAt
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
 
-  image        Image?
-  ingredients  Ingredient[]
-  instructions Instruction[]
+model EmailVerificationCode {
+  id        String   @id @default(uuid())
+  code      String
+  email     String
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }

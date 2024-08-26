@@ -1,13 +1,26 @@
-import React from 'react';
+'use client';
 
-interface LabelProps extends React.ComponentPropsWithoutRef<'label'> {}
+import * as React from 'react';
+import * as LabelPrimitive from '@radix-ui/react-label';
 
-export function Label({ children, ...props }: LabelProps) {
+import { cn } from '@/lib/utils';
+
+const Label = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+>(function Label({ className, ...props }, ref) {
   return (
-    <label
-      className="block text-sm font-medium leading-6 text-gray-900"
-      {...props}>
-      {children}
-    </label>
+    <LabelPrimitive.Root
+      ref={ref}
+      className={cn(
+        'block text-sm font-medium leading-6 text-gray-900',
+        className
+      )}
+      {...props}
+    />
   );
-}
+});
+
+Label.displayName = LabelPrimitive.Root.displayName;
+
+export { Label };

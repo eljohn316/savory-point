@@ -1,23 +1,13 @@
 import { Suspense } from 'react';
-import { SearchInput } from './search-input';
-import { RecipeList } from './recipe-list';
-import { RecipeListSkeleton } from './recipe-list-skeleton';
-import { RecipeListHeader } from './recipe-list-header';
+import { RecipeList } from '@/app/(root)/recipe-list';
+import { RecipeListSkeleton } from '@/app/(root)/recipe-list-skeleton';
 
-interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default function Page({ searchParams }: PageProps) {
+export default function Page() {
   return (
-    <>
-      <SearchInput />
-      <div className="mt-8 divide-y divide-gray-200">
-        <RecipeListHeader />
-        <Suspense fallback={<RecipeListSkeleton />}>
-          <RecipeList searchParams={searchParams} />
-        </Suspense>
-      </div>
-    </>
+    <div className="max-w-3xl mx-auto">
+      <Suspense fallback={<RecipeListSkeleton />}>
+        <RecipeList />
+      </Suspense>
+    </div>
   );
 }

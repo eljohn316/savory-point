@@ -5,12 +5,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.spoonacular.com'
       }
     ]
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['@node-rs/argon2']
   }
 };
 

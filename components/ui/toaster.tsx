@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useCookies } from 'next-client-cookies';
+import { useCookies } from '@/hooks/use-cookies';
 import {
   Toast,
   ToastClose,
@@ -12,26 +12,19 @@ import {
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
 
-type ToastParsed = {
-  variant: string;
-  message: string;
-};
-
 export function Toaster() {
   const { toasts, toast } = useToast();
-  const cookies = useCookies();
+  const { getCookie, deleteCookie } = useCookies();
 
-  const newToast = cookies.get('toast');
+  const toastMessage = getCookie('toast-message');
 
   useEffect(() => {
-    if (!newToast) return;
+    if (!toastMessage) return;
 
-    const toastParsed: ToastParsed = JSON.parse(newToast);
+    toast({ description: toastMessage });
 
-    toast({ title: toastParsed.message });
-
-    cookies.remove('toast');
-  }, [newToast, cookies, toast]);
+    deleteCookie('toast-message');
+  }, [toastMessage, deleteCookie, toast]);
 
   return (
     <ToastProvider>
@@ -41,7 +34,9 @@ export function Toaster() {
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
-                <ToastDescription>{description}</ToastDescription>
+                <ToastDescription className="font-medium">
+                  {description}
+                </ToastDescription>
               )}
             </div>
             {action}
