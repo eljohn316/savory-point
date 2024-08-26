@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { range } from '@/lib/utils';
 
-export function RecipeListSkeleton() {
+export default function Loading() {
   return (
     <div className="divide-y divide-gray-200">
       {range(4).map((num) => (

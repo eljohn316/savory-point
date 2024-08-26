@@ -1,6 +1,7 @@
-import Image from 'next/image';
 import { Prisma } from '@prisma/client';
-import { db } from '@/lib/db';
+import Image from 'next/image';
+import Link from 'next/link';
+import { EmptyRecipeState } from '@/components/empty-recipe-state';
 
 type Recipe = Prisma.RecipeGetPayload<{
   select: {
@@ -19,23 +20,23 @@ type Recipe = Prisma.RecipeGetPayload<{
   };
 }>;
 
-export async function RecipeList() {
-  const recipes = await db.recipe.findMany({
-    select: {
-      id: true,
-      imageUrl: true,
-      title: true,
-      slug: true,
-      about: true,
-      uploader: {
-        select: {
-          image: true,
-          firstName: true,
-          lastName: true
-        }
-      }
-    }
-  });
+interface RecipeListProps {
+  recipes: Recipe[];
+  search?: string;
+}
+
+export function RecipeList({ recipes, search }: RecipeListProps) {
+  if (recipes.length === 0 && search)
+    return (
+      <div className="text-center">
+        <h3 className="text-lg font-bold leading-10">No results found</h3>
+        <p className="text-sm font-medium text-gray-700">
+          We could not find the recipe you&apos;re looking for.
+        </p>
+      </div>
+    );
+
+  if (recipes.length === 0) return <EmptyRecipeState />;
 
   return (
     <div className="divide-y divide-gray-200">
@@ -46,9 +47,15 @@ export async function RecipeList() {
   );
 }
 
-function RecipeListItem({ recipe }: { recipe: Recipe }) {
+interface RecipeListItemProps {
+  recipe: Recipe;
+}
+
+function RecipeListItem({ recipe }: RecipeListItemProps) {
   return (
-    <div className="py-5 first:pt-0 last:pb-0 sm:flex sm:items-center">
+    <Link
+      href={`/${recipe.slug}`}
+      className="block group py-5 first:pt-0 last:pb-0 sm:flex sm:items-center">
       <div className="bg-gray-200 h-48 shrink-0 relative overflow-hidden rounded-md sm:size-36 sm:mr-4">
         {recipe.imageUrl && (
           <Image
@@ -56,12 +63,14 @@ function RecipeListItem({ recipe }: { recipe: Recipe }) {
             alt={`${recipe.title}`}
             fill
             sizes="(min-width: 640px) 50vw"
-            className="object-cover"
+            className="object-cover group-hover:scale-105 duration-300"
           />
         )}
       </div>
       <div className="mt-4 sm:mt-0">
-        <h3 className="text-lg font-bold truncate">{recipe.title}</h3>
+        <h3 className="text-lg font-bold truncate group-hover:underline">
+          {recipe.title}
+        </h3>
         <p className="mt-1 line-clamp-2">{recipe.about}</p>
         <div className="mt-3 flex items-center gap-x-3">
           <div className="shrink-0">
@@ -80,6 +89,6 @@ function RecipeListItem({ recipe }: { recipe: Recipe }) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

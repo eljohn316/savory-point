@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useTransition } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,8 @@ export function SearchInput({ className }: { className?: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [isPending, startTransition] = useTransition();
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -39,8 +41,9 @@ export function SearchInput({ className }: { className?: string }) {
       <Input
         type="text"
         name="search"
-        className={cn(isPending ? 'px-10' : 'pl-10', 'py-2')}
         placeholder="Search"
+        className={cn(isPending ? 'px-10' : 'pl-10', 'py-2')}
+        defaultValue={searchParams.get('search') ?? undefined}
         onKeyDown={handleKeyDown}
         ref={inputRef}
       />
