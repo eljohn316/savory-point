@@ -26,7 +26,7 @@ export async function toBase64(file: File) {
 }
 
 export function formatDate(date: Date) {
-  return format(date, 'MMM dd yyyy');
+  return format(date, 'MMM dd, yyyy');
 }
 
 export function parseArrayValues(

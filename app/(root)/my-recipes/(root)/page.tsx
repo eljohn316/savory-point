@@ -15,8 +15,7 @@ async function getUploadedRecipes(userId: string) {
       select: {
         id: true,
         imageUrl: true,
-        title: true,
-        uploadedOn: true
+        title: true
       }
     });
 
