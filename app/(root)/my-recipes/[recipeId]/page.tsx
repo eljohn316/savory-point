@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { db } from '@/lib/db';
-import { formatDate } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 type Props = {
@@ -46,89 +45,161 @@ export default async function Page({ params }: Props) {
   if (!recipe) notFound();
 
   return (
-    <div>
-      <div className="border-b border-gray-300 pb-6 mb-6">
-        <div className="sm:flex sm:items-center sm:justify-between sm:gap-x-4">
-          <div className="mb-4 sm:mb-0">
-            <h3 className="text-xl font-bold text-gray-900 line-clamp-1">
-              {recipe.title}
+    <div className="lg:flex lg:gap-x-8">
+      <div className="space-y-24 lg:flex-1 lg:pr-8 lg:border-r lg:border-gray-200">
+        <div>
+          <div className="border-b border-gray-200 pb-4 flex items-center justify-between">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              Primary details
             </h3>
-            <p className="text-gray-500 sm:text-sm">
-              Uploaded on {formatDate(recipe.uploadedOn)}
-            </p>
+            <Button asChild>
+              <Link href={`/my-recipes/${params.recipeId}/update-details`}>
+                Update
+              </Link>
+            </Button>
           </div>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href={`/my-recipes/${recipe.id}/update`}>Update</Link>
-          </Button>
+          <div className="mt-6">
+            <dl className="space-y-8 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:gap-y-8">
+              <div className="space-y-2 sm:col-span-2">
+                <dt className="text-gray-500 font-medium sm:text-sm">Title</dt>
+                <dd className="text-gray-900 font-medium sm:text-sm">
+                  {recipe.title}
+                </dd>
+              </div>
+              <div className="space-y-2 sm:col-span-3">
+                <dt className="text-gray-500 font-medium sm:text-sm">
+                  Description
+                </dt>
+                <dd className="text-gray-900 font-medium sm:text-sm">
+                  {recipe.description}
+                </dd>
+              </div>
+              <div className="space-y-2 sm:col-span-1">
+                <dt className="text-gray-500 font-medium sm:text-sm">
+                  Preparation time
+                </dt>
+                <dd className="text-gray-900 font-medium sm:text-sm">
+                  {recipe.prepTime} {recipe.prepTime > 1 ? 'mins' : 'min'}
+                </dd>
+              </div>
+              <div className="space-y-2 sm:col-span-1">
+                <dt className="text-gray-500 font-medium sm:text-sm">
+                  Cooking time
+                </dt>
+                <dd className="text-gray-900 font-medium sm:text-sm">
+                  {recipe.cookingTime} {recipe.cookingTime > 1 ? 'mins' : 'min'}
+                </dd>
+              </div>
+              <div className="space-y-2 sm:col-span-1">
+                <dt className="text-gray-500 font-medium sm:text-sm">
+                  Servings
+                </dt>
+                <dd className="text-gray-900 font-medium sm:text-sm">
+                  {recipe.servings}{' '}
+                  {recipe.servings > 1 ? 'servings' : 'serving'}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div>
+          <div className="border-b border-gray-200 pb-4 flex items-center justify-between">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              Ingredients
+            </h3>
+            <Button asChild>
+              <Link href={`/my-recipes/${params.recipeId}/update-ingredients`}>
+                Update
+              </Link>
+            </Button>
+          </div>
+          <div className="mt-6">
+            <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4">
+              {recipe.ingredients.map((ing) => (
+                <div
+                  key={ing.id}
+                  className="text-gray-900 font-medium sm:text-sm">
+                  {ing.ingredient}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="border-b border-gray-200 pb-4 flex items-center justify-between">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              Instructions
+            </h3>
+            <Button asChild>
+              <Link href={`/my-recipes/${params.recipeId}/update-instructions`}>
+                Update
+              </Link>
+            </Button>
+          </div>
+          <div className="mt-6">
+            <div className="space-y-6">
+              {recipe.instructions.map((ins) => (
+                <div
+                  key={ins.id}
+                  className="space-y-1.5 sm:space-y-0 sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-6">
+                  <div className="text-gray-500 font-medium sm:text-sm">
+                    Step {ins.step}
+                  </div>
+                  <p className="text-gray-900 font-medium sm:text-sm">
+                    {ins.instruction}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="lg:hidden">
+          <div className="border-b border-gray-200 pb-4">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              Image
+            </h3>
+          </div>
+          <div className="mt-6 max-w-80 w-full">
+            <div className="h-64 relative flex-1 rounded-lg overflow-hidden">
+              <Image
+                src={recipe.imageUrl!}
+                alt="Recipe image preview"
+                fill
+                sizes="(min-width: 808px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="mt-4 flex items-center gap-x-3">
+              <Button variant="default" className="flex-1">
+                Update
+              </Button>
+              <Button variant="outline" className="flex-1">
+                Remove
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
-        <div className="col-span-2 sm:col-span-3">
-          <dt className="font-medium leading-6 text-gray-500">Description</dt>
-          <dd className="mt-1 leading-6 text-gray-900 sm:mt-2">
-            {recipe.description}
-          </dd>
-        </div>
-        <div className="col-span-1">
-          <dt className="font-medium leading-6 text-gray-500">Prep time</dt>
-          <dd className="mt-1 leading-6 text-gray-900 sm:mt-2">
-            {recipe.prepTime} {recipe.prepTime > 1 ? 'mins' : 'min'}
-          </dd>
-        </div>
-        <div className="col-span-1">
-          <dt className="font-medium leading-6 text-gray-500">Cooking time</dt>
-          <dd className="mt-1 leading-6 text-gray-900 sm:mt-2">
-            {recipe.prepTime} {recipe.prepTime > 1 ? 'mins' : 'min'}
-          </dd>
-        </div>
-        <div className="col-span-1">
-          <dt className="font-medium leading-6 text-gray-500">Servings</dt>
-          <dd className="mt-1 leading-6 text-gray-900 sm:mt-2">
-            {recipe.servings} {recipe.servings > 1 ? 'persons' : 'person'}
-          </dd>
-        </div>
-      </div>
-
-      {recipe.ingredients.length > 0 && (
-        <div className="mt-10">
-          <div className="font-medium text-gray-500">Ingredients</div>
-          <ul
-            role="list"
-            className="mt-1 marker:text-gray-400 list-disc pl-5 space-y-3 sm:mt-3">
-            {recipe.ingredients.map((ing) => (
-              <li key={ing.id} className="text-gray-900">
-                {ing.ingredient}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {recipe.instructions.length > 0 && (
-        <div className="mt-10">
-          <div className="font-medium text-gray-500">Instructions</div>
-          <ul role="list" className="mt-1 space-y-5 sm:mt-3">
-            {recipe.instructions.map((ins) => (
-              <li key={ins.id} className="space-y-1">
-                <div className="text-gray-500">Step {ins.step}</div>
-                <div className="text-gray-800">{ins.instruction}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="mt-10">
-        <div className="font-medium text-gray-500">Image</div>
-        <div className="relative mt-3 h-72 max-w-96 w-full">
+      <div className="hidden lg:block lg:shrink-0 max-w-80 w-full">
+        <div className="h-64 relative flex-1 rounded-lg overflow-hidden">
           <Image
             src={recipe.imageUrl!}
-            alt={recipe.title}
+            alt="Recipe image preview"
             fill
-            sizes="75vw"
-            className="size-full object-cover rounded-lg"
+            sizes="(min-width: 808px) 50vw, 100vw"
+            className="object-cover"
           />
+        </div>
+        <div className="mt-4 flex items-center gap-x-3">
+          <Button variant="default" className="flex-1">
+            Update
+          </Button>
+          <Button variant="outline" className="flex-1">
+            Remove
+          </Button>
         </div>
       </div>
     </div>

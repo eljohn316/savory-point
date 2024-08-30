@@ -7,7 +7,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <Link
         href="/my-recipes"
         className="-ml-1 inline-flex items-center text-sm font-semibold text-emerald-700 hover:text-emerald-700">
