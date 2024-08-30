@@ -9,7 +9,7 @@ type Recipe = Prisma.RecipeGetPayload<{
     imageUrl: true;
     title: true;
     slug: true;
-    about: true;
+    description: true;
     uploader: {
       select: {
         image: true;
@@ -71,7 +71,7 @@ function RecipeListItem({ recipe }: RecipeListItemProps) {
         <h3 className="text-lg font-bold truncate group-hover:underline">
           {recipe.title}
         </h3>
-        <p className="mt-1 line-clamp-2">{recipe.about}</p>
+        <p className="mt-1 line-clamp-2">{recipe.description}</p>
         <div className="mt-3 flex items-center gap-x-3">
           <div className="shrink-0">
             {recipe.uploader?.image && (

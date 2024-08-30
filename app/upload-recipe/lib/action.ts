@@ -6,76 +6,73 @@ import { db } from '@/lib/db';
 import { validateRequest } from '@/lib/auth';
 import { createSlug, toBase64, parseArrayValues } from '@/lib/utils';
 import { cloudinary } from '@/lib/cloudinary';
-import { serverSchema } from '@/app/upload-recipe/lib/schema';
+import { recipeServerSchema } from '@/lib/schema';
+import { revalidatePath } from 'next/cache';
 
 export type PrevState = {
   errors: {
     title?: string[] | undefined;
-    about?: string[] | undefined;
+    description?: string[] | undefined;
     prepTime?: string[] | undefined;
     cookingTime?: string[] | undefined;
-    readyTime?: string[] | undefined;
     servings?: string[] | undefined;
     ingredients?: string[] | undefined;
     instructions?: string[] | undefined;
     image?: string[] | undefined;
   };
+  message?: string;
 };
-
-const titleExists = async (title: string) =>
-  await db.recipe.findUnique({ where: { title } });
 
 export async function createRecipeAction(
   prevState: PrevState,
   formData: FormData
 ): Promise<PrevState> {
   const { user } = await validateRequest();
-
   if (!user) return redirect('/sign-in');
 
   const entries = Object.fromEntries(formData);
-  const validated = serverSchema.safeParse({
+
+  const { success, data, error } = recipeServerSchema.safeParse({
     image: entries.image,
     title: entries.title,
-    about: entries.about,
+    description: entries.description,
     prepTime: entries.prepTime,
     cookingTime: entries.cookingTime,
-    readyTime: entries.readyTime,
     servings: entries.servings,
     ingredients: parseArrayValues('ingredients', entries),
-    instructions: parseArrayValues('instructions', entries)
+    instructions: parseArrayValues('instructions', entries).map((ins, i) => ({
+      step: i + 1,
+      instruction: ins.instruction
+    }))
   });
 
-  if (!validated.success)
+  if (!success)
     return {
-      errors: validated.error.flatten().fieldErrors
+      errors: error.flatten().fieldErrors
     };
 
-  if (await titleExists(validated.data.title))
+  if (await db.recipe.findUnique({ where: { title: data.title } }))
     return {
       errors: {
         title: ['Recipe title is already taken']
       }
     };
 
-  const payload = validated.data;
-
   const recipe = await db.recipe.create({
     data: {
-      title: payload.title,
-      about: payload.about,
-      prepTime: payload.prepTime,
-      cookingTime: payload.cookingTime,
-      readyTime: payload.readyTime,
-      servings: payload.servings,
-      ingredients: { createMany: { data: payload.ingredients } },
-      instructions: { createMany: { data: payload.instructions } },
-      slug: createSlug(payload.title),
+      title: data.title,
+      description: data.description,
+      prepTime: data.prepTime,
+      cookingTime: data.cookingTime,
+      servings: data.servings,
+      ingredients: { createMany: { data: data.ingredients } },
+      instructions: { createMany: { data: data.instructions } },
+      slug: createSlug(data.title),
       uploaderId: user.id
     }
   });
 
-  const base64 = await toBase64(payload.image);
+  const base64 = await toBase64(data.image);
   const result = await cloudinary.uploader.upload(base64, {
     public_id: recipe.id,
     resource_type: 'auto',
@@ -87,6 +84,7 @@ export async function createRecipeAction(
     data: { imageUrl: result.secure_url }
   });
 
+  revalidatePath('/');
   cookies().set('toast-message', 'Recipe successfully uploaded');
   redirect('/');
 }

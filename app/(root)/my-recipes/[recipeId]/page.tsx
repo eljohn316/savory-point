@@ -67,7 +67,7 @@ export default async function Page({ params }: Props) {
         <div className="col-span-2 sm:col-span-3">
           <dt className="font-medium leading-6 text-gray-500">Description</dt>
           <dd className="mt-1 leading-6 text-gray-900 sm:mt-2">
-            {recipe.about}
+            {recipe.description}
           </dd>
         </div>
         <div className="col-span-1">
@@ -108,12 +108,11 @@ export default async function Page({ params }: Props) {
       {recipe.instructions.length > 0 && (
         <div className="mt-10">
           <div className="font-medium text-gray-500">Instructions</div>
-          <ul
-            role="list"
-            className="mt-1 marker:text-gray-500 list-decimal pl-5 space-y-3 sm:mt-3">
+          <ul role="list" className="mt-1 space-y-5 sm:mt-3">
             {recipe.instructions.map((ins) => (
-              <li key={ins.id} className="text-gray-900">
-                {ins.instruction}
+              <li key={ins.id} className="space-y-1">
+                <div className="text-gray-500">Step {ins.step}</div>
+                <div className="text-gray-800">{ins.instruction}</div>
               </li>
             ))}
           </ul>

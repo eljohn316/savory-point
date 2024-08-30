@@ -20,7 +20,7 @@ async function getRecipes(search?: string) {
         imageUrl: true,
         title: true,
         slug: true,
-        about: true,
+        description: true,
         uploader: {
           select: {
             image: true,

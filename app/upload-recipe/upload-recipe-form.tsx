@@ -2,11 +2,13 @@
 
 import Image from 'next/image';
 import React, { useRef, useState, useTransition } from 'react';
+import { z } from 'zod';
 import { useFormState } from 'react-dom';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PhotoIcon } from '@heroicons/react/24/solid';
-import { clientSchema, TClientSchema } from '@/app/upload-recipe/lib/schema';
+import { cn } from '@/lib/utils';
+import { recipeClientSchema } from '@/lib/schema';
 import { createRecipeAction } from '@/app/upload-recipe/lib/action';
 import {
   Form,
@@ -20,25 +22,27 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { cn } from '@/lib/utils';
+
+type TRecipeClientSchema = z.infer<typeof recipeClientSchema>;
 
 export function UploadRecipeForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [result, formAction] = useFormState(createRecipeAction, { errors: {} });
+  const [result, formAction] = useFormState(createRecipeAction, {
+    errors: {}
+  });
 
-  const form = useForm<TClientSchema>({
-    resolver: zodResolver(clientSchema),
+  const form = useForm<TRecipeClientSchema>({
+    resolver: zodResolver(recipeClientSchema),
     defaultValues: {
       title: '',
-      about: '',
+      description: '',
       prepTime: 0,
       cookingTime: 0,
-      readyTime: 0,
       servings: 1,
       ingredients: [{ ingredient: '' }],
-      instructions: [{ instruction: '' }]
+      instructions: [{ step: 1, instruction: '' }]
     }
   });
 
@@ -89,12 +93,12 @@ export function UploadRecipeForm() {
   return (
     <Form {...form}>
       <form ref={formRef} action={formAction} onSubmit={handleSubmit}>
-        <div className="space-y-6 sm:space-y-0 sm:grid sm:grid-cols-4 sm:gap-x-5 sm:gap-y-6">
+        <div className="space-y-6 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-x-5 sm:gap-y-6">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
-              <FormItem className="sm:col-span-3">
+              <FormItem className="sm:col-span-2">
                 <FormLabel>Title</FormLabel>
                 <FormControl serverError={result?.errors?.title?.at(0)}>
                   <Input type="text" disabled={isPending} {...field} />
@@ -106,24 +110,24 @@ export function UploadRecipeForm() {
 
           <FormField
             control={form.control}
-            name="about"
+            name="description"
             render={({ field }) => (
-              <FormItem className="sm:col-span-4">
-                <FormLabel>About</FormLabel>
-                <FormControl serverError={result?.errors?.about?.at(0)}>
+              <FormItem className="sm:col-span-3">
+                <FormLabel>Description</FormLabel>
+                <FormControl serverError={result?.errors?.description?.at(0)}>
                   <Textarea disabled={isPending} {...field} />
                 </FormControl>
-                <FormMessage>{result?.errors?.about?.at(0)}</FormMessage>
+                <FormMessage>{result?.errors?.description?.at(0)}</FormMessage>
               </FormItem>
             )}
           />
 
-          <div className="sm:col-span-4 grid grid-cols-4 gap-x-5 gap-y-6">
+          <div className="space-y-6 sm:space-y-0 sm:col-span-3 sm:grid sm:grid-cols-3 sm:gap-x-5 sm:gap-y-6">
             <FormField
               control={form.control}
               name="prepTime"
               render={({ field }) => (
-                <FormItem className="col-span-2 sm:col-span-1">
+                <FormItem className="sm:col-span-1">
                   <FormLabel>Prep time</FormLabel>
                   <FormControl serverError={result?.errors?.prepTime?.at(0)}>
                     <Input
@@ -142,7 +146,7 @@ export function UploadRecipeForm() {
               control={form.control}
               name="cookingTime"
               render={({ field }) => (
-                <FormItem className="col-span-2 sm:col-span-1">
+                <FormItem className="sm:col-span-1">
                   <FormLabel>Cooking time</FormLabel>
                   <FormControl serverError={result?.errors?.cookingTime?.at(0)}>
                     <Input
@@ -161,28 +165,9 @@ export function UploadRecipeForm() {
 
             <FormField
               control={form.control}
-              name="readyTime"
-              render={({ field }) => (
-                <FormItem className="col-span-2 sm:col-span-1">
-                  <FormLabel>Ready time</FormLabel>
-                  <FormControl serverError={result?.errors?.readyTime?.at(0)}>
-                    <Input
-                      type="number"
-                      min={0}
-                      disabled={isPending}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{result?.errors?.readyTime?.at(0)}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="servings"
               render={({ field }) => (
-                <FormItem className="col-span-2 sm:col-span-1">
+                <FormItem className="sm:col-span-1">
                   <FormLabel>Servings</FormLabel>
                   <FormControl serverError={result?.errors?.servings?.at(0)}>
                     <Input
@@ -256,7 +241,7 @@ export function UploadRecipeForm() {
                 render={({ field: input }) => (
                   <FormItem>
                     <div className="flex items-baseline">
-                      <FormLabel>Step {index + 1}</FormLabel>
+                      <FormLabel>Step {field.step}</FormLabel>
                       {instructionFields.length > 1 &&
                         instructionFields.length - 1 === index && (
                           <button
@@ -284,7 +269,12 @@ export function UploadRecipeForm() {
               type="button"
               variant="secondary"
               className="w-full border-2 border-dashed border-emerald-600"
-              onClick={() => appendInstruction({ instruction: '' })}>
+              onClick={() =>
+                appendInstruction({
+                  step: instructionFields.at(-1)!.step + 1,
+                  instruction: ''
+                })
+              }>
               Add item
             </Button>
           </div>

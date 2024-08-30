@@ -12,21 +12,16 @@ model Recipe {
   id          String   @id @default(uuid())
   imageUrl    String?
   title       String   @unique
-  about       String
+  description String
   servings    Int
   cookingTime Int
   prepTime    Int
-  readyTime   Int
   slug        String
-  sourceUrl   String?
-  creditsText String?
-  sourceName  String?
   uploadedOn  DateTime @default(now())
   updatedOn   DateTime @updatedAt
+  uploaderId  String?
 
-  uploader   User?   @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
-  uploaderId String?
-
+  uploader     User?         @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
   ingredients  Ingredient[]
   instructions Instruction[]
 }
@@ -41,6 +36,7 @@ model Ingredient {
 
 model Instruction {
   id          Int    @id @default(autoincrement())
+  step        Int
   instruction String
 
   recipe   Recipe @relation(references: [id], fields: [recipeId], onDelete: Cascade)

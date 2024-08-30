@@ -1,25 +1,21 @@
 import { z } from 'zod';
 
 const ACCEPTED_FILES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-const MAX_IMAGE_SIZE = 1;
+const MAX_IMAGE_SIZE = 5;
 
 const sizeInMB = (sizeInBytes: number, decimalsNum = 2) => {
   const result = sizeInBytes / (1024 * 1024);
   return +result.toFixed(decimalsNum);
 };
 
-const baseSchema = z.object({
+const recipeBaseSchema = z.object({
   title: z.string().min(1, { message: 'Recipe title is required' }),
-  about: z.string().trim().min(1, { message: 'About is required' }),
+  description: z.string().trim().min(1, { message: 'Description is required' }),
   prepTime: z.coerce
     .number()
     .int()
     .gte(0, { message: 'Prep time is required' }),
   cookingTime: z.coerce
-    .number()
-    .int()
-    .gte(0, { message: 'Cooking time is required' }),
-  readyTime: z.coerce
     .number()
     .int()
     .gte(0, { message: 'Cooking time is required' }),
@@ -33,14 +29,14 @@ const baseSchema = z.object({
     .nonempty({ message: 'Recipe must atleast have one ingredient' }),
   instructions: z
     .object({
-      num: z.optional(z.number()),
+      step: z.number(),
       instruction: z.string().trim().min(1, 'Instruction is required')
     })
     .array()
     .nonempty({ message: 'Recipe must atleast have one instruction' })
 });
 
-export const clientSchema = baseSchema.extend({
+export const recipeClientSchema = recipeBaseSchema.extend({
   image: z
     .custom<FileList>()
     .refine((files) => files.length === 1, 'Image is required')
@@ -58,7 +54,7 @@ export const clientSchema = baseSchema.extend({
     )
 });
 
-export const serverSchema = baseSchema.extend({
+export const recipeServerSchema = recipeBaseSchema.extend({
   image: z
     .custom<File>()
     .refine((file) => file.size > 0, 'Image is required')
@@ -71,6 +67,3 @@ export const serverSchema = baseSchema.extend({
       'Maximum image size is 5mb.'
     )
 });
-
-export type TClientSchema = z.infer<typeof clientSchema>;
-export type TServerSchema = z.infer<typeof serverSchema>;
