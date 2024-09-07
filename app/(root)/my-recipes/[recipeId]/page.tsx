@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
+import { UpdateImageButton } from './update-image-button';
+import { RemoveImageButton } from './remove-image-button';
 
 type Props = {
   params: { recipeId: string };
@@ -172,13 +174,8 @@ export default async function Page({ params }: Props) {
                 className="object-cover"
               />
             </div>
-            <div className="mt-4 flex items-center gap-x-3">
-              <Button variant="default" className="flex-1">
-                Update
-              </Button>
-              <Button variant="outline" className="flex-1">
-                Remove
-              </Button>
+            <div className="mt-4">
+              <UpdateImageButton imageUrl={recipe.imageUrl!} />
             </div>
           </div>
         </div>
@@ -193,13 +190,8 @@ export default async function Page({ params }: Props) {
             className="object-cover"
           />
         </div>
-        <div className="mt-4 flex items-center gap-x-3">
-          <Button variant="default" className="flex-1">
-            Update
-          </Button>
-          <Button variant="outline" className="flex-1">
-            Remove
-          </Button>
+        <div className="mt-4">
+          <UpdateImageButton imageUrl={recipe.imageUrl!} />
         </div>
       </div>
     </div>
