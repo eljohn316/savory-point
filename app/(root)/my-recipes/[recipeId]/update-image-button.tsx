@@ -51,7 +51,7 @@ export function UpdateImageButton({ imageUrl }: UpdateImageButtonProps) {
   return (
     <>
       <Button
-        variant="default"
+        variant="secondary"
         className="w-full"
         onClick={() => setOpen(true)}>
         Update

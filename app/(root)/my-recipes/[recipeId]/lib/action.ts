@@ -38,3 +38,21 @@ export async function updateImageAction(
     timestamp: Date.now()
   };
 }
+
+export async function deleteRecipeAction(recipeId: string, prevState: any) {
+  try {
+    await db.recipe.delete({
+      where: {
+        id: recipeId
+      }
+    });
+  } catch (error) {
+    return {
+      messsage: 'Could not delete recipe something went wrong'
+    };
+  }
+
+  cookies().set('toast-message', 'Recipe successfully deleted');
+  revalidatePath('/my-recipes');
+  redirect('/my-recipes');
+}

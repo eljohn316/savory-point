@@ -6,7 +6,8 @@ import { cache } from 'react';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import { UpdateImageButton } from './update-image-button';
-import { RemoveImageButton } from './remove-image-button';
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid';
+import { ConfirmDeleteModal } from './confirm-delete-modal';
 
 type Props = {
   params: { recipeId: string };
@@ -54,7 +55,7 @@ export default async function Page({ params }: Props) {
             <h3 className="text-base font-semibold leading-6 text-gray-900">
               Primary details
             </h3>
-            <Button asChild>
+            <Button variant="secondary" asChild>
               <Link href={`/my-recipes/${params.recipeId}/update-details`}>
                 Update
               </Link>
@@ -110,7 +111,7 @@ export default async function Page({ params }: Props) {
             <h3 className="text-base font-semibold leading-6 text-gray-900">
               Ingredients
             </h3>
-            <Button asChild>
+            <Button variant="secondary" asChild>
               <Link href={`/my-recipes/${params.recipeId}/update-ingredients`}>
                 Update
               </Link>
@@ -134,7 +135,7 @@ export default async function Page({ params }: Props) {
             <h3 className="text-base font-semibold leading-6 text-gray-900">
               Instructions
             </h3>
-            <Button asChild>
+            <Button variant="secondary" asChild>
               <Link href={`/my-recipes/${params.recipeId}/update-instructions`}>
                 Update
               </Link>
@@ -177,6 +178,33 @@ export default async function Page({ params }: Props) {
             <div className="mt-4">
               <UpdateImageButton imageUrl={recipe.imageUrl!} />
             </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="border-b border-gray-200 pb-4">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">
+              Delete recipe
+            </h3>
+          </div>
+          <div className="mt-5 border-l-4 border-red-400 bg-red-50 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <ExclamationTriangleIcon
+                  className="h-5 w-5 text-red-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">
+                  This action will delete this recipe from our servers. This
+                  action cannot be undone
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <ConfirmDeleteModal />
           </div>
         </div>
       </div>
