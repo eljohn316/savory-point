@@ -1,47 +1,59 @@
 import { db } from '@/lib/db';
 import { RecipeList } from '@/app/(root)/(home)/recipe-list';
+import { PaginationButtons } from './pagination-buttons';
+import { RESULTS_PER_PAGE } from './config';
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 }
 
-async function getRecipes(search?: string) {
-  try {
-    const recipes = await db.recipe.findMany({
-      where: {
-        title: {
-          contains: search,
-          mode: 'insensitive'
-        }
-      },
-      orderBy: { uploadedOn: 'desc' },
-      select: {
-        id: true,
-        imageUrl: true,
-        title: true,
-        slug: true,
-        description: true,
-        uploader: {
-          select: {
-            image: true,
-            firstName: true,
-            lastName: true
-          }
+async function getRecipes({ page, search }: { page: number; search?: string }) {
+  return await db.recipe.findMany({
+    where: {
+      title: {
+        contains: search,
+        mode: 'insensitive'
+      }
+    },
+    take: RESULTS_PER_PAGE,
+    skip: (page - 1) * RESULTS_PER_PAGE,
+    orderBy: { uploadedOn: 'desc' },
+    select: {
+      id: true,
+      imageUrl: true,
+      title: true,
+      slug: true,
+      description: true,
+      uploader: {
+        select: {
+          image: true,
+          firstName: true,
+          lastName: true
         }
       }
-    });
+    }
+  });
+}
 
-    return recipes;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Something went wrong');
-  }
+async function getTotalRecipes({ search }: { search?: string }) {
+  return await db.recipe.count({
+    where: {
+      title: {
+        contains: search,
+        mode: 'insensitive'
+      }
+    }
+  });
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const search = searchParams.search as string | undefined;
+  const { search, page } = searchParams;
+  const currentPage = typeof page === 'string' ? +page : 1;
 
-  const recipes = await getRecipes(search);
+  const [recipes, count] = await Promise.all([
+    getRecipes({ page: currentPage, search }),
+    getTotalRecipes({ search })
+  ]);
 
   return (
     <>
@@ -55,8 +67,10 @@ export default async function Page({ searchParams }: PageProps) {
           </p>
         </div>
       )}
-
-      <RecipeList search={search} recipes={recipes} />
+      <RecipeList recipes={recipes} />
+      <div className="mt-8">
+        <PaginationButtons numResults={count} />
+      </div>
     </>
   );
 }

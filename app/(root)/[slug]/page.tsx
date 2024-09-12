@@ -127,8 +127,8 @@ export default async function Page({ params }: PageProps) {
         <ul className="list-none space-y-4 text-gray-700 marker:text-gray-400">
           {recipe.instructions.map(({ id, step, instruction }) => (
             <li key={id}>
-              <p className="text-gray-500">Step {step}</p>
-              <p className="text-gray-700">{instruction}</p>
+              <p className="text-emerald-600">Step {step}</p>
+              <p className="text-gray-900">{instruction}</p>
             </li>
           ))}
         </ul>

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
+
 import recipes from './recipes.json';
 
 cloudinary.config({
@@ -12,33 +13,35 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    // const result = await uploadImage(data.imageUrl, data.id);
-    // console.log('Result');
-    // console.log(result);
-    // for (const recipe of recipes) {
-    //   const newRecipe = await prisma.recipe.create({
-    //     data: {
-    //       id: recipe.id,
-    //       image: {
-    //         create: {
-    //           url: recipe.imageUrl,
-    //           publicId: recipe.slug
-    //         }
-    //       },
-    //       title: recipe.title,
-    //       cookingTime: recipe.cookingTime,
-    //       prepTime: recipe.prepTime,
-    //       servings: recipe.servings,
-    //       about: recipe.about,
-    //       ingredients: { createMany: { data: recipe.ingredients } },
-    //       instructions: { createMany: { data: recipe.instructions } },
-    //       slug: recipe.slug,
-    //       uploadedOn: recipe.uploadedOn
-    //     }
-    //   });
-    //   console.log(`Recipe ID: ${newRecipe.id} successfully created!`);
-    // }
-    // console.log('Database successfully seeded');
+    for (const recipe of recipes) {
+      const result = await cloudinary.uploader.upload(recipe.imageUrl);
+
+      const newRecipe = await prisma.recipe.create({
+        data: {
+          id: recipe.id,
+          imageUrl: result.secure_url,
+          title: recipe.title,
+          description: recipe.about,
+          cookingTime: recipe.cookingTime,
+          prepTime: recipe.prepTime,
+          servings: recipe.servings,
+          ingredients: { createMany: { data: recipe.ingredients } },
+          instructions: {
+            createMany: {
+              data: recipe.instructions.map((ins, i) => ({
+                step: i + 1,
+                instruction: ins.instruction
+              }))
+            }
+          },
+          slug: recipe.slug,
+          uploadedOn: recipe.uploadedOn,
+          uploaderId: 'wi5j7khyq2ea74ct'
+        }
+      });
+      console.log(`Recipe ID: ${newRecipe.id} successfully created!`);
+    }
+    console.log('Database successfully seeded');
   } catch (error) {
     console.error(error);
   }

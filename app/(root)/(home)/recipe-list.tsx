@@ -1,7 +1,11 @@
-import { Prisma } from '@prisma/client';
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { Prisma } from '@prisma/client';
 import { EmptyRecipeState } from '@/components/empty-recipe-state';
+import { PaginationButtons } from './pagination-buttons';
+import { useSearchParams } from 'next/navigation';
 
 type Recipe = Prisma.RecipeGetPayload<{
   select: {
@@ -22,10 +26,11 @@ type Recipe = Prisma.RecipeGetPayload<{
 
 interface RecipeListProps {
   recipes: Recipe[];
-  search?: string;
 }
 
-export function RecipeList({ recipes, search }: RecipeListProps) {
+export function RecipeList({ recipes }: RecipeListProps) {
+  const search = useSearchParams().get('search');
+
   if (recipes.length === 0 && search)
     return (
       <div className="text-center">
