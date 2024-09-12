@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { Cookie } from 'next/font/google';
 import { User } from 'lucia';
-import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { validateRequest } from '@/lib/auth';
-import { SearchInput } from '@/components/search-input';
 import {
   Dropdown,
   DropdownItem,
@@ -20,7 +19,7 @@ export function Logo({ className }: { className?: string }) {
     <Link
       href="/"
       className={cn(
-        'text-4xl md:text-[2.5rem] lg:text-5xl text-emerald-700',
+        'text-[38px] text-emerald-700',
         fontLogo.className,
         className
       )}>
@@ -90,34 +89,14 @@ function NavActions({ user }: { user: User | null }) {
   return <AuthenticatedNavLinks user={user} />;
 }
 
-function SearchActions() {
-  return (
-    <>
-      <button
-        type="button"
-        className="-m-2 p-2 text-gray-400 hover:text-gray-500 lg:hidden">
-        <MagnifyingGlassIcon className="size-6" aria-hidden="true" />
-        <span className="sr-only">Open search modal</span>
-      </button>
-
-      <SearchInput className="hidden lg:block" />
-    </>
-  );
-}
-
 export async function Navigation() {
   const { user } = await validateRequest();
 
   return (
     <nav className="shadow p-4 sm:px-6">
-      <div className="max-w-7xl mx-auto flex items-center gap-x-4">
-        <div className="flex-1 flex-shrink-0">
-          <SearchActions />
-        </div>
-        <div className="flex-grow flex-shrink flex justify-center">
-          <Logo />
-        </div>
-        <div className="flex-1 flex-shrink-0 flex items-center justify-end">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <Logo />
+        <div className="flex items-center">
           <NavActions user={user} />
         </div>
       </div>

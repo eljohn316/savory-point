@@ -2,10 +2,12 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { verify } from '@node-rs/argon2';
 import { db } from '@/lib/db';
 import { lucia } from '@/lib/lucia';
 import { schema } from '@/app/(auth)/sign-in/lib/schema';
+import console from 'console';
 
 export type PrevState = {
   errors?: {
@@ -59,7 +61,12 @@ export async function signInAction(
     sessionCookie.value,
     sessionCookie.attributes
   );
+
   cookies().set('toast-message', `Welcome back, ${user.firstName}!`);
 
-  redirect('/');
+  const headerList = headers();
+  const url = new URL(headerList.get('referer') as string);
+  const redirectUrl = url.searchParams.get('redirect');
+
+  redirect(typeof redirectUrl === 'string' ? redirectUrl : '/');
 }

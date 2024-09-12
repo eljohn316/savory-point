@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import { RecipeList } from '@/app/(root)/(home)/recipe-list';
 import { PaginationButtons } from './pagination-buttons';
 import { RESULTS_PER_PAGE } from './config';
+import { SearchInput } from '@/components/search-input';
+import Link from 'next/link';
 
 interface PageProps {
   searchParams: { [key: string]: string | undefined };
@@ -57,14 +59,22 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <>
+      <SearchInput className="mb-8" />
+
       {search && (
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-700">
             Search results for{' '}
             <span className="text-gray-900 font-semibold">
               &ldquo;{search}&rdquo;
             </span>
           </p>
+
+          <Link
+            href="/"
+            className="text-red-600 hover:text-red-600/90 font-medium">
+            Clear
+          </Link>
         </div>
       )}
       <RecipeList recipes={recipes} />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useTransition } from 'react';
+import { useEffect, useRef, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
@@ -28,6 +28,11 @@ export function SearchInput({ className }: { className?: string }) {
       });
     }
   }
+
+  useEffect(() => {
+    if (!searchParams.get('search') && inputRef.current)
+      inputRef.current.value = '';
+  }, [searchParams]);
 
   return (
     <div className={cn('relative', className)}>
