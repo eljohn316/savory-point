@@ -1,11 +1,6 @@
-'use client';
-
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Prisma } from '@prisma/client';
-import { EmptyRecipeState } from '@/components/empty-recipe-state';
-import { PaginationButtons } from './pagination-buttons';
-import { useSearchParams } from 'next/navigation';
 
 type Recipe = Prisma.RecipeGetPayload<{
   select: {
@@ -13,10 +8,8 @@ type Recipe = Prisma.RecipeGetPayload<{
     imageUrl: true;
     title: true;
     slug: true;
-    description: true;
     uploader: {
       select: {
-        image: true;
         firstName: true;
         lastName: true;
       };
@@ -29,71 +22,35 @@ interface RecipeListProps {
 }
 
 export function RecipeList({ recipes }: RecipeListProps) {
-  const search = useSearchParams().get('search');
-
-  if (recipes.length === 0 && search)
-    return (
-      <div className="text-center">
-        <h3 className="text-lg font-bold leading-10">No results found</h3>
-        <p className="text-sm font-medium text-gray-700">
-          We could not find the recipe you&apos;re looking for.
-        </p>
-      </div>
-    );
-
-  if (recipes.length === 0) return <EmptyRecipeState />;
-
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="grid grid-cols-1 gap-x-8 gap-y-12 duration-200 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       {recipes.map((recipe) => (
-        <RecipeListItem key={recipe.id} recipe={recipe} />
+        <Link
+          key={recipe.id}
+          href={`/recipe/${recipe.slug}`}
+          className="group block">
+          <div className="relative h-44 overflow-hidden rounded-md sm:h-40">
+            <Image
+              src={recipe.imageUrl!}
+              alt={recipe.title}
+              sizes="(min-width: 360px) 50vw, 100vw"
+              className="object-cover duration-300 group-hover:scale-105"
+              fill
+            />
+          </div>
+          <div className="mt-4">
+            <h3 className="line-clamp-2 font-serif text-xl font-semibold leading-7 text-gray-900 group-hover:underline group-hover:underline-offset-2 sm:text-lg sm:leading-6">
+              {recipe.title}
+            </h3>
+            <p className="mt-2 text-base font-medium sm:text-sm">
+              <span className="text-gray-500">by</span>{' '}
+              <span className="text-gray-700">
+                {recipe.uploader?.firstName} {recipe.uploader?.lastName}
+              </span>
+            </p>
+          </div>
+        </Link>
       ))}
     </div>
-  );
-}
-
-interface RecipeListItemProps {
-  recipe: Recipe;
-}
-
-function RecipeListItem({ recipe }: RecipeListItemProps) {
-  return (
-    <Link
-      href={`/${recipe.slug}`}
-      className="block group py-5 first:pt-0 last:pb-0 sm:flex sm:items-center">
-      <div className="bg-gray-200 h-48 shrink-0 relative overflow-hidden rounded-md sm:size-36 sm:mr-4">
-        {recipe.imageUrl && (
-          <Image
-            src={recipe.imageUrl}
-            alt={`${recipe.title}`}
-            fill
-            sizes="(min-width: 640px) 50vw"
-            className="object-cover group-hover:scale-105 duration-300"
-          />
-        )}
-      </div>
-      <div className="mt-4 sm:mt-0">
-        <h3 className="text-lg font-bold truncate group-hover:underline">
-          {recipe.title}
-        </h3>
-        <p className="mt-1 line-clamp-2">{recipe.description}</p>
-        <div className="mt-3 flex items-center gap-x-3">
-          <div className="shrink-0">
-            {recipe.uploader?.image && (
-              <Image
-                src={recipe.uploader.image}
-                alt="User profile photo"
-                height={32}
-                width={32}
-                className="size-8 rounded-full"
-              />
-            )}
-          </div>
-          <div className="text-sm text-gray-500 font-medium">
-            {recipe.uploader?.firstName} {recipe.uploader?.lastName}
-          </div>
-        </div>
-      </div>
-    </Link>
   );
 }

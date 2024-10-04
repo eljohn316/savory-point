@@ -1,17 +1,12 @@
-import { redirect } from 'next/navigation';
-import { validateRequest } from '@/lib/auth';
+import React from "react";
 
-interface AuthLayoutProps {
+interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default async function AuthLayout({ children }: AuthLayoutProps) {
-  const { session } = await validateRequest();
-
-  if (session) return redirect('/');
-
+export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex min-h-full flex-1 items-center justify-center px-4 py-14 sm:px-6 lg:px-8">
+    <div className="flex items-start justify-center px-4 pb-6 pt-16 lg:px-8">
       {children}
     </div>
   );

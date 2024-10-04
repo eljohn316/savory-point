@@ -1,100 +1,119 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import React, { useRef, useTransition } from 'react';
-import { useFormState } from 'react-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { schema, TSchema } from '@/app/(auth)/create-account/lib/schema';
-import { createAccountAction } from '@/app/(auth)/create-account/lib/action';
+import * as React from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { XCircleIcon } from "@heroicons/react/20/solid";
+
+import { useFormAction } from "@/hooks/use-form-action";
+import { createAccountSchema } from "@/lib/schema/create-account";
+import { createAccount } from "@/lib/actions/auth";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+  FormMessage,
+  FormControl
+} from "@/components/ui/form";
+import { Alert, AlertDescription, AlertIcon } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
+
+type TSchema = z.infer<typeof createAccountSchema>;
 
 export function CreateAccountForm() {
-  const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
-  const [result, formAction] = useFormState(createAccountAction, {
-    errors: {}
-  });
-
   const form = useForm<TSchema>({
-    mode: 'onBlur',
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createAccountSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: ""
     }
   });
+
+  const { isPending, formAction, formState, onSubmit } = useFormAction(
+    createAccount,
+    { errors: {} }
+  );
+
+  React.useEffect(() => {
+    if (formState.success === false) {
+      form.reset();
+    }
+  }, [formState, form]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const formData = new FormData(formRef.current!);
-
-    startTransition(() => {
+    onSubmit(() => {
+      const formData = new FormData(e.currentTarget);
       form.handleSubmit(() => formAction(formData))(e);
     });
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form ref={formRef} action={formAction} onSubmit={handleSubmit}>
-          <div className="space-y-6">
-            <div className="space-y-6 sm:space-y-0 sm:flex sm:gap-x-5">
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem className="sm:flex-1">
-                    <FormLabel>First name</FormLabel>
-                    <FormControl serverError={result?.errors?.firstName?.at(0)}>
-                      <Input type="text" disabled={isPending} {...field} />
-                    </FormControl>
-                    <FormMessage>
-                      {result?.errors?.firstName?.at(0)}
-                    </FormMessage>
-                  </FormItem>
-                )}
-              />
+    <div className="space-y-4">
+      {!formState.success && formState.message && (
+        <Alert variant="danger" className="flex">
+          <div className="shrink-0">
+            <AlertIcon icon={XCircleIcon} className="shrink-0" />
+          </div>
+          <div className="ml-3">
+            <AlertDescription className="font-medium">
+              {formState.message}
+            </AlertDescription>
+          </div>
+        </Alert>
+      )}
 
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem className="sm:flex-1">
-                    <FormLabel>Last name</FormLabel>
-                    <FormControl serverError={result?.errors?.lastName?.at(0)}>
-                      <Input type="text" disabled={isPending} {...field} />
-                    </FormControl>
-                    <FormMessage>{result?.errors?.lastName?.at(0)}</FormMessage>
-                  </FormItem>
-                )}
-              />
-            </div>
+      <Form {...form}>
+        <form action={formAction} onSubmit={handleSubmit}>
+          <div className="space-y-6 sm:grid sm:gap-x-5 sm:gap-y-6 sm:space-y-0">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-1">
+                  <FormLabel>First name</FormLabel>
+                  <FormControl serverError={formState?.errors?.firstName}>
+                    <Input type="text" disabled={isPending} {...field} />
+                  </FormControl>
+                  <FormMessage>{formState?.errors?.firstName}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-1">
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl serverError={formState?.errors?.lastName}>
+                    <Input type="text" disabled={isPending} {...field} />
+                  </FormControl>
+                  <FormMessage>{formState?.errors?.lastName}</FormMessage>
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="sm:col-span-2">
                   <FormLabel>Email</FormLabel>
-                  <FormControl serverError={result?.errors?.email?.at(0)}>
+                  <FormControl serverError={formState?.errors?.email}>
                     <Input type="email" disabled={isPending} {...field} />
                   </FormControl>
-                  <FormMessage>{result?.errors?.email?.at(0)}</FormMessage>
+                  <FormMessage>{formState?.errors?.email}</FormMessage>
                 </FormItem>
               )}
             />
@@ -103,12 +122,12 @@ export function CreateAccountForm() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="sm:col-span-2">
                   <FormLabel>Password</FormLabel>
-                  <FormControl serverError={result?.errors?.password?.at(0)}>
-                    <Input type="password" disabled={isPending} {...field} />
+                  <FormControl serverError={formState?.errors?.password}>
+                    <PasswordInput disabled={isPending} {...field} />
                   </FormControl>
-                  <FormMessage>{result?.errors?.password?.at(0)}</FormMessage>
+                  <FormMessage>{formState?.errors?.password}</FormMessage>
                 </FormItem>
               )}
             />
@@ -117,38 +136,26 @@ export function CreateAccountForm() {
               control={form.control}
               name="confirmPassword"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="sm:col-span-2">
                   <FormLabel>Confirm password</FormLabel>
-                  <FormControl
-                    serverError={result?.errors?.confirmPassword?.at(0)}>
-                    <Input type="password" disabled={isPending} {...field} />
+                  <FormControl serverError={formState?.errors?.confirmPassword}>
+                    <PasswordInput disabled={isPending} {...field} />
                   </FormControl>
                   <FormMessage>
-                    {result?.errors?.confirmPassword?.at(0)}
+                    {formState?.errors?.confirmPassword}
                   </FormMessage>
                 </FormItem>
               )}
             />
           </div>
-
           <div className="mt-8">
             <Button type="submit" disabled={isPending} className="w-full">
-              {isPending ? 'Creating account' : 'Create account'}
-              {isPending && <Spinner className="size-4 ml-2" />}
+              {isPending && <Spinner className="mr-2" aria-hidden="true" />}
+              {isPending ? "Creating account" : "Create account"}
             </Button>
           </div>
-
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Already have an account?{' '}
-            <Link
-              href="/sign-in"
-              className="font-semibold leading-6 text-emerald-600 hover:text-emerald-500">
-              Sign in
-            </Link>{' '}
-            here
-          </p>
         </form>
       </Form>
-    </>
+    </div>
   );
 }

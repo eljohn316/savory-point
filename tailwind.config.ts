@@ -12,7 +12,13 @@ const config: Config = {
       xs: '475px',
       ...defaultTheme.screens
     },
-    extend: {}
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)'],
+        serif: ['var(--font-serif)'],
+        logo: ['var(--font-logo)']
+      }
+    }
   },
   plugins: [require('@tailwindcss/forms'), require('tailwindcss-animate')]
 };

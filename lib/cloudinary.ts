@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary, UploadApiOptions } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -6,4 +6,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-export { cloudinary };
+const upload = async (file: string, options?: UploadApiOptions) => {
+  const result = await cloudinary.uploader.upload(file, options);
+  return result.secure_url;
+};
+
+export { upload };

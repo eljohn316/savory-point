@@ -3,22 +3,13 @@ import { range } from '@/lib/utils';
 
 export default function Loading() {
   return (
-    <div className="divide-y divide-gray-200">
-      {range(4).map((num) => (
-        <div
-          key={num}
-          className="py-5 first:pt-0 last:pb-0 sm:flex sm:items-center">
-          <Skeleton className="shrink-0 h-32 sm:w-36 sm:mr-4" />
-          <div className="mt-4 sm:mt-0 sm:flex-1">
-            <Skeleton className="max-w-40 h-5" />
-            <div className="space-y-2 mt-3">
-              <Skeleton className="h-4" />
-              <Skeleton className="h-4" />
-            </div>
-            <div className="mt-3 flex items-center gap-x-2">
-              <Skeleton className="size-8 rounded-full" />
-              <Skeleton className="h-4 max-w-24 w-full" />
-            </div>
+    <div className="grid grid-cols-1 gap-x-8 gap-y-12 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      {range(12).map((i) => (
+        <div key={i}>
+          <Skeleton className="h-44 w-full sm:h-40" />
+          <div className="mt-5 space-y-2">
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-5 w-3/4" />
           </div>
         </div>
       ))}

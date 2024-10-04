@@ -1,10 +1,26 @@
 import type { Metadata } from 'next';
-import { Quicksand } from 'next/font/google';
-
-import './globals.css';
+import { Quicksand, Lora, Cookie } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 
-const fontSans = Quicksand({ subsets: ['latin'] });
+import './globals.css';
+
+const fontSans = Quicksand({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap'
+});
+
+const fontSerif = Lora({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap'
+});
+
+const fontLogo = Cookie({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-logo'
+});
 
 export const metadata: Metadata = {
   title: {
@@ -19,8 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={fontSans.className}>
+    <html
+      lang="en"
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontLogo.variable}`}>
+      <body>
         {children}
         <Toaster />
       </body>

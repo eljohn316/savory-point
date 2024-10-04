@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useCookies } from '@/hooks/use-cookies';
+import { useCallback, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid';
+import { useToast } from '@/hooks/use-toast';
 import {
   Toast,
   ToastClose,
@@ -10,33 +12,66 @@ import {
   ToastTitle,
   ToastViewport
 } from '@/components/ui/toast';
-import { useToast } from '@/components/ui/use-toast';
 
 export function Toaster() {
   const { toasts, toast } = useToast();
-  const { getCookie, deleteCookie } = useCookies();
+
+  const getCookie = useCallback((name: string) => Cookies.get(name), []);
+
+  const deleteCookie = useCallback(
+    (name: string, options?: Cookies.CookieAttributes) =>
+      Cookies.remove(name, options),
+    []
+  );
 
   const toastMessage = getCookie('toast-message');
 
   useEffect(() => {
     if (!toastMessage) return;
 
-    toast({ description: toastMessage });
+    const parsedToastMessage = JSON.parse(toastMessage);
+
+    toast({
+      title: parsedToastMessage.title,
+      description: parsedToastMessage.description,
+      variant: parsedToastMessage.variant
+    });
 
     deleteCookie('toast-message');
-  }, [toastMessage, deleteCookie, toast]);
+  }, [toastMessage, toast, deleteCookie]);
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, ...props }) {
+      {toasts.map(function ({
+        id,
+        title,
+        description,
+        action,
+        variant,
+        ...props
+      }) {
         return (
           <Toast key={id} {...props}>
+            {variant &&
+              (variant === 'success' ? (
+                <div className="mr-2.5 flex-none">
+                  <CheckCircleIcon
+                    className="size-5 text-emerald-600"
+                    aria-hidden="true"
+                  />
+                </div>
+              ) : (
+                <div className="mr-2.5 flex-none">
+                  <XCircleIcon
+                    className="size-5 text-red-600"
+                    aria-hidden="true"
+                  />
+                </div>
+              ))}
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
-                <ToastDescription className="font-medium">
-                  {description}
-                </ToastDescription>
+                <ToastDescription>{description}</ToastDescription>
               )}
             </div>
             {action}

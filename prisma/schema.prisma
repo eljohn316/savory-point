@@ -16,7 +16,7 @@ model Recipe {
   servings    Int
   cookingTime Int
   prepTime    Int
-  slug        String
+  slug        String   @unique
   uploadedOn  DateTime @default(now())
   updatedOn   DateTime @updatedAt
   uploaderId  String?
@@ -46,6 +46,7 @@ model Instruction {
 model User {
   id            String   @id @default(uuid())
   image         String?
+  defaultImage  String
   firstName     String
   lastName      String
   email         String   @unique
@@ -56,6 +57,7 @@ model User {
   sessions              Session[]
   emailVerificationCode EmailVerificationCode[]
   recipes               Recipe[]
+  passwordResetToken    PasswordResetToken[]
 }
 
 model Session {
@@ -69,6 +71,14 @@ model EmailVerificationCode {
   id        String   @id @default(uuid())
   code      String
   email     String
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
   userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
