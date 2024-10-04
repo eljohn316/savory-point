@@ -53,6 +53,7 @@ export function parseArrayValues(
 
   for (const [key, value] of Object.entries(fieldObject)) {
     if (filteredFields.includes(key)) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [_, label] = key.split(/\.\d+\./);
       values.push({ [label]: value });
     }
