@@ -5,15 +5,13 @@ import { convertToMB } from '@/lib/utils';
 const recipeBaseSchema = z.object({
   title: z.string().min(1, { message: 'Recipe title is required' }),
   description: z.string().trim().min(1, { message: 'Description is required' }),
-  prepTime: z.coerce
-    .number()
-    .int()
-    .gte(0, { message: 'Prep time is required' }),
-  cookingTime: z.coerce
-    .number()
-    .int()
-    .gte(0, { message: 'Cooking time is required' }),
-  servings: z.coerce.number().int().gte(1, { message: 'Servings is required' }),
+  prepTimeHours: z.coerce.number().optional(),
+  prepTimeMins: z.coerce.number().optional(),
+  cookingTimeHours: z.coerce.number().optional(),
+  cookingTimeMins: z.coerce.number().optional(),
+  servings: z.coerce
+    .number({ required_error: 'Servings is required' })
+    .min(1, { message: 'Servings must atleast be 1' }),
   ingredients: z
     .object({
       ingredient: z.string().trim().min(1, 'Ingredient is required')
@@ -48,15 +46,5 @@ export const recipeClientSchema = recipeBaseSchema.extend({
 });
 
 export const recipeServerSchema = recipeBaseSchema.extend({
-  image: z
-    .custom<File>()
-    .refine((file) => file.size > 0, 'Image is required')
-    .refine(
-      (file) => ACCEPTED_FILES.includes(file.type),
-      'Invalid image type. Allowed types are .jpeg, .jpg, .png and .webp'
-    )
-    .refine(
-      (file) => convertToMB(file.size) <= MAX_IMAGE_SIZE,
-      'Maximum image size is 5mb.'
-    )
+  image: z.string().min(1, { message: 'Image is required' })
 });

@@ -1,20 +1,15 @@
 'use client';
 
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  CameraIcon,
-  PhotoIcon,
-  PlusIcon,
-  XMarkIcon
-} from '@heroicons/react/20/solid';
 
-import { recipeClientSchema } from '@/lib/schema/upload-recipe';
-import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 import { useFormAction } from '@/hooks/use-form-action';
+import { createRecipe } from '@/lib/actions/recipe';
+import { recipeClientSchema } from '@/lib/schema/upload-recipe';
 
 import {
   Form,
@@ -28,9 +23,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { createRecipe } from '@/lib/actions/recipe';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+
+import { FieldArrayInput } from './field-array-input';
+import { FieldArrayTextareaInput } from './field-array-teaxtarea-input';
+import { FieldArrayInputWrapper } from './field-array-input-wrapper';
+import { ImageField } from './image-field';
+import { TimeInput } from './time-input';
 
 type TSchema = z.infer<typeof recipeClientSchema>;
 
@@ -41,29 +40,13 @@ export function UploadRecipeForm() {
     defaultValues: {
       title: '',
       description: '',
-      prepTime: 0,
-      cookingTime: 0,
-      servings: 1,
+      prepTimeHours: 0,
+      prepTimeMins: 0,
+      cookingTimeHours: 0,
+      cookingTimeMins: 0,
+      servings: 0,
       ingredients: [{ ingredient: '' }],
       instructions: [{ step: 1, instruction: '' }]
-    }
-  });
-
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  const imageField = form.register('image', {
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files;
-      const file = files?.item(0);
-
-      if (!file) return;
-
-      const fileReader = new FileReader();
-
-      fileReader.readAsDataURL(file);
-      fileReader.addEventListener('load', () => {
-        setImagePreview(fileReader.result as string);
-      });
     }
   });
 
@@ -91,6 +74,8 @@ export function UploadRecipeForm() {
     {}
   );
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
   useEffect(() => {
     if (formState.success) {
       router.replace('/account');
@@ -108,12 +93,40 @@ export function UploadRecipeForm() {
     }
   }, [router, toast, formState]);
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    const file = files?.item(0);
+
+    if (!file) return;
+
+    const fileReader = new FileReader();
+
+    fileReader.readAsDataURL(file);
+    fileReader.addEventListener('load', () => {
+      setImagePreview(fileReader.result as string);
+    });
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     onSubmit(() => {
-      const formData = new FormData(e.currentTarget);
-      form.handleSubmit(() => formAction(formData))(e);
+      const formData = new FormData();
+
+      form.handleSubmit((data) => {
+        formData.set('title', data.title);
+        formData.set('description', data.description);
+        formData.set('prepTimeHours', `${data.prepTimeHours}`);
+        formData.set('prepTimeMins', `${data.prepTimeMins}`);
+        formData.set('cookingTimeHours', `${data.cookingTimeHours}`);
+        formData.set('cookingTimeMins', `${data.cookingTimeMins}`);
+        formData.set('servings', `${data.servings}`);
+        formData.set('ingredients', `${JSON.stringify(data.ingredients)}`);
+        formData.set('instructions', `${JSON.stringify(data.instructions)}`);
+        formData.set('image', imagePreview as string);
+
+        formAction(formData);
+      })(e);
     });
   }
 
@@ -162,42 +175,84 @@ export function UploadRecipeForm() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="prepTime"
-            render={({ field }) => (
-              <FormItem className="sm:col-span-1">
-                <FormLabel>Prep time</FormLabel>
-                <FormControl serverError={formState.errors?.prepTime}>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage>{formState.errors?.prepTime}</FormMessage>
-              </FormItem>
-            )}
-          />
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Preparation time</Label>
+            <div className="flex flex-col gap-4 xs:flex-row">
+              <FormField
+                control={form.control}
+                name="prepTimeHours"
+                render={({ field }) => (
+                  <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
+                    <FormLabel className="sr-only">Prep time hours</FormLabel>
+                    <FormControl>
+                      <TimeInput input="hours" min={0} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="cookingTime"
-            render={({ field }) => (
-              <FormItem className="sm:col-span-1">
-                <FormLabel>Cooking time</FormLabel>
-                <FormControl serverError={formState.errors?.cookingTime}>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage>{formState.errors?.cookingTime}</FormMessage>
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="prepTimeMins"
+                render={({ field }) => (
+                  <FormItem className="flex-1 space-y-0">
+                    <FormLabel className="sr-only">Prep time minutes</FormLabel>
+                    <FormControl>
+                      <TimeInput input="minutes" step={5} min={0} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Cooking time</Label>
+            <div className="flex flex-col gap-4 xs:flex-row">
+              <FormField
+                control={form.control}
+                name="cookingTimeHours"
+                render={({ field }) => (
+                  <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
+                    <FormLabel className="sr-only">
+                      Cooking time hours
+                    </FormLabel>
+                    <FormControl>
+                      <TimeInput input="hours" min={0} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cookingTimeMins"
+                render={({ field }) => (
+                  <FormItem className="flex-1 space-y-0">
+                    <FormLabel className="sr-only">
+                      Cooking time minutes
+                    </FormLabel>
+                    <FormControl>
+                      <TimeInput input="minutes" step={5} min={0} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <FormField
             control={form.control}
             name="servings"
             render={({ field }) => (
-              <FormItem className="sm:col-span-1">
+              <FormItem className="max-w-48 sm:col-span-2">
                 <FormLabel>Servings</FormLabel>
                 <FormControl serverError={formState.errors?.servings}>
-                  <Input type="number" {...field} />
+                  <Input type="number" min={0} {...field} />
                 </FormControl>
                 <FormMessage>{formState.errors?.servings}</FormMessage>
               </FormItem>
@@ -258,51 +313,11 @@ export function UploadRecipeForm() {
 
         <div className="max-w-md space-y-6">
           <h3 className="text-base font-semibold text-gray-900">Image</h3>
-          <div className="flex h-80 rounded-lg border-2 border-dashed border-gray-300 p-1.5 sm:col-span-3">
-            {imagePreview ? (
-              <div className="relative flex-1 overflow-hidden rounded-lg">
-                <Image
-                  src={imagePreview as string}
-                  alt="Recipe image preview"
-                  fill
-                  sizes="(min-width: 808px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <div className="text-center">
-                  <PhotoIcon
-                    className="mx-auto size-12 text-gray-300"
-                    aria-hidden="true"
-                  />
-                  <p className="mt-2 text-xs leading-5 text-gray-600">
-                    PNG, JPG, JPEG up to 5MB
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-          <FormField
-            control={form.control}
-            name="image"
-            render={() => (
-              <FormItem className="mt-4 sm:col-span-3">
-                <Button variant="outline" asChild>
-                  <FormLabel className="cursor-pointer">
-                    <CameraIcon
-                      className="mr-2 size-4 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    Choose image
-                    <FormControl serverError={formState.errors?.image}>
-                      <input type="file" className="sr-only" {...imageField} />
-                    </FormControl>
-                  </FormLabel>
-                </Button>
-                <FormMessage>{formState.errors?.image}</FormMessage>
-              </FormItem>
-            )}
+          <ImageField
+            form={form}
+            error={formState.errors?.image}
+            src={imagePreview}
+            onChange={handleChange}
           />
         </div>
 
@@ -314,93 +329,5 @@ export function UploadRecipeForm() {
         </div>
       </form>
     </Form>
-  );
-}
-
-interface FieldArrayInputProps
-  extends React.ComponentPropsWithoutRef<typeof Input> {
-  onRemove: () => void;
-}
-
-const FieldArrayInput = React.forwardRef<
-  React.ElementRef<typeof Input>,
-  FieldArrayInputProps
->(function FieldArrayInput({ onRemove, className, type, ...props }, ref) {
-  return (
-    <div className="relative">
-      <Input type={type} className={className} ref={ref} {...props} />
-      <div className="absolute inset-y-0 right-0 my-2 border-l border-gray-300 px-2">
-        <button
-          type="button"
-          className="text-gray-400 hover:text-gray-500"
-          onClick={onRemove}>
-          <span className="sr-only">Remove field</span>
-          <XMarkIcon className="size-[18px]" aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-  );
-});
-
-interface FieldArrayTextareaInputProps
-  extends React.ComponentPropsWithoutRef<typeof Textarea> {
-  onRemove: () => void;
-}
-
-const FieldArrayTextareaInput = React.forwardRef<
-  React.ElementRef<typeof Textarea>,
-  FieldArrayTextareaInputProps
->(function FieldArrayInput({ onRemove, className, ...props }, ref) {
-  return (
-    <div className="relative">
-      <Textarea className={className} ref={ref} {...props} />
-      <div className="absolute inset-y-0 right-0 my-2 border-l border-gray-300 px-2">
-        <button
-          type="button"
-          className="text-gray-400 hover:text-gray-500"
-          onClick={onRemove}>
-          <span className="sr-only">Remove field</span>
-          <XMarkIcon className="size-[18px]" aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-  );
-});
-
-interface FieldArrayInputWrapperProps {
-  label: string;
-  className?: string;
-  onAddField: () => void;
-  children: React.ReactNode;
-}
-
-function FieldArrayInputWrapper({
-  label,
-  className,
-  onAddField,
-  children
-}: FieldArrayInputWrapperProps) {
-  return (
-    <div className={cn('space-y-6', className)}>
-      <h3 className="text-base font-semibold text-gray-900">{label}</h3>
-      <div className="space-y-6">
-        {children}
-        <div className="relative">
-          <div
-            className="absolute inset-0 flex items-center"
-            aria-hidden="true">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center">
-            <button
-              type="button"
-              className="bg-white px-2 text-sm font-medium text-gray-400 hover:text-gray-500"
-              onClick={onAddField}>
-              <PlusIcon className="size-[18px]" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }

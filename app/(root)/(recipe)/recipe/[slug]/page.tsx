@@ -55,6 +55,7 @@ export default async function Page({ params }: PageProps) {
     <div className="space-y-12">
       <div className="space-y-6">
         <RecipeTitle title={recipe.title} />
+
         <div className="flex border-y border-gray-200 py-4">
           <div className="flex-none">
             <Image
@@ -122,13 +123,19 @@ export default async function Page({ params }: PageProps) {
         <div className="flex-1 py-3 text-center">
           <p className="text-sm font-medium text-gray-500">Prep time</p>
           <p className="mt-1 font-medium">
-            {recipe.prepTime} {recipe.prepTime > 1 ? 'mins' : 'min'}
+            {recipe.prepTimeHours > 0 && <span>{recipe.prepTimeHours} hr</span>}{' '}
+            {recipe.prepTimeMins > 0 && <span>{recipe.prepTimeMins} min</span>}
           </p>
         </div>
         <div className="flex-1 py-3 text-center">
           <p className="text-sm font-medium text-gray-500">Cooking time</p>
           <p className="mt-1 font-medium">
-            {recipe.cookingTime} {recipe.cookingTime > 1 ? 'mins' : 'min'}
+            {recipe.cookingTimeHours > 0 && (
+              <span>{recipe.cookingTimeHours} hr</span>
+            )}{' '}
+            {recipe.cookingTimeMins > 0 && (
+              <span>{recipe.cookingTimeMins} min</span>
+            )}
           </p>
         </div>
       </div>
