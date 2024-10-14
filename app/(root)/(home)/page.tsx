@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { RecipeList } from './recipe-list';
+import { RecipeList } from '@/components/recipe-list';
 import { RESULTS_PER_PAGE } from '@/lib/constants';
 
 async function getRecipes({ currentPage }: { currentPage: number }) {

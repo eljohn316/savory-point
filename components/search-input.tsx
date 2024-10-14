@@ -1,16 +1,15 @@
-"use client";
+'use client';
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { Input } from '@/components/ui/input';
 
-interface SearchInputProps {
-  className?: string;
-}
-
-export function SearchInput({ className }: SearchInputProps) {
+const SearchInput = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentPropsWithoutRef<'input'>
+>(function SearchInput(props, ref) {
   return (
-    <div className={cn("relative", className)}>
+    <div className="relative">
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
         <span className="sr-only">Search</span>
         <MagnifyingGlassIcon
@@ -23,7 +22,11 @@ export function SearchInput({ className }: SearchInputProps) {
         name="search"
         placeholder="Search"
         className="py-2 pl-10"
+        ref={ref}
+        {...props}
       />
     </div>
   );
-}
+});
+
+export { SearchInput };
