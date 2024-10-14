@@ -1,22 +1,22 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
 import {
-  EllipsisVerticalIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
-
-import { useFormAction } from '@/hooks/use-form-action';
-import { deleteRecipe } from '@/lib/actions/recipe';
-
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  AlertTitle
+} from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Menu, MenuItem, MenuItems, MenuButton } from '@/components/ui/menu';
 import { Modal, ModalTitle } from '@/components/ui/modal';
 import { Spinner } from '@/components/ui/spinner';
+import { useFormAction } from '@/hooks/use-form-action';
+import { deleteRecipe } from '@/lib/actions/recipe';
+import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
 
-export function RecipeActions() {
+export function DeleteSection() {
   const params = useParams<{ id: string }>();
   const [open, setOpen] = useState<boolean>(false);
   const { isPending, formAction, onSubmit } = useFormAction(
@@ -37,6 +37,7 @@ export function RecipeActions() {
       formAction(new FormData());
     });
   }
+
   return (
     <>
       <Modal open={open} onClose={handleClose} className="py-5">
@@ -72,37 +73,25 @@ export function RecipeActions() {
         </div>
       </Modal>
 
-      <div className="hidden flex-none sm:ml-4 sm:flex sm:gap-x-3">
-        <Button variant="outline" asChild>
-          <Link href={`/account/recipe/${params.id}/update`}>Update</Link>
-        </Button>
-        <Button variant="danger" onClick={handleOpen}>
-          Delete
-        </Button>
+      <div>
+        <Alert variant="danger" className="flex">
+          <div className="flex-none">
+            <AlertIcon icon={ExclamationCircleIcon} className="shrink-0" />
+          </div>
+          <div className="ml-4">
+            <AlertTitle>Warning!</AlertTitle>
+            <AlertDescription>
+              This action will delete this recipe from our servers. This action
+              cannot be undone
+            </AlertDescription>
+          </div>
+        </Alert>
+        <div className="mt-8">
+          <Button variant="danger" onClick={handleOpen}>
+            Delete recipe
+          </Button>
+        </div>
       </div>
-      <Menu as="div" className="flex flex-none items-center sm:hidden">
-        <MenuButton className="-m-1 rounded-md p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2">
-          <EllipsisVerticalIcon className="size-6" aria-hidden="true" />
-          <span className="sr-only">Toggle options</span>
-        </MenuButton>
-        <MenuItems className="py-1">
-          <MenuItem>
-            <Link
-              href={`/account/recipe/${params.id}/update`}
-              className="block px-4 py-2 text-sm font-medium text-gray-500 data-[focus]:bg-gray-100 data-[focus]:text-gray-700">
-              Update
-            </Link>
-          </MenuItem>
-          <MenuItem>
-            <button
-              type="button"
-              className="block w-full px-4 py-2 text-left text-sm font-medium text-gray-500 data-[focus]:bg-gray-100 data-[focus]:text-gray-700"
-              onClick={handleOpen}>
-              Delete
-            </button>
-          </MenuItem>
-        </MenuItems>
-      </Menu>
     </>
   );
 }

@@ -79,7 +79,7 @@ interface RecipeItemProps {
 function RecipeItem({ recipe }: RecipeItemProps) {
   return (
     <Link
-      href={`/account/recipe/${recipe.id}`}
+      href={`/recipe/uploads/${recipe.id}`}
       className="group flex py-4 first:pt-0 last:pb-0">
       <div className="flex-none">
         <Image
