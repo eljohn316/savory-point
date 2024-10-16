@@ -1,36 +1,56 @@
 import { FaceFrownIcon } from '@heroicons/react/24/outline';
 import { db } from '@/lib/db';
+import { RESULTS_PER_PAGE } from '@/lib/constants';
 import { RecipeList } from '@/components/recipe-list';
+import { RecipeSearchListPagination } from '@/components/recipe-search-list-pagination';
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-async function getRecipes({ search }: { search?: string }) {
+async function getRecipes({
+  search,
+  currentPage
+}: {
+  search?: string;
+  currentPage: number;
+}) {
   try {
-    const recipes = await db.recipe.findMany({
-      where: {
-        title: {
-          contains: search,
-          mode: 'insensitive'
-        }
-      },
-      orderBy: { uploadedOn: 'desc' },
-      select: {
-        id: true,
-        imageUrl: true,
-        title: true,
-        slug: true,
-        uploader: {
-          select: {
-            firstName: true,
-            lastName: true
+    const [recipes, totalRecipes] = await Promise.all([
+      db.recipe.findMany({
+        where: {
+          title: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        },
+        orderBy: { uploadedOn: 'desc' },
+        select: {
+          id: true,
+          imageUrl: true,
+          title: true,
+          slug: true,
+          uploader: {
+            select: {
+              firstName: true,
+              lastName: true
+            }
+          }
+        },
+        take: RESULTS_PER_PAGE,
+        skip: (currentPage - 1) * RESULTS_PER_PAGE
+      }),
+      db.recipe.count({
+        where: {
+          title: {
+            contains: search,
+            mode: 'insensitive'
           }
         }
-      }
-    });
+      })
+    ]);
 
-    return recipes;
+    return { recipes, totalRecipes };
   } catch (error) {
     throw error;
   }
@@ -38,8 +58,12 @@ async function getRecipes({ search }: { search?: string }) {
 
 export default async function Page({ searchParams }: PageProps) {
   const search = searchParams.t as string | undefined;
+  const page = typeof searchParams.page === 'string' ? +searchParams.page : 1;
 
-  const recipes = await getRecipes({ search });
+  const { recipes, totalRecipes } = await getRecipes({
+    search,
+    currentPage: page
+  });
 
   if (recipes.length === 0)
     return (
@@ -60,5 +84,13 @@ export default async function Page({ searchParams }: PageProps) {
       </div>
     );
 
-  return <RecipeList recipes={recipes} />;
+  return (
+    <>
+      <RecipeList recipes={recipes} />
+      <RecipeSearchListPagination
+        currentPage={page}
+        totalResults={totalRecipes}
+      />
+    </>
+  );
 }

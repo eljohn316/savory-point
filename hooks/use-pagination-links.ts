@@ -68,5 +68,8 @@ export function usePaginationLinks({
     }
   }, [currentPage, siblingsCount, totalResults]);
 
+  if (typeof pages === 'undefined' || totalResults <= RESULTS_PER_PAGE)
+    return null;
+
   return pages;
 }

@@ -58,7 +58,7 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
             <Spinner className="size-8 text-gray-400" />
           </div>
         ) : (
-          children
+          <div className="space-y-10">{children}</div>
         )}
       </div>
     </div>
