@@ -24,12 +24,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Label } from '@/components/ui/label';
+import { FieldArrayInput } from '@/components/field-array-input';
+import { FieldArrayTextareaInput } from '@/components/field-array-teaxtarea-input';
+import { FieldArrayInputWrapper } from '@/components/field-array-input-wrapper';
+import { TimeInput } from '@/components/time-input';
 
-import { FieldArrayInput } from './field-array-input';
-import { FieldArrayTextareaInput } from './field-array-teaxtarea-input';
-import { FieldArrayInputWrapper } from './field-array-input-wrapper';
 import { ImageField } from './image-field';
-import { TimeInput } from './time-input';
 
 type TSchema = z.infer<typeof recipeClientSchema>;
 
