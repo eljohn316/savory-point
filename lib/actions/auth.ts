@@ -152,8 +152,11 @@ export async function signIn(
     })
   );
 
-  revalidatePath('/');
-  redirect('/');
+  const headerList = headers();
+  const url = new URL(headerList.get('referer') as string);
+  const redirectUrl = url.searchParams.get('redirect');
+
+  redirect(typeof redirectUrl === 'string' ? redirectUrl : '/');
 }
 
 type ResetPasswordInput = z.infer<typeof forgotPasswordSchema>;
