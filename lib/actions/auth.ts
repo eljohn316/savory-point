@@ -87,6 +87,15 @@ export async function createAccount(
     throw new Error('Something went wrong! Could not create account');
   }
 
+  cookies().set(
+    'toast-message',
+    JSON.stringify({
+      variant: 'success',
+      title: 'Welcome to Savory Point'
+    })
+  );
+
+  revalidatePath('/');
   redirect('/');
 }
 
@@ -134,6 +143,16 @@ export async function signIn(
 
   await createUserSession(user.id);
 
+  cookies().set(
+    'toast-message',
+    JSON.stringify({
+      variant: 'success',
+      title: 'Successfully logged in',
+      description: `Welcome back, ${user.firstName}`
+    })
+  );
+
+  revalidatePath('/');
   redirect('/');
 }
 
