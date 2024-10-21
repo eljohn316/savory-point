@@ -95,7 +95,7 @@ export function Navigation({ user }: NavigationProps) {
               <MenuSection className="py-1">
                 <MenuItem>
                   <Link
-                    href="/account"
+                    href="/upload-recipe"
                     className="block px-4 py-2 text-sm font-medium text-gray-500 data-[focus]:bg-gray-100 data-[focus]:text-gray-700">
                     Upload a recipe
                   </Link>
