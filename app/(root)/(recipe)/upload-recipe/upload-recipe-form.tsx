@@ -145,187 +145,203 @@ export function UploadRecipeForm() {
 
   return (
     <Form {...form}>
-      <form action={formAction} onSubmit={handleSubmit} className="space-y-16">
-        <div className="grid gap-y-6 sm:grid-cols-4 sm:gap-x-6">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem className="sm:col-span-3">
-                <FormLabel>Title</FormLabel>
-                <FormControl serverError={formState.errors?.title}>
-                  <Input type="text" {...field} />
-                </FormControl>
-                <FormMessage>{formState.errors?.title}</FormMessage>
-              </FormItem>
-            )}
-          />
+      <form action={formAction} onSubmit={handleSubmit}>
+        <div className="space-y-16">
+          <div className="grid gap-y-6 sm:grid-cols-4 sm:gap-x-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-3">
+                  <FormLabel>Title</FormLabel>
+                  <FormControl serverError={formState.errors?.title}>
+                    <Input type="text" {...field} />
+                  </FormControl>
+                  <FormMessage>{formState.errors?.title}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem className="sm:col-span-4">
-                <FormLabel>Description</FormLabel>
-                <FormControl serverError={formState.errors?.description}>
-                  <Textarea {...field} />
-                </FormControl>
-                <FormMessage>{formState.errors?.description}</FormMessage>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-4">
+                  <FormLabel>Description</FormLabel>
+                  <FormControl serverError={formState.errors?.description}>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage>{formState.errors?.description}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label>Preparation time</Label>
-            <div className="flex flex-col gap-4 xs:flex-row">
-              <FormField
-                control={form.control}
-                name="prepTimeHours"
-                render={({ field }) => (
-                  <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
-                    <FormLabel className="sr-only">Prep time hours</FormLabel>
-                    <FormControl>
-                      <TimeInput input="hours" min={0} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>Preparation time</Label>
+              <div className="flex flex-col gap-4 xs:flex-row">
+                <FormField
+                  control={form.control}
+                  name="prepTimeHours"
+                  render={({ field }) => (
+                    <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
+                      <FormLabel className="sr-only">Prep time hours</FormLabel>
+                      <FormControl>
+                        <TimeInput input="hours" min={0} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="prepTimeMins"
-                render={({ field }) => (
-                  <FormItem className="flex-1 space-y-0">
-                    <FormLabel className="sr-only">Prep time minutes</FormLabel>
-                    <FormControl>
-                      <TimeInput input="minutes" step={5} min={0} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="prepTimeMins"
+                  render={({ field }) => (
+                    <FormItem className="flex-1 space-y-0">
+                      <FormLabel className="sr-only">
+                        Prep time minutes
+                      </FormLabel>
+                      <FormControl>
+                        <TimeInput
+                          input="minutes"
+                          step={5}
+                          min={0}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label>Cooking time</Label>
-            <div className="flex flex-col gap-4 xs:flex-row">
-              <FormField
-                control={form.control}
-                name="cookingTimeHours"
-                render={({ field }) => (
-                  <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
-                    <FormLabel className="sr-only">
-                      Cooking time hours
-                    </FormLabel>
-                    <FormControl>
-                      <TimeInput input="hours" min={0} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>Cooking time</Label>
+              <div className="flex flex-col gap-4 xs:flex-row">
+                <FormField
+                  control={form.control}
+                  name="cookingTimeHours"
+                  render={({ field }) => (
+                    <FormItem className="flex-1 space-y-0 sm:max-w-32 sm:flex-none">
+                      <FormLabel className="sr-only">
+                        Cooking time hours
+                      </FormLabel>
+                      <FormControl>
+                        <TimeInput input="hours" min={0} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="cookingTimeMins"
-                render={({ field }) => (
-                  <FormItem className="flex-1 space-y-0">
-                    <FormLabel className="sr-only">
-                      Cooking time minutes
-                    </FormLabel>
-                    <FormControl>
-                      <TimeInput input="minutes" step={5} min={0} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="cookingTimeMins"
+                  render={({ field }) => (
+                    <FormItem className="flex-1 space-y-0">
+                      <FormLabel className="sr-only">
+                        Cooking time minutes
+                      </FormLabel>
+                      <FormControl>
+                        <TimeInput
+                          input="minutes"
+                          step={5}
+                          min={0}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
+
+            <FormField
+              control={form.control}
+              name="servings"
+              render={({ field }) => (
+                <FormItem className="max-w-48 sm:col-span-2">
+                  <FormLabel>Servings</FormLabel>
+                  <FormControl serverError={formState.errors?.servings}>
+                    <Input type="number" min={0} {...field} />
+                  </FormControl>
+                  <FormMessage>{formState.errors?.servings}</FormMessage>
+                </FormItem>
+              )}
+            />
           </div>
 
-          <FormField
-            control={form.control}
-            name="servings"
-            render={({ field }) => (
-              <FormItem className="max-w-48 sm:col-span-2">
-                <FormLabel>Servings</FormLabel>
-                <FormControl serverError={formState.errors?.servings}>
-                  <Input type="number" min={0} {...field} />
-                </FormControl>
-                <FormMessage>{formState.errors?.servings}</FormMessage>
-              </FormItem>
-            )}
-          />
-        </div>
+          <FieldArrayInputWrapper
+            label="Ingredients"
+            onAddField={handleAddIngredient}>
+            <div className="space-y-8">
+              {ingredientFields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  name={`ingredients.${index}.ingredient` as const}
+                  render={({ field: input }) => (
+                    <FormItem>
+                      <FormLabel className="sr-only">Ingredient</FormLabel>
+                      <FormControl serverError={formState.errors?.ingredients}>
+                        <FieldArrayInput
+                          type="text"
+                          onRemove={() => removeIngredient(index)}
+                          {...input}
+                        />
+                      </FormControl>
+                      <FormMessage>{formState.errors?.ingredients}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          </FieldArrayInputWrapper>
 
-        <FieldArrayInputWrapper
-          label="Ingredients"
-          onAddField={handleAddIngredient}>
-          <div className="space-y-8">
-            {ingredientFields.map((field, index) => (
-              <FormField
-                key={field.id}
-                name={`ingredients.${index}.ingredient` as const}
-                render={({ field: input }) => (
-                  <FormItem>
-                    <FormLabel className="sr-only">Ingredient</FormLabel>
-                    <FormControl serverError={formState.errors?.ingredients}>
-                      <FieldArrayInput
-                        type="text"
-                        onRemove={() => removeIngredient(index)}
-                        {...input}
-                      />
-                    </FormControl>
-                    <FormMessage>{formState.errors?.ingredients}</FormMessage>
-                  </FormItem>
-                )}
-              />
-            ))}
+          <FieldArrayInputWrapper
+            label="Instructions"
+            onAddField={handleAddInstruction}>
+            <div className="space-y-8">
+              {instructionFields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  name={`instructions.${index}.instruction` as const}
+                  render={({ field: input }) => (
+                    <FormItem>
+                      <FormLabel>Step {field.step}</FormLabel>
+                      <FormControl serverError={formState.errors?.instructions}>
+                        <FieldArrayTextareaInput
+                          onRemove={() => removeInstruction(index)}
+                          {...input}
+                        />
+                      </FormControl>
+                      <FormMessage>
+                        {formState.errors?.instructions}
+                      </FormMessage>
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          </FieldArrayInputWrapper>
+
+          <div className="max-w-md space-y-6">
+            <h3 className="text-base font-semibold text-gray-900">Image</h3>
+            <ImageField
+              form={form}
+              error={formState.errors?.image}
+              src={imagePreview}
+              onChange={handleChange}
+            />
           </div>
-        </FieldArrayInputWrapper>
 
-        <FieldArrayInputWrapper
-          label="Instructions"
-          onAddField={handleAddInstruction}>
-          <div className="space-y-8">
-            {instructionFields.map((field, index) => (
-              <FormField
-                key={field.id}
-                name={`instructions.${index}.instruction` as const}
-                render={({ field: input }) => (
-                  <FormItem>
-                    <FormLabel>Step {field.step}</FormLabel>
-                    <FormControl serverError={formState.errors?.instructions}>
-                      <FieldArrayTextareaInput
-                        onRemove={() => removeInstruction(index)}
-                        {...input}
-                      />
-                    </FormControl>
-                    <FormMessage>{formState.errors?.instructions}</FormMessage>
-                  </FormItem>
-                )}
-              />
-            ))}
+          <div>
+            <Button type="submit" disabled={isPending}>
+              {isPending && <Spinner className="mr-2" aria-hidden="true" />}
+              {isPending ? 'Uploading recipe' : 'Upload recipe'}
+            </Button>
           </div>
-        </FieldArrayInputWrapper>
-
-        <div className="max-w-md space-y-6">
-          <h3 className="text-base font-semibold text-gray-900">Image</h3>
-          <ImageField
-            form={form}
-            error={formState.errors?.image}
-            src={imagePreview}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <Button type="submit" disabled={isPending}>
-            {isPending && <Spinner className="mr-2" aria-hidden="true" />}
-            {isPending ? 'Uploading recipe' : 'Upload recipe'}
-          </Button>
         </div>
       </form>
     </Form>
