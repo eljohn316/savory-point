@@ -12,13 +12,7 @@ async function getRecipes({ currentPage }: { currentPage: number }) {
           id: true,
           imageUrl: true,
           title: true,
-          slug: true,
-          uploader: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
-          }
+          slug: true
         },
         take: RESULTS_PER_PAGE,
         skip: (currentPage - 1) * RESULTS_PER_PAGE
@@ -39,6 +33,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
   const searchParamsPage = searchParams.page;
   const page = typeof searchParamsPage === 'string' ? +searchParamsPage : 1;
+
   const { recipes, totalRecipes } = await getRecipes({ currentPage: page });
 
   return (

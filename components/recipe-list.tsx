@@ -8,12 +8,6 @@ type Recipe = Prisma.RecipeGetPayload<{
     imageUrl: true;
     title: true;
     slug: true;
-    uploader: {
-      select: {
-        firstName: true;
-        lastName: true;
-      };
-    };
   };
 }>;
 
@@ -29,7 +23,7 @@ export function RecipeList({ recipes }: RecipeListProps) {
           key={recipe.id}
           href={`/recipe/${recipe.slug}`}
           className="group block">
-          <div className="relative h-44 overflow-hidden rounded-md sm:h-40">
+          <div className="relative h-52 overflow-hidden rounded-md sm:h-48">
             <Image
               src={recipe.imageUrl!}
               alt={recipe.title}
@@ -42,12 +36,6 @@ export function RecipeList({ recipes }: RecipeListProps) {
             <h3 className="line-clamp-2 font-serif text-xl font-semibold leading-7 text-gray-900 group-hover:underline group-hover:underline-offset-2 sm:text-lg sm:leading-6">
               {recipe.title}
             </h3>
-            <p className="mt-2 text-base font-medium sm:text-sm">
-              <span className="text-gray-500">by</span>{' '}
-              <span className="text-gray-700">
-                {recipe.uploader?.firstName} {recipe.uploader?.lastName}
-              </span>
-            </p>
           </div>
         </Link>
       ))}

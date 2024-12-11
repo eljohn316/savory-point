@@ -3,18 +3,22 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
       },
       {
-        protocol: "https",
-        hostname: "ui-avatars.com",
+        protocol: 'https',
+        hostname: 'img.spoonacular.com'
       },
-    ],
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com'
+      }
+    ]
   },
   experimental: {
-    serverComponentsExternalPackages: ["@node-rs/argon2"],
-  },
+    serverComponentsExternalPackages: ['@node-rs/argon2']
+  }
 };
 
 export default nextConfig;
