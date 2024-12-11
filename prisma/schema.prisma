@@ -12,7 +12,7 @@ model Recipe {
   id               String   @id @default(uuid())
   imageUrl         String
   title            String   @unique
-  description      String
+  description      String?
   servings         Int
   prepTimeHours    Int
   prepTimeMins     Int
@@ -23,9 +23,12 @@ model Recipe {
   updatedOn        DateTime @updatedAt
   uploaderId       String?
 
-  uploader     User?         @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
+  uploader User?  @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
+  source   Source @relation(references: [id], fields: [sourceId], onDelete: Cascade)
+
   ingredients  Ingredient[]
   instructions Instruction[]
+  sourceId     String
 }
 
 model Ingredient {
@@ -43,6 +46,14 @@ model Instruction {
 
   recipe   Recipe @relation(references: [id], fields: [recipeId], onDelete: Cascade)
   recipeId String
+}
+
+model Source {
+  id      String   @id @default(uuid())
+  imageId Int
+  name    String
+  url     String
+  Recipe  Recipe[]
 }
 
 model User {
