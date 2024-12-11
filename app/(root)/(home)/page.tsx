@@ -37,7 +37,8 @@ interface PageProps {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const page = typeof searchParams.page === 'string' ? +searchParams.page : 1;
+  const searchParamsPage = searchParams.page;
+  const page = typeof searchParamsPage === 'string' ? +searchParamsPage : 1;
   const { recipes, totalRecipes } = await getRecipes({ currentPage: page });
 
   return (

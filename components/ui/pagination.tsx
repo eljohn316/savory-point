@@ -58,7 +58,7 @@ export function PaginationPrevButton() {
           className="-ml-1 mr-1.5 size-5 text-gray-300"
           aria-hidden="true"
         />
-        Previous
+        Prev
       </Button>
     );
 
@@ -69,7 +69,7 @@ export function PaginationPrevButton() {
           className="-ml-1 mr-1.5 size-5 text-gray-400"
           aria-hidden="true"
         />
-        Previous
+        Prev
       </Link>
     </Button>
   );

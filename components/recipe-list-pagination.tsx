@@ -43,7 +43,9 @@ export function RecipeListPagination({
   return (
     <Pagination totalResults={totalResults}>
       <PaginationPrevButton />
-      <PaginationLinkWrapper>{links}</PaginationLinkWrapper>
+      <PaginationLinkWrapper className="hidden sm:flex">
+        {links}
+      </PaginationLinkWrapper>
       <PaginationNextButton />
     </Pagination>
   );
