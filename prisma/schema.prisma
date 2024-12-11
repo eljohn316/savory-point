@@ -23,8 +23,8 @@ model Recipe {
   updatedOn        DateTime @updatedAt
   uploaderId       String?
 
-  uploader User?  @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
-  source   Source @relation(references: [id], fields: [sourceId], onDelete: Cascade)
+  uploader User?   @relation(references: [id], fields: [uploaderId], onDelete: Cascade)
+  source   Source? @relation(references: [id], fields: [sourceId], onDelete: Cascade)
 
   ingredients  Ingredient[]
   instructions Instruction[]
