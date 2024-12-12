@@ -71,15 +71,17 @@ export default async function Page({ params }: PageProps) {
                 {recipe.title}
               </dd>
             </div>
-            <div className="sm:col-span-3">
-              <dt className="font-medium leading-6 text-gray-900 sm:text-sm">
-                Description
-              </dt>
-              <dd
-                className="mt-1 leading-6 text-gray-700 sm:mt-2 sm:text-sm"
-                dangerouslySetInnerHTML={{ __html: recipe.description }}
-              />
-            </div>
+            {recipe.description && (
+              <div className="sm:col-span-3">
+                <dt className="font-medium leading-6 text-gray-900 sm:text-sm">
+                  Description
+                </dt>
+                <dd
+                  className="mt-1 leading-6 text-gray-700 sm:mt-2 sm:text-sm"
+                  dangerouslySetInnerHTML={{ __html: recipe.description }}
+                />
+              </div>
+            )}
             <div className="sm:col-span-1">
               <dt className="font-medium leading-6 text-gray-900 sm:text-sm">
                 Preparation time

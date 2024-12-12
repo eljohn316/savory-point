@@ -62,7 +62,7 @@ export function UpdateDetailsForm({ recipe }: UpdateDetailsFormProps) {
     resolver: zodResolver(schema),
     defaultValues: {
       title: recipe.title,
-      description: recipe.description,
+      description: recipe.description ?? '',
       prepTimeHours: recipe.prepTimeHours,
       prepTimeMins: recipe.prepTimeMins,
       cookingTimeHours: recipe.cookingTimeHours,
