@@ -28,7 +28,7 @@ model Recipe {
 
   ingredients  Ingredient[]
   instructions Instruction[]
-  sourceId     String
+  sourceId     String?
 }
 
 model Ingredient {
