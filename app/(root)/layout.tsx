@@ -1,5 +1,5 @@
-import { validateRequest } from "@/lib/auth";
-import { Navigation } from "@/components/navigation";
+import { validateRequest } from '@/lib/auth';
+import { Navigation } from '@/components/navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
