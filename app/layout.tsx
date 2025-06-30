@@ -1,46 +1,38 @@
+import '@/app/globals.css';
+
 import type { Metadata } from 'next';
-import { Quicksand, Lora, Cookie } from 'next/font/google';
-import { Toaster } from '@/components/ui/toaster';
+import { Outfit, Neuton } from 'next/font/google';
 
-import './globals.css';
-
-const fontSans = Quicksand({
-  subsets: ['latin'],
+const fontSans = Outfit({
   variable: '--font-sans',
-  display: 'swap'
+  subsets: ['latin'],
+  display: 'swap',
 });
 
-const fontSerif = Lora({
-  subsets: ['latin'],
+const fontSerif = Neuton({
   variable: '--font-serif',
-  display: 'swap'
-});
-
-const fontLogo = Cookie({
   subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-logo'
+  display: 'swap',
+  weight: ['400', '700', '800'],
 });
 
 export const metadata: Metadata = {
   title: {
     template: '%s | Savory Point',
-    default: 'Savory Point'
-  }
+    default: 'Savory Point',
+  },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${fontSans.variable} ${fontSerif.variable} ${fontLogo.variable}`}>
-      <body>
+    <html lang="en">
+      <body
+        className={`${fontSans.variable} ${fontSerif.variable} antialiased`}>
         {children}
-        <Toaster />
       </body>
     </html>
   );

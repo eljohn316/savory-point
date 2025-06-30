@@ -1,0 +1,22 @@
+import { RecipeCard } from '@/features/recipe/components/recipe-card';
+import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
+
+export default async function Home() {
+  const recipes = await getAllRecipes();
+
+  return (
+    <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {recipes.map((recipe) => (
+        <RecipeCard
+          key={recipe.id}
+          recipe={{
+            name: recipe.name,
+            image: recipe.image,
+            uploader: recipe.uploader,
+            slug: recipe.slug,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
