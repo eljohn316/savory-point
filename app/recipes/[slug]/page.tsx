@@ -19,17 +19,22 @@ export default async function Page({ params }: PageProps) {
           {recipe.name}
         </h2>
         <div className="flex items-center gap-x-2">
-          <Image
-            src={recipe.uploader.image}
-            alt={recipe.uploader.name}
-            height={40}
-            width={40}
-            className="size-7 rounded-full"
-          />
-          <p className="text-gray-600">{recipe.uploader.name}</p>
+          <>
+            <Image
+              src={
+                recipe.uploader!.profile!.image ||
+                recipe.uploader!.profile!.defaultImage!
+              }
+              alt={recipe.uploader!.firstName!}
+              height={40}
+              width={40}
+              className="size-7 rounded-full"
+            />
+            <p className="text-gray-600">{recipe.uploader!.firstName}</p>
+          </>
         </div>
       </div>
-      <div className="space-y-8">
+      <div className="mt-6 space-y-8">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
           <button className="group inline-flex cursor-pointer items-center gap-x-2">
             <MessageCircleIcon className="size-5 text-gray-400 group-hover:text-gray-500" />
@@ -47,14 +52,16 @@ export default async function Page({ params }: PageProps) {
           </button>
         </div>
         <div className="relative h-80">
-          <Image
-            src={recipe.image}
-            alt={recipe.name}
-            fill
-            sizes="80vw"
-            className="rounded-md object-cover"
-            quality={100}
-          />
+          {recipe.image && (
+            <Image
+              src={recipe.image}
+              alt={recipe.name}
+              fill
+              sizes="80vw"
+              className="rounded-md object-cover"
+              quality={100}
+            />
+          )}
         </div>
         <p className="text-gray-700">{recipe.summary}</p>
         <div className="rounded-xl bg-green-50 p-6">
@@ -65,22 +72,22 @@ export default async function Page({ params }: PageProps) {
             <li>
               <span className="font-semibold text-gray-700">Total:</span>{' '}
               <span className="text-gray-600">
-                Approximately {recipe.preparation.total}{' '}
-                {recipe.preparation.total === 1 ? 'minute' : 'minutes'}
+                Approximately {recipe.cooking!.total}{' '}
+                {recipe.cooking!.total === 1 ? 'minute' : 'minutes'}
               </span>
             </li>
             <li>
               <span className="font-semibold text-gray-700">Preparation:</span>{' '}
               <span className="text-gray-600">
-                {recipe.preparation.preparation}{' '}
-                {recipe.preparation.preparation === 1 ? 'minute' : 'minutes'}
+                {recipe.cooking!.preparation}{' '}
+                {recipe.cooking!.preparation === 1 ? 'minute' : 'minutes'}
               </span>
             </li>
             <li>
               <span className="font-semibold text-gray-700">Cooking:</span>{' '}
               <span className="text-gray-600">
-                {recipe.preparation.cooking}{' '}
-                {recipe.preparation.cooking === 1 ? 'minute' : 'minutes'}
+                {recipe.cooking!.cooking}{' '}
+                {recipe.cooking!.cooking === 1 ? 'minute' : 'minutes'}
               </span>
             </li>
           </ul>
