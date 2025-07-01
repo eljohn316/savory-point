@@ -29,6 +29,12 @@ export async function getRecipeBySlug(slug: string) {
     where: { slug },
     select: {
       id: true,
+      image: true,
+      name: true,
+      servings: true,
+      slug: true,
+      summary: true,
+      uploadedAt: true,
       cooking: {
         select: {
           preparation: true,
@@ -36,7 +42,6 @@ export async function getRecipeBySlug(slug: string) {
           total: true,
         },
       },
-      image: true,
       ingredients: {
         select: {
           id: true,
@@ -53,7 +58,7 @@ export async function getRecipeBySlug(slug: string) {
           step: 'asc',
         },
       },
-      name: true,
+
       nutrition: {
         select: {
           id: true,
@@ -61,10 +66,6 @@ export async function getRecipeBySlug(slug: string) {
           value: true,
         },
       },
-      servings: true,
-      slug: true,
-      summary: true,
-      uploadedAt: true,
       uploader: {
         select: {
           id: true,
