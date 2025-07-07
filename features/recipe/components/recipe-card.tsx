@@ -37,7 +37,10 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           </>
         )}
       </div>
-      <Link href={`/recipes/${recipe.slug}`} className="absolute inset-0">
+      <Link
+        prefetch
+        href={`/recipes/${recipe.slug}`}
+        className="absolute inset-0">
         <span className="sr-only">Go to recipe</span>
       </Link>
     </div>
