@@ -7,10 +7,10 @@ import {
   MessageCircleIcon,
 } from 'lucide-react';
 
-import { getRecipeBySlug } from '@/features/recipe/queries/get-recipes';
 import { Heading } from '@/features/recipe/components/heading';
 import { Uploader } from '@/features/recipe/components/uploader';
 import { List, ListItem } from '@/features/recipe/components/list';
+import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -28,7 +28,7 @@ export default async function Page({ params }: PageProps) {
         <Heading>{recipe.name}</Heading>
         <Uploader uploader={recipe.uploader} />
       </div>
-      <div className="mt-6 space-y-8">
+      <div className="mt-6 space-y-12">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
           <button className="group inline-flex cursor-pointer items-center gap-x-2">
             <MessageCircleIcon className="size-5 text-gray-400 group-hover:text-gray-500" />

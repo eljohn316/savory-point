@@ -1,27 +1,9 @@
-import { Prisma } from '@/generated/prisma';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
 
 type RecipeCardProps = {
-  recipe: Prisma.RecipeGetPayload<{
-    select: {
-      id: true;
-      image: true;
-      name: true;
-      slug: true;
-      uploader: {
-        select: {
-          profile: {
-            select: {
-              defaultImage: true;
-            };
-          };
-          firstName: true;
-          lastName: true;
-        };
-      };
-    };
-  }>;
+  recipe: Awaited<ReturnType<typeof getAllRecipes>>[number];
 };
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
