@@ -18,30 +18,9 @@ export async function getRecipeBySlug(slug: string) {
           total: true,
         },
       },
-      ingredients: {
-        select: {
-          id: true,
-          ingredient: true,
-        },
-      },
-      instructions: {
-        select: {
-          id: true,
-          step: true,
-          instruction: true,
-        },
-        orderBy: {
-          step: 'asc',
-        },
-      },
-
-      nutrition: {
-        select: {
-          id: true,
-          name: true,
-          value: true,
-        },
-      },
+      ingredients: true,
+      instructions: true,
+      nutrition: true,
       uploader: {
         select: {
           id: true,

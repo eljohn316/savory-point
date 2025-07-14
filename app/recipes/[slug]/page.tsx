@@ -11,6 +11,11 @@ import { Heading } from '@/features/recipe/components/heading';
 import { Uploader } from '@/features/recipe/components/uploader';
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
+import type {
+  Ingredient,
+  Instruction,
+  Nutrition,
+} from '@/features/recipe/types';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -90,9 +95,11 @@ export default async function Page({ params }: PageProps) {
             Ingredients
           </Heading>
           <List as="ul" className="marker:text-green-800">
-            {recipe.ingredients.map(({ id, ingredient }) => (
-              <ListItem key={id}>{ingredient}</ListItem>
-            ))}
+            {(recipe.ingredients as Ingredient[]).map(
+              ({ id, ingredient }: { id: number; ingredient: string }) => (
+                <ListItem key={id}>{ingredient}</ListItem>
+              ),
+            )}
           </List>
         </div>
         <div className="space-y-6">
@@ -100,11 +107,13 @@ export default async function Page({ params }: PageProps) {
             Instructions
           </Heading>
           <List as="ol" className="marker:text-green-800">
-            {recipe.instructions.map(({ id, instruction }) => (
-              <ListItem key={id} className="text-gray-700">
-                {instruction}
-              </ListItem>
-            ))}
+            {(recipe.instructions as Instruction[]).map(
+              ({ step, instruction }) => (
+                <ListItem key={step} className="text-gray-700">
+                  {instruction}
+                </ListItem>
+              ),
+            )}
           </List>
         </div>
         <div className="space-y-6">
@@ -120,7 +129,7 @@ export default async function Page({ params }: PageProps) {
           <List
             as="ul"
             className="list-none space-y-0 divide-y divide-gray-200">
-            {recipe.nutrition.map(({ id, name, value }) => (
+            {(recipe.nutrition as Nutrition[]).map(({ id, name, value }) => (
               <ListItem
                 key={id}
                 className="flex items-center gap-x-4 px-8 py-3 first:pt-0 last:pb-0">

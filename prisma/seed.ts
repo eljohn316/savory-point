@@ -372,18 +372,6 @@ async function main() {
           },
         },
         image: recipe.image,
-        ingredients: {
-          create: recipe.ingredients.map(({ ingredient }) => ({ ingredient })),
-        },
-        instructions: {
-          create: recipe.instructions.map(({ step, instruction }) => ({
-            step,
-            instruction,
-          })),
-        },
-        nutrition: {
-          create: recipe.nutrition.map(({ name, value }) => ({ name, value })),
-        },
         uploader: {
           create: {
             id: recipe.uploader.id,
@@ -398,6 +386,12 @@ async function main() {
             },
           },
         },
+        instructions: recipe.instructions.map(({ step, instruction }) => ({
+          step,
+          instruction,
+        })),
+        ingredients: recipe.ingredients,
+        nutrition: recipe.nutrition,
       },
     });
 
