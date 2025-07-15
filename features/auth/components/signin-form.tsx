@@ -1,7 +1,7 @@
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { signinSchema, SigninValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
@@ -12,8 +12,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 import { PasswordInput } from '@/components/ui/password-input';
+import { signinSchema, SigninValues } from '@/features/auth/schema';
 
 export function SigninForm() {
   const form = useForm<SigninValues>({
