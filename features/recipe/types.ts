@@ -1,5 +1,4 @@
 export type Ingredient = {
-  id: number;
   ingredient: string;
 };
 
@@ -9,7 +8,6 @@ export type Instruction = {
 };
 
 export type Nutrition = {
-  id: number;
   name: string;
   value: string;
 };

@@ -95,11 +95,10 @@ export default async function Page({ params }: PageProps) {
             Ingredients
           </Heading>
           <List as="ul" className="marker:text-green-800">
-            {(recipe.ingredients as Ingredient[]).map(
-              ({ id, ingredient }: { id: number; ingredient: string }) => (
-                <ListItem key={id}>{ingredient}</ListItem>
-              ),
-            )}
+            {(recipe.ingredients as Ingredient[]).map(({ ingredient }) => {
+              const id = crypto.randomUUID();
+              return <ListItem key={id}>{ingredient}</ListItem>;
+            })}
           </List>
         </div>
         <div className="space-y-6">
@@ -129,14 +128,17 @@ export default async function Page({ params }: PageProps) {
           <List
             as="ul"
             className="list-none space-y-0 divide-y divide-gray-200">
-            {(recipe.nutrition as Nutrition[]).map(({ id, name, value }) => (
-              <ListItem
-                key={id}
-                className="flex items-center gap-x-4 px-8 py-3 first:pt-0 last:pb-0">
-                <p className="flex-1">{name}</p>
-                <p className="flex-1 font-semibold text-green-700">{value}</p>
-              </ListItem>
-            ))}
+            {(recipe.nutrition as Nutrition[]).map(({ name, value }) => {
+              const id = crypto.randomUUID();
+              return (
+                <ListItem
+                  key={id}
+                  className="flex items-center gap-x-4 px-8 py-3 first:pt-0 last:pb-0">
+                  <p className="flex-1">{name}</p>
+                  <p className="flex-1 font-semibold text-green-700">{value}</p>
+                </ListItem>
+              );
+            })}
           </List>
         </div>
       </div>
