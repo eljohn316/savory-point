@@ -3,14 +3,12 @@
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/form/form';
+import { FormField } from '@/components/form/form-field';
+import { FormItem } from '@/components/form/form-item';
+import { FormLabel } from '@/components/form/form-label';
+import { FormControl } from '@/components/form/form-control';
+import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { signinSchema, SigninValues } from '@/features/auth/schema';

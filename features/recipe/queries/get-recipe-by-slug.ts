@@ -1,6 +1,10 @@
+import { cache } from 'react';
+import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 
-export async function getRecipeBySlug(slug: string) {
+export const getRecipeBySlug = cache(async function getRecipeBySlug(
+  slug: string,
+) {
   const recipe = await prisma.recipe.findUnique({
     where: { slug },
     select: {
@@ -37,5 +41,7 @@ export async function getRecipeBySlug(slug: string) {
     },
   });
 
+  if (!recipe) notFound();
+
   return recipe;
-}
+});

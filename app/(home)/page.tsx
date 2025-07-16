@@ -1,5 +1,10 @@
+import type { Metadata } from 'next';
 import { RecipeCard } from '@/features/recipe/components/recipe-card';
 import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
+
+export const metadata: Metadata = {
+  title: 'Home',
+};
 
 export default async function Home() {
   const recipes = await getAllRecipes();

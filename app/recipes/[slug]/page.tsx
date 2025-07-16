@@ -1,12 +1,11 @@
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import {
   BookmarkIcon,
   HeartIcon,
   ImageIcon,
   MessageCircleIcon,
 } from 'lucide-react';
-
 import { Heading } from '@/features/recipe/components/heading';
 import { Uploader } from '@/features/recipe/components/uploader';
 import { List, ListItem } from '@/features/recipe/components/list';
@@ -21,11 +20,20 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export default async function Page({ params }: PageProps) {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
 
-  if (!recipe) notFound();
+  return {
+    title: recipe.name,
+  };
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
+  const recipe = await getRecipeBySlug(slug);
 
   return (
     <>
