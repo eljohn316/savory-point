@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import { Toaster } from '@/components/ui/sonner';
 
 import type { Metadata } from 'next';
 import { Outfit, Neuton } from 'next/font/google';
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontSerif.variable} antialiased`}>
         {children}
+        <Toaster expand duration={8000} />
       </body>
     </html>
   );

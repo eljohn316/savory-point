@@ -1,30 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { startTransition, useActionState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { XIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/form/form';
+import { FormControl } from '@/components/form/form-control';
+import { FormField } from '@/components/form/form-field';
+import { FormItem } from '@/components/form/form-item';
+import { FormLabel } from '@/components/form/form-label';
+import { FormMessage } from '@/components/form/form-message';
+import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
+import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
+import { renderFormErrors } from '@/components/form/utils/render-form-errors';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { NumInput, NumInputField } from '@/components/ui/num-input';
+import { errorToast } from '@/components/ui/sonner';
 import { FieldListWrapper } from '@/components/field-list-wrapper';
 import {
   recipeFormSchema,
   type RecipeFormValues,
 } from '@/features/recipe/schema';
+import { uploadRecipe } from '@/features/recipe/actions/upload-recipe';
 
 export default function Page() {
-  const [isPending, setIsPending] = useState(false); // to be replaced
-
   const form = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeFormSchema),
     defaultValues: {
@@ -32,11 +32,16 @@ export default function Page() {
       summary: '',
       servings: 1,
       cooking: {
-        preparation: 5,
-        cooking: 5,
+        preparation: 0,
+        cooking: 0,
       },
       ingredients: [{ ingredient: '' }],
-      instructions: [{ step: 1, instruction: '' }],
+      instructions: [
+        {
+          step: 1,
+          instruction: '',
+        },
+      ],
       nutrition: [{ name: '', value: '' }],
     },
   });
@@ -68,19 +73,40 @@ export default function Page() {
     name: 'nutrition',
   });
 
+  const [actionState, action, isPending] = useActionState(
+    uploadRecipe,
+    INITIAL_ACTION_STATE,
+  );
+
+  useActionFeedback(actionState, {
+    onFail: ({ fieldErrors }) => {
+      renderFormErrors<RecipeFormValues>(fieldErrors, form);
+    },
+    onError: ({ message }) => {
+      errorToast(message);
+    },
+  });
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    form.handleSubmit(async (data) => {
-      setIsPending(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(data);
-      setIsPending(false);
+    form.handleSubmit((data) => {
+      startTransition(() => {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('summary', data.summary);
+        formData.append('servings', `${data.servings}`);
+        formData.append('cooking', JSON.stringify(data.cooking));
+        formData.append('ingredients', JSON.stringify(data.ingredients));
+        formData.append('instructions', JSON.stringify(data.instructions));
+        formData.append('nutrition', JSON.stringify(data.nutrition));
+        action(formData);
+      });
     })(e);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit}>
+      <form action={action} onSubmit={handleSubmit}>
         <h2 className="text-xl font-bold text-gray-700">Upload a recipe</h2>
         <div className="mt-6 space-y-14">
           <div className="space-y-6 lg:space-y-8">
