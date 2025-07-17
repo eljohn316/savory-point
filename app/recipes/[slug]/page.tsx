@@ -1,28 +1,15 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import {
-  BookmarkIcon,
-  HeartIcon,
-  ImageIcon,
-  MessageCircleIcon,
-} from 'lucide-react';
-import { Heading } from '@/features/recipe/components/heading';
-import { Uploader } from '@/features/recipe/components/uploader';
+import { BookmarkIcon, HeartIcon, ImageIcon, MessageCircleIcon } from 'lucide-react';
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
-import type {
-  Ingredient,
-  Instruction,
-  Nutrition,
-} from '@/features/recipe/types';
+import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
 
@@ -38,16 +25,23 @@ export default async function Page({ params }: PageProps) {
   return (
     <>
       <div className="space-y-4">
-        <Heading>{recipe.name}</Heading>
-        <Uploader uploader={recipe.uploader} />
+        <h2 className="font-serif text-4xl font-bold text-gray-900">{recipe.name}</h2>
+        <div className="flex items-center gap-x-2">
+          <Image
+            src={recipe.uploader.image ?? recipe.uploader.defaultImage}
+            alt={recipe.uploader.name}
+            height={40}
+            width={40}
+            className="size-7 rounded-full"
+          />
+          <p className="text-sm text-gray-600">{recipe.uploader.name}</p>
+        </div>
       </div>
       <div className="mt-6 space-y-12">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
           <button className="group inline-flex cursor-pointer items-center gap-x-2">
             <MessageCircleIcon className="size-5 text-gray-400 group-hover:text-gray-500" />
-            <p className="text-sm text-gray-500 group-hover:text-gray-600">
-              41 comments
-            </p>
+            <p className="text-sm text-gray-500 group-hover:text-gray-600">41 comments</p>
           </button>
           <button className="ml-auto cursor-pointer text-gray-400 hover:text-gray-500">
             <HeartIcon className="size-5" />
@@ -88,8 +82,7 @@ export default async function Page({ params }: PageProps) {
             </ListItem>
             <ListItem>
               <span className="mr-1.5 font-semibold">Cooking:</span>
-              {recipe.cooking!.cooking}{' '}
-              {recipe.cooking!.cooking === 1 ? 'minute' : 'minutes'}
+              {recipe.cooking!.cooking} {recipe.cooking!.cooking === 1 ? 'minute' : 'minutes'}
             </ListItem>
             <ListItem>
               <span className="mr-1.5 font-semibold">Total:</span>
@@ -99,9 +92,7 @@ export default async function Page({ params }: PageProps) {
           </List>
         </div>
         <div className="space-y-6">
-          <Heading className="text-[28px] text-emerald-800">
-            Ingredients
-          </Heading>
+          <h3 className="font-serif text-[28px] font-bold text-emerald-800">Ingredients</h3>
           <List as="ul" className="marker:text-green-800">
             {(recipe.ingredients as Ingredient[]).map(({ ingredient }) => {
               const id = crypto.randomUUID();
@@ -110,32 +101,23 @@ export default async function Page({ params }: PageProps) {
           </List>
         </div>
         <div className="space-y-6">
-          <Heading className="text-[28px] text-emerald-800">
-            Instructions
-          </Heading>
+          <h3 className="font-serif text-[28px] font-bold text-emerald-800">Instructions</h3>
           <List as="ol" className="marker:text-green-800">
-            {(recipe.instructions as Instruction[]).map(
-              ({ step, instruction }) => (
-                <ListItem key={step} className="text-gray-700">
-                  {instruction}
-                </ListItem>
-              ),
-            )}
+            {(recipe.instructions as Instruction[]).map(({ step, instruction }) => (
+              <ListItem key={step} className="text-gray-700">
+                {instruction}
+              </ListItem>
+            ))}
           </List>
         </div>
         <div className="space-y-6">
           <div className="space-y-2">
-            <Heading className="text-[28px] text-emerald-800">
-              Nutrition
-            </Heading>
+            <h3 className="font-serif text-[28px] font-bold text-emerald-800">Nutrition</h3>
             <p className="text-sm font-light text-gray-500">
-              The table below shows nutritional values per serving without the
-              additional fillings.
+              The table below shows nutritional values per serving without the additional fillings.
             </p>
           </div>
-          <List
-            as="ul"
-            className="list-none space-y-0 divide-y divide-gray-200">
+          <List as="ul" className="list-none space-y-0 divide-y divide-gray-200">
             {(recipe.nutrition as Nutrition[]).map(({ name, value }) => {
               const id = crypto.randomUUID();
               return (

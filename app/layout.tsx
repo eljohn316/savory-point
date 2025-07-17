@@ -30,8 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${fontSans.variable} ${fontSerif.variable} antialiased`}>
+      <body className={`${fontSans.variable} ${fontSerif.variable} antialiased`}>
         {children}
         <Toaster expand />
       </body>

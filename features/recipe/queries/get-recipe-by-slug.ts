@@ -2,9 +2,7 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 
-export const getRecipeBySlug = cache(async function getRecipeBySlug(
-  slug: string,
-) {
+export const getRecipeBySlug = cache(async function getRecipeBySlug(slug: string) {
   const recipe = await prisma.recipe.findUnique({
     where: { slug },
     select: {
@@ -28,14 +26,9 @@ export const getRecipeBySlug = cache(async function getRecipeBySlug(
       uploader: {
         select: {
           id: true,
-          firstName: true,
-          lastName: true,
-          profile: {
-            select: {
-              defaultImage: true,
-              image: true,
-            },
-          },
+          name: true,
+          image: true,
+          defaultImage: true,
         },
       },
     },

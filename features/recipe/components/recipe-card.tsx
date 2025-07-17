@@ -15,7 +15,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
           alt={recipe.name}
           height={668}
           width={700}
-          className="h-52 rounded-md object-cover sm:h-48"
+          className="h-60 rounded-md object-cover sm:h-48"
         />
       )}
       <h3 className="mt-4 text-lg font-medium text-gray-700 group-hover:underline lg:text-xl">
@@ -25,22 +25,17 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         {recipe.uploader && (
           <>
             <Image
-              src={recipe.uploader.profile?.defaultImage!}
-              alt={recipe.uploader.firstName}
+              src={recipe.uploader.defaultImage}
+              alt={recipe.uploader.name}
               height={40}
               width={40}
               className="size-6 rounded-full"
             />
-            <p className="text-base text-gray-600 sm:text-sm">
-              {recipe.uploader.firstName} {recipe.uploader.lastName}
-            </p>
+            <p className="text-base text-gray-600 sm:text-sm">{recipe.uploader.name}</p>
           </>
         )}
       </div>
-      <Link
-        prefetch
-        href={`/recipes/${recipe.slug}`}
-        className="absolute inset-0">
+      <Link prefetch href={`/recipes/${recipe.slug}`} className="absolute inset-0">
         <span className="sr-only">Go to recipe</span>
       </Link>
     </div>

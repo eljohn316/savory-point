@@ -1,4 +1,5 @@
 import { PrismaClient } from '@/generated/prisma';
+import { auth } from '@/lib/auth';
 
 const FAKE_RECIPES = [
   {
@@ -231,8 +232,7 @@ const FAKE_RECIPES = [
       {
         id: 5,
         step: 5,
-        instruction:
-          'Pour batter to form pancakes and cook until bubbles form.',
+        instruction: 'Pour batter to form pancakes and cook until bubbles form.',
       },
       { id: 6, step: 6, instruction: 'Flip and cook until golden brown.' },
     ],
@@ -358,6 +358,16 @@ const prisma = new PrismaClient();
 
 async function main() {
   for (const recipe of FAKE_RECIPES) {
+    const { user } = await auth.api.signUpEmail({
+      body: {
+        firstName: recipe.uploader.firstName,
+        lastName: recipe.uploader.lastName,
+        name: recipe.uploader.firstName + ' ' + recipe.uploader.lastName,
+        defaultImage: `https://api.dicebear.com/9.x/initials/svg?seed=${recipe.uploader.firstName}%20${recipe.uploader.lastName}`,
+        email: recipe.uploader.email,
+        password: 'password',
+      },
+    });
     const newRecipe = await prisma.recipe.create({
       data: {
         name: recipe.name,
@@ -372,27 +382,13 @@ async function main() {
           },
         },
         image: recipe.image,
-        uploader: {
-          create: {
-            id: recipe.uploader.id,
-            firstName: recipe.uploader.firstName,
-            lastName: recipe.uploader.lastName,
-            email: recipe.uploader.email,
-            password: 'password',
-            profile: {
-              create: {
-                defaultImage: `https://api.dicebear.com/9.x/initials/svg?seed=${recipe.uploader.firstName}%20${recipe.uploader.lastName}`,
-                bio: recipe.uploader.profile.bio,
-              },
-            },
-          },
-        },
         instructions: recipe.instructions.map(({ step, instruction }) => ({
           step,
           instruction,
         })),
         ingredients: recipe.ingredients,
         nutrition: recipe.nutrition,
+        uploaderId: user.id,
       },
     });
 

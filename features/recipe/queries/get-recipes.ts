@@ -9,13 +9,9 @@ export async function getAllRecipes() {
       slug: true,
       uploader: {
         select: {
-          profile: {
-            select: {
-              defaultImage: true,
-            },
-          },
-          firstName: true,
-          lastName: true,
+          defaultImage: true,
+          image: true,
+          name: true,
         },
       },
     },
