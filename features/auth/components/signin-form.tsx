@@ -11,7 +11,7 @@ import { FormControl } from '@/components/form/form-control';
 import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
-import { signinSchema, SigninValues } from '@/features/auth/schema';
+import { signinSchema, SigninValues } from '@/features/auth/schema/sign-in';
 
 export function SigninForm() {
   const form = useForm<SigninValues>({
@@ -29,9 +29,7 @@ export function SigninForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSignin)}>
-        <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">
-          Sign in
-        </h3>
+        <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign in</h3>
         <div className="mt-8 space-y-6">
           <FormField
             control={form.control}
@@ -68,9 +66,7 @@ export function SigninForm() {
           </button>
           <p className="text-sm font-light text-gray-600">
             Don&apos;t have an account yet?{' '}
-            <Link
-              href="/sign-up"
-              className="font-medium text-emerald-700 hover:underline">
+            <Link href="/sign-up" className="font-medium text-emerald-700 hover:underline">
               Sign up
             </Link>{' '}
             instead

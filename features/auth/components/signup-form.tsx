@@ -11,11 +11,12 @@ import { FormControl } from '@/components/form/form-control';
 import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
-import { signupSchema, SignupValues } from '@/features/auth/schema';
+import { signupSchema, SignupValues } from '@/features/auth/schema/sign-up';
 
 export function SignupForm() {
   const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
+    reValidateMode: 'onSubmit',
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -25,16 +26,14 @@ export function SignupForm() {
     },
   });
 
-  function handleSignup(values: SignupValues) {
-    console.log(values);
+  function handleSignup(data: SignupValues) {
+    console.log(data);
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSignup)}>
-        <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">
-          Sign up
-        </h3>
+        <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign up</h3>
         <div className="mt-10 grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
           <FormField
             control={form.control}
@@ -43,7 +42,7 @@ export function SignupForm() {
               <FormItem className="sm:col-span-1">
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input disabled={form.formState.isValidating} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -56,7 +55,7 @@ export function SignupForm() {
               <FormItem className="sm:col-span-1">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input disabled={form.formState.isValidating} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,7 +68,7 @@ export function SignupForm() {
               <FormItem className="sm:col-span-2">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" {...field} />
+                  <Input type="email" disabled={form.formState.isValidating} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,7 +81,7 @@ export function SignupForm() {
               <FormItem className="sm:col-span-2">
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <PasswordInput {...field} />
+                  <PasswordInput disabled={form.formState.isValidating} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -95,7 +94,7 @@ export function SignupForm() {
               <FormItem className="sm:col-span-2">
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <PasswordInput {...field} />
+                  <PasswordInput disabled={form.formState.isValidating} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,13 +105,11 @@ export function SignupForm() {
           <button
             type="submit"
             className="block w-full rounded-md bg-emerald-700 px-4 py-2 text-base font-medium text-green-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none">
-            Sign up
+            {form.formState.isValidating ? 'Signing up...' : 'Sign up'}
           </button>
           <p className="text-sm font-light text-gray-600">
             Already have an account?{' '}
-            <Link
-              href="/sign-in"
-              className="font-medium text-emerald-700 hover:underline">
+            <Link href="/sign-in" className="font-medium text-emerald-700 hover:underline">
               Sign in
             </Link>{' '}
             instead

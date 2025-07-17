@@ -378,6 +378,7 @@ async function main() {
             firstName: recipe.uploader.firstName,
             lastName: recipe.uploader.lastName,
             email: recipe.uploader.email,
+            password: 'password',
             profile: {
               create: {
                 defaultImage: `https://api.dicebear.com/9.x/initials/svg?seed=${recipe.uploader.firstName}%20${recipe.uploader.lastName}`,

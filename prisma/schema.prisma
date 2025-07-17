@@ -14,13 +14,14 @@ model User {
   firstName  String
   lastName   String
   email      String   @unique
+  password   String
   profile    Profile?
   recipes    Recipe[]
 }
 
 model Profile {
   id           Int     @id @default(autoincrement())
-  bio          String
+  bio          String?
   image        String?
   defaultImage String
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
