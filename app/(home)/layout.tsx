@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Container } from '@/components/container';
 import { Navigation } from '@/components/navigation';
-import { RedirectToast } from '@/components/redirect-toast';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -10,7 +9,6 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   return (
     <>
-      <RedirectToast />
       <Navigation />
       <Container className="max-w-4xl">{children}</Container>
     </>
