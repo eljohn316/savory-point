@@ -13,8 +13,8 @@ export function RedirectToast() {
       const toast = await getCookieByKey('toast');
       if (toast) {
         successToast(toast);
-        await deleteCookieByKey('toast');
       }
+      await deleteCookieByKey('toast');
     };
 
     showCookieToast();
