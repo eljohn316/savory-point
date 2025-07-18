@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/lib/auth-client';
@@ -16,9 +18,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Image from 'next/image';
+import { SignoutModal } from '@/features/auth/components/sign-out-modal';
 
 function NavigationLinks() {
+  const [showSignoutModal, setShowSignoutModal] = useState(false);
   const { isPending, data } = useSession();
   const pathname = usePathname();
   const router = useRouter();
@@ -72,52 +75,59 @@ function NavigationLinks() {
     );
 
   return (
-    <div className="flex items-center gap-x-6">
-      {pathname !== '/upload-recipe' && (
-        <Link
-          href="/upload-recipe"
-          className="hidden rounded-md bg-emerald-700 px-4 py-2 text-[15px] text-emerald-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none md:inline-block">
-          Upload recipe
-        </Link>
-      )}
-      <DropdownMenu>
-        <DropdownMenuTrigger className="overflow-hidden rounded-full outline-none focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2">
-          <Image
-            src={data.user.image ?? data.user.defaultImage}
-            alt={`${data.user.firstName}'s avatar`}
-            height={36}
-            width={36}
-            className="size-9"
-          />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-52 p-2" sideOffset={8} hideWhenDetached>
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>
-              <p className="text-gray-600">Signed in as</p>
-              <p className="text-base text-gray-800">{data.user.name}</p>
-            </DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator className="my-2" />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              onSelect={() => router.push('/upload-recipe')}
-              className="text-base text-gray-600">
-              Upload recipe
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator className="my-2" />
-          <DropdownMenuGroup className="space-y-1">
-            <DropdownMenuItem className="text-base text-gray-600">Account</DropdownMenuItem>
-            <DropdownMenuItem className="text-base text-gray-600">Profile</DropdownMenuItem>
-            <DropdownMenuItem className="text-base text-gray-600">Settings</DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator className="my-2" />
-          <DropdownMenuGroup>
-            <DropdownMenuItem className="text-base text-gray-600">Sign out</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <>
+      <SignoutModal open={showSignoutModal} onOpenChange={setShowSignoutModal} />
+      <div className="flex items-center gap-x-6">
+        {pathname !== '/upload-recipe' && (
+          <Link
+            href="/upload-recipe"
+            className="hidden rounded-md bg-emerald-700 px-4 py-2 text-[15px] text-emerald-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none md:inline-block">
+            Upload recipe
+          </Link>
+        )}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="overflow-hidden rounded-full outline-none focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2">
+            <Image
+              src={data.user.image ?? data.user.defaultImage}
+              alt={`${data.user.firstName}'s avatar`}
+              height={36}
+              width={36}
+              className="size-9"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-52 p-2" sideOffset={8} hideWhenDetached>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>
+                <p className="text-gray-600">Signed in as</p>
+                <p className="text-base text-gray-800">{data.user.name}</p>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className="my-2" />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onSelect={() => router.push('/upload-recipe')}
+                className="text-base text-gray-600">
+                Upload recipe
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className="my-2" />
+            <DropdownMenuGroup className="space-y-1">
+              <DropdownMenuItem className="text-base text-gray-600">Account</DropdownMenuItem>
+              <DropdownMenuItem className="text-base text-gray-600">Profile</DropdownMenuItem>
+              <DropdownMenuItem className="text-base text-gray-600">Settings</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator className="my-2" />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onSelect={() => setShowSignoutModal(true)}
+                className="text-base text-gray-600">
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </>
   );
 }
 

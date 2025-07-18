@@ -38,3 +38,21 @@ export function fromErrorToActionState(error: unknown): ActionState {
     };
   }
 }
+
+export function actionStateError(message: string): ActionState {
+  return {
+    status: 'error',
+    message,
+    fieldErrors: {},
+    timestamp: Date.now(),
+  };
+}
+
+export function actionStateSuccess(message: string): ActionState {
+  return {
+    status: 'success',
+    message,
+    fieldErrors: {},
+    timestamp: Date.now(),
+  };
+}
