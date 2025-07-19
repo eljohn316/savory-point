@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { BookmarkIcon, HeartIcon, ImageIcon, MessageCircleIcon } from 'lucide-react';
+import { BookmarkIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
@@ -52,22 +53,20 @@ export default async function Page({ params }: PageProps) {
             <span className="sr-only">Save</span>
           </button>
         </div>
-        <div className="relative h-80">
-          {recipe.image ? (
-            <Image
-              src={recipe.image}
-              alt={recipe.name}
-              fill
-              sizes="80vw"
-              className="rounded-md object-cover"
-              quality={100}
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center rounded-md bg-gray-200">
-              <ImageIcon className="size-8 text-gray-500" />
-            </div>
-          )}
-        </div>
+        {recipe.image ? (
+          <CloudinaryImage
+            src={recipe.image}
+            alt={recipe.name}
+            height="600"
+            width="960"
+            sizes="100vw"
+            className="h-80 rounded-md object-cover sm:h-96"
+            format="webp"
+            quality="auto"
+          />
+        ) : (
+          <div className="h-80 rounded-md bg-gray-200 sm:h-96" />
+        )}
         <p className="text-gray-700">{recipe.summary}</p>
         <div className="rounded-xl bg-green-50 p-6">
           <List as="ul" className="marker:text-green-800">

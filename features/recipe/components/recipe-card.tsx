@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 
 type RecipeCardProps = {
   recipe: Awaited<ReturnType<typeof getAllRecipes>>[number];
@@ -9,14 +10,19 @@ type RecipeCardProps = {
 export function RecipeCard({ recipe }: RecipeCardProps) {
   return (
     <div className="group relative">
-      {recipe.image && (
-        <Image
+      {recipe.image ? (
+        <CloudinaryImage
           src={recipe.image}
           alt={recipe.name}
-          height={668}
-          width={700}
+          height="600"
+          width="960"
+          sizes="100vw"
           className="h-60 rounded-md object-cover sm:h-48"
+          format="webp"
+          quality="auto"
         />
+      ) : (
+        <div className="h-60 rounded-md bg-gray-200 sm:h-48" />
       )}
       <h3 className="mt-4 text-lg font-medium text-gray-700 group-hover:underline lg:text-xl">
         {recipe.name}

@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 const FAKE_RECIPES = [
   {
     id: 'rec_001',
-    image: '/spaghetti-bolognese.jpg',
+    image: 'savory-point/spaghetti-bolognese',
     name: 'Spaghetti Bolognese',
     servings: 2,
     summary:
@@ -77,7 +77,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_002',
-    image: '/chicken-curry.jpg',
+    image: 'savory-point/chicken-curry',
     name: 'Chicken Curry',
     servings: 6,
     summary:
@@ -140,7 +140,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_003',
-    image: '/vegetable-stir-fry.jpg',
+    image: 'savory-point/vegetable-stir-fry',
     name: 'Vegetable Stir Fry',
     servings: 5,
     summary:
@@ -193,7 +193,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_004',
-    image: '/fluffy-pancakes.jpg',
+    image: 'savory-point/fluffy-pancakes',
     name: 'Fluffy Pancakes',
     servings: 4,
     summary:
@@ -255,7 +255,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_005',
-    image: '/caesar-salad.jpg',
+    image: 'savory-point/caesar-salad',
     name: 'Caesar Salad',
     servings: 3,
     summary:
@@ -302,7 +302,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_006',
-    image: '/beef-tacos.jpg',
+    image: 'savory-point/beef-tacos',
     name: 'Beef Tacos',
     servings: 2,
     summary:
@@ -368,6 +368,7 @@ async function main() {
         password: 'password',
       },
     });
+
     const newRecipe = await prisma.recipe.create({
       data: {
         name: recipe.name,

@@ -1,5 +1,5 @@
-import { RecipeFormSkeleton } from '@/features/recipe/components/recipe-form-skeleton';
+import { UploadRecipeFormSkeleton } from '@/features/recipe/components/upload-recipe-form-skeleton';
 
 export default function Loading() {
-  return <RecipeFormSkeleton />;
+  return <UploadRecipeFormSkeleton />;
 }

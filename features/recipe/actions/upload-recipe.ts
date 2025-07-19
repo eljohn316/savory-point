@@ -4,21 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { createSlug } from '@/lib/utils';
-import {
-  ActionState,
-  fromErrorToActionState,
-} from '@/components/form/utils/action-state-utils';
-import { recipeFormSchema } from '@/features/recipe/schema';
-
-const isRecipeNameTaken = async (recipeName: string) =>
-  !(await prisma.recipe.findUnique({ where: { name: recipeName } }));
-
-const schema = recipeFormSchema.refine(
-  async (val) => await isRecipeNameTaken(val.name),
-  { message: 'Recipe name already taken', path: ['name'] },
-);
+import { setCookie } from '@/lib/cookie';
+import { upload } from '@/lib/cloudinary';
+import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
+import { uploadRecipeServerSchema } from '@/features/recipe/schema/upload-recipe';
 
 export async function uploadRecipe(
+  uploaderId: string,
   _actionState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
@@ -31,7 +23,8 @@ export async function uploadRecipe(
       ingredients,
       instructions,
       nutrition,
-    } = await schema.parseAsync({
+      image,
+    } = await uploadRecipeServerSchema.parseAsync({
       name: formData.get('name'),
       summary: formData.get('summary'),
       servings: formData.get('servings'),
@@ -39,31 +32,43 @@ export async function uploadRecipe(
       ingredients: JSON.parse(formData.get('ingredients') as string),
       instructions: JSON.parse(formData.get('instructions') as string),
       nutrition: JSON.parse(formData.get('nutrition') as string),
+      image: formData.get('image'),
     });
-    await prisma.recipe.create({
-      data: {
-        name,
-        summary,
-        servings,
-        ingredients,
-        instructions,
-        nutrition,
-        slug: createSlug(name),
-        cooking: {
-          create: {
-            cooking,
-            preparation,
-            total: cooking + preparation,
+
+    const slug = createSlug(name);
+
+    await Promise.all([
+      await upload(image, {
+        public_id: slug,
+        resource_type: 'image',
+        folder: 'savory-point',
+      }),
+      await prisma.recipe.create({
+        data: {
+          name,
+          summary,
+          servings,
+          ingredients,
+          instructions,
+          nutrition,
+          slug: createSlug(name),
+          cooking: {
+            create: {
+              cooking,
+              preparation,
+              total: cooking + preparation,
+            },
           },
+          image: slug,
+          uploaderId,
         },
-        // TEMPORARY
-        image: '/beef-tacos.jpg',
-        uploaderId: 'cmcj5bljs0005iyc47r4fg5om',
-      },
-    });
+      }),
+    ]);
   } catch (error) {
     return fromErrorToActionState(error);
   }
+
+  await setCookie('toast', 'Recipe successfully uploaded');
   revalidatePath('/');
   redirect('/');
 }

@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function RecipeFormSkeleton() {
+export function UploadRecipeFormSkeleton() {
   return (
     <>
       <h2 className="text-xl font-bold text-gray-700">Upload a recipe</h2>
@@ -57,7 +57,11 @@ export function RecipeFormSkeleton() {
             </div>
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="space-y-6">
+          <h3 className="text-lg font-bold text-green-900">Image</h3>
+          <Skeleton className="h-80 sm:h-96" />
+        </div>
+        <div className="flex justify-end border-t border-gray-200 pt-6">
           <button
             type="button"
             className="rounded-md bg-green-700 px-4 py-2 text-sm text-green-50 hover:bg-green-800 focus:ring-1 focus:ring-green-700 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none disabled:opacity-50">
