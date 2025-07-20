@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { BookmarkIcon, HeartIcon, MessageCircleIcon } from 'lucide-react';
 import { CloudinaryImage } from '@/components/cloudinary-image';
+import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
-import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -15,13 +16,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const recipe = await getRecipeBySlug(slug);
 
   return {
-    title: recipe.name,
+    title: recipe ? recipe.name : 'Recipe not found',
   };
 }
 
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
+
+  if (!recipe) notFound();
 
   return (
     <>

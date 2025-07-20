@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
 import { CloudinaryImage } from '@/components/cloudinary-image';
+import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
 
 type RecipeCardProps = {
   recipe: Awaited<ReturnType<typeof getAllRecipes>>[number];
@@ -28,18 +28,14 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         {recipe.name}
       </h3>
       <div className="mt-2 flex items-center gap-x-2">
-        {recipe.uploader && (
-          <>
-            <Image
-              src={recipe.uploader.defaultImage}
-              alt={recipe.uploader.name}
-              height={40}
-              width={40}
-              className="size-6 rounded-full"
-            />
-            <p className="text-base text-gray-600 sm:text-sm">{recipe.uploader.name}</p>
-          </>
-        )}
+        <Image
+          src={recipe.uploader.defaultImage}
+          alt={recipe.uploader.name}
+          height={40}
+          width={40}
+          className="size-6 rounded-full"
+        />
+        <p className="text-base text-gray-600 sm:text-sm">{recipe.uploader.name}</p>
       </div>
       <Link prefetch href={`/recipes/${recipe.slug}`} className="absolute inset-0">
         <span className="sr-only">Go to recipe</span>
