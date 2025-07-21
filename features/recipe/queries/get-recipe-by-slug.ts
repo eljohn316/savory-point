@@ -6,19 +6,15 @@ export const getRecipeBySlug = cache(async function getRecipeBySlug(slug: string
     where: { slug },
     select: {
       id: true,
-      image: true,
+      imagePublicId: true,
       name: true,
       servings: true,
       slug: true,
       summary: true,
       uploadedAt: true,
-      cooking: {
-        select: {
-          preparation: true,
-          cooking: true,
-          total: true,
-        },
-      },
+      preparation: true,
+      cooking: true,
+      total: true,
       ingredients: true,
       instructions: true,
       nutrition: true,

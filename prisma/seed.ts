@@ -1,10 +1,13 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { PrismaClient } from '@/generated/prisma';
 import { auth } from '@/lib/auth';
+import { upload } from '@/lib/cloudinary';
 
 const FAKE_RECIPES = [
   {
     id: 'rec_001',
-    image: 'savory-point/spaghetti-bolognese',
+    image: '/images/spaghetti-bolognese.jpg',
     name: 'Spaghetti Bolognese',
     servings: 2,
     summary:
@@ -77,7 +80,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_002',
-    image: 'savory-point/chicken-curry',
+    image: '/images/chicken-curry.jpg',
     name: 'Chicken Curry',
     servings: 6,
     summary:
@@ -140,7 +143,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_003',
-    image: 'savory-point/vegetable-stir-fry',
+    image: '/images/vegetable-stir-fry.jpg',
     name: 'Vegetable Stir Fry',
     servings: 5,
     summary:
@@ -193,7 +196,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_004',
-    image: 'savory-point/fluffy-pancakes',
+    image: '/images/fluffy-pancakes.jpg',
     name: 'Fluffy Pancakes',
     servings: 4,
     summary:
@@ -255,7 +258,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_005',
-    image: 'savory-point/caesar-salad',
+    image: '/images/caesar-salad.jpg',
     name: 'Caesar Salad',
     servings: 3,
     summary:
@@ -302,7 +305,7 @@ const FAKE_RECIPES = [
   },
   {
     id: 'rec_006',
-    image: 'savory-point/beef-tacos',
+    image: '/images/beef-tacos.jpg',
     name: 'Beef Tacos',
     servings: 2,
     summary:
@@ -356,6 +359,20 @@ const FAKE_RECIPES = [
 
 const prisma = new PrismaClient();
 
+async function uploadImage(filePath: string, slug: string) {
+  try {
+    const file = path.join(__dirname, filePath);
+    await fs.access(file);
+
+    await upload(file, {
+      public_id: slug,
+      upload_preset: 'savory-point-recipe-preset',
+    });
+  } catch (error) {
+    console.log('Unable to upload recipe image');
+  }
+}
+
 async function main() {
   for (const recipe of FAKE_RECIPES) {
     const { user } = await auth.api.signUpEmail({
@@ -368,32 +385,29 @@ async function main() {
         password: 'password',
       },
     });
-
-    const newRecipe = await prisma.recipe.create({
-      data: {
-        name: recipe.name,
-        summary: recipe.summary,
-        servings: recipe.servings,
-        slug: recipe.slug,
-        cooking: {
-          create: {
-            total: recipe.preparation.total,
-            preparation: recipe.preparation.preparation,
-            cooking: recipe.preparation.cooking,
-          },
+    await Promise.all([
+      uploadImage(recipe.image, recipe.slug),
+      prisma.recipe.create({
+        data: {
+          name: recipe.name,
+          summary: recipe.summary,
+          servings: recipe.servings,
+          slug: recipe.slug,
+          preparation: recipe.preparation.preparation,
+          cooking: recipe.preparation.cooking,
+          total: recipe.preparation.total,
+          instructions: recipe.instructions.map(({ step, instruction }) => ({
+            step,
+            instruction,
+          })),
+          ingredients: recipe.ingredients,
+          nutrition: recipe.nutrition,
+          imagePublicId: recipe.slug,
+          uploaderId: user.id,
         },
-        image: recipe.image,
-        instructions: recipe.instructions.map(({ step, instruction }) => ({
-          step,
-          instruction,
-        })),
-        ingredients: recipe.ingredients,
-        nutrition: recipe.nutrition,
-        uploaderId: user.id,
-      },
-    });
-
-    console.log(`Recipe ${newRecipe.id} successfully created`);
+      }),
+    ]);
+    console.log(`Recipe successfully created`);
   }
   console.log(`Database successfully seeded`);
 }

@@ -10,20 +10,16 @@ type RecipeCardProps = {
 export function RecipeCard({ recipe }: RecipeCardProps) {
   return (
     <div className="group relative">
-      {recipe.image ? (
-        <CloudinaryImage
-          src={recipe.image}
-          alt={recipe.name}
-          height="600"
-          width="960"
-          sizes="100vw"
-          className="h-60 rounded-md object-cover sm:h-48"
-          format="webp"
-          quality="auto"
-        />
-      ) : (
-        <div className="h-60 rounded-md bg-gray-200 sm:h-48" />
-      )}
+      <CloudinaryImage
+        src={recipe.imagePublicId}
+        alt={recipe.name}
+        height="600"
+        width="960"
+        sizes="100vw"
+        className="h-60 rounded-md object-cover sm:h-48"
+        format="webp"
+        quality="auto"
+      />
       <h3 className="mt-4 text-lg font-medium text-gray-700 group-hover:underline lg:text-xl">
         {recipe.name}
       </h3>

@@ -35,10 +35,9 @@ export function UploadRecipeForm() {
       name: '',
       summary: '',
       servings: 1,
-      cooking: {
-        preparation: 0,
-        cooking: 0,
-      },
+      cooking: 0,
+      preparation: 0,
+      total: 0,
       ingredients: [{ ingredient: '' }],
       instructions: [
         {
@@ -100,7 +99,9 @@ export function UploadRecipeForm() {
         formData.append('name', data.name);
         formData.append('summary', data.summary);
         formData.append('servings', `${data.servings}`);
-        formData.append('cooking', JSON.stringify(data.cooking));
+        formData.append('cooking', `${data.cooking}`);
+        formData.append('preparation', `${data.preparation}`);
+        formData.append('total', `${data.preparation + data.cooking}`);
         formData.append('ingredients', JSON.stringify(data.ingredients));
         formData.append('instructions', JSON.stringify(data.instructions));
         formData.append('nutrition', JSON.stringify(data.nutrition));
@@ -176,7 +177,7 @@ export function UploadRecipeForm() {
               />
               <FormField
                 control={form.control}
-                name="cooking.preparation"
+                name="preparation"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
@@ -197,7 +198,7 @@ export function UploadRecipeForm() {
               />
               <FormField
                 control={form.control}
-                name="cooking.cooking"
+                name="cooking"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>

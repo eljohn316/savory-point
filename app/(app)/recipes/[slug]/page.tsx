@@ -31,13 +31,23 @@ export default async function Page({ params }: PageProps) {
       <div className="space-y-4">
         <h2 className="font-serif text-4xl font-bold text-gray-900">{recipe.name}</h2>
         <div className="flex items-center gap-x-2">
-          <Image
-            src={recipe.uploader.image ?? recipe.uploader.defaultImage}
-            alt={recipe.uploader.name}
-            height={40}
-            width={40}
-            className="size-7 rounded-full"
-          />
+          {recipe.uploader.image ? (
+            <CloudinaryImage
+              src={recipe.uploader.image}
+              alt={recipe.uploader.name}
+              height={40}
+              width={40}
+              className="size-7 rounded-full"
+            />
+          ) : (
+            <Image
+              src={recipe.uploader.defaultImage}
+              alt={recipe.uploader.name}
+              height={40}
+              width={40}
+              className="size-7 rounded-full"
+            />
+          )}
           <p className="text-sm text-gray-600">{recipe.uploader.name}</p>
         </div>
       </div>
@@ -56,20 +66,16 @@ export default async function Page({ params }: PageProps) {
             <span className="sr-only">Save</span>
           </button>
         </div>
-        {recipe.image ? (
-          <CloudinaryImage
-            src={recipe.image}
-            alt={recipe.name}
-            height="600"
-            width="960"
-            sizes="100vw"
-            className="h-80 rounded-md object-cover sm:h-96"
-            format="webp"
-            quality="auto"
-          />
-        ) : (
-          <div className="h-80 rounded-md bg-gray-200 sm:h-96" />
-        )}
+        <CloudinaryImage
+          src={recipe.imagePublicId}
+          alt={recipe.name}
+          height="600"
+          width="960"
+          sizes="100vw"
+          className="h-80 rounded-md object-cover sm:h-96"
+          format="webp"
+          quality="auto"
+        />
         <p className="text-gray-700">{recipe.summary}</p>
         <div className="rounded-xl bg-green-50 p-6">
           <List as="ul" className="marker:text-green-800">
@@ -79,17 +85,15 @@ export default async function Page({ params }: PageProps) {
             </ListItem>
             <ListItem>
               <span className="mr-1.5 font-semibold">Preparation:</span>
-              {recipe.cooking!.preparation}{' '}
-              {recipe.cooking!.preparation === 1 ? 'minute' : 'minutes'}
+              {recipe.preparation} {recipe.preparation === 1 ? 'minute' : 'minutes'}
             </ListItem>
             <ListItem>
               <span className="mr-1.5 font-semibold">Cooking:</span>
-              {recipe.cooking!.cooking} {recipe.cooking!.cooking === 1 ? 'minute' : 'minutes'}
+              {recipe.cooking} {recipe.cooking === 1 ? 'minute' : 'minutes'}
             </ListItem>
             <ListItem>
               <span className="mr-1.5 font-semibold">Total:</span>
-              Approximately {recipe.cooking!.total}{' '}
-              {recipe.cooking!.total === 1 ? 'minute' : 'minutes'}
+              Approximately {recipe.total} {recipe.total === 1 ? 'minute' : 'minutes'}
             </ListItem>
           </List>
         </div>

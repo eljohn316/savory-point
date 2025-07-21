@@ -4,7 +4,7 @@ export async function getAllRecipes() {
   const recipes = await prisma.recipe.findMany({
     select: {
       id: true,
-      image: true,
+      imagePublicId: true,
       name: true,
       slug: true,
       uploader: {
@@ -14,6 +14,9 @@ export async function getAllRecipes() {
           name: true,
         },
       },
+    },
+    orderBy: {
+      uploadedAt: 'desc',
     },
   });
 

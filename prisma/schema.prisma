@@ -9,29 +9,22 @@ datasource db {
 }
 
 model Recipe {
-  id           String   @id @default(cuid())
-  uploadedAt   DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  image        String?
-  name         String   @unique
-  slug         String   @unique
-  summary      String
-  servings     Int
-  cooking      Cooking?
-  ingredients  Json
-  instructions Json
-  nutrition    Json
-  uploader     User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
-  uploaderId   String
-}
-
-model Cooking {
-  id          Int    @id @default(autoincrement())
-  total       Float
-  preparation Float
-  cooking     Float
-  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  recipeId    String @unique
+  id            String   @id @default(cuid())
+  uploadedAt    DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  imagePublicId String
+  name          String   @unique
+  slug          String   @unique
+  summary       String
+  servings      Int
+  cooking       Float
+  preparation   Float
+  total         Float
+  ingredients   Json
+  instructions  Json
+  nutrition     Json
+  uploader      User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploaderId    String
 }
 
 model User {

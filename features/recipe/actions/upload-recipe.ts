@@ -19,7 +19,9 @@ export async function uploadRecipe(
       name,
       summary,
       servings,
-      cooking: { cooking, preparation },
+      preparation,
+      cooking,
+      total,
       ingredients,
       instructions,
       nutrition,
@@ -28,7 +30,9 @@ export async function uploadRecipe(
       name: formData.get('name'),
       summary: formData.get('summary'),
       servings: formData.get('servings'),
-      cooking: JSON.parse(formData.get('cooking') as string),
+      preparation: formData.get('cooking'),
+      cooking: formData.get('cooking'),
+      total: formData.get('total'),
       ingredients: JSON.parse(formData.get('ingredients') as string),
       instructions: JSON.parse(formData.get('instructions') as string),
       nutrition: JSON.parse(formData.get('nutrition') as string),
@@ -38,11 +42,7 @@ export async function uploadRecipe(
     const slug = createSlug(name);
 
     await Promise.all([
-      await upload(image, {
-        public_id: slug,
-        resource_type: 'image',
-        folder: 'savory-point',
-      }),
+      await upload(image, { public_id: slug, upload_preset: 'savory-point-recipe-preset' }),
       await prisma.recipe.create({
         data: {
           name,
@@ -51,16 +51,12 @@ export async function uploadRecipe(
           ingredients,
           instructions,
           nutrition,
-          slug: createSlug(name),
-          cooking: {
-            create: {
-              cooking,
-              preparation,
-              total: cooking + preparation,
-            },
-          },
-          image: slug,
+          cooking,
+          preparation,
+          total,
+          slug,
           uploaderId,
+          imagePublicId: slug,
         },
       }),
     ]);

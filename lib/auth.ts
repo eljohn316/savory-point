@@ -34,6 +34,7 @@ export const auth = betterAuth({
     fields: {
       image: 'image',
       defaultImage: 'defaultImage',
+      imagePublicId: 'imagePublicId',
       firstName: 'firstName',
       lastName: 'lastName',
       name: 'name',
