@@ -12,12 +12,13 @@ import { FormControl } from '@/components/form/form-control';
 import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
-import { signupSchema, SignupValues } from '@/features/auth/schema/sign-up';
-import { signup } from '@/features/auth/actions/sign-up';
 import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
 import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
 import { errorToast } from '@/components/ui/sonner';
 import { renderFormErrors } from '@/components/form/utils/render-form-errors';
+import { Button } from '@/components/ui/button';
+import { signupSchema, SignupValues } from '@/features/auth/schema/sign-up';
+import { signup } from '@/features/auth/actions/sign-up';
 
 export function SignupForm() {
   const form = useForm<SignupValues>({
@@ -131,17 +132,14 @@ export function SignupForm() {
           />
         </div>
         <div className="mt-10 space-y-5 text-center">
-          <button
-            type="submit"
-            className="disabled:pointer-none: block w-full rounded-md bg-emerald-700 px-4 py-2 text-base font-medium text-green-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
-            disabled={isPending}>
+          <Button type="submit" className="w-full text-base" size="lg" disabled={isPending}>
             {isPending ? 'Signing up...' : 'Sign up'}
-          </button>
+          </Button>
           <p className="text-sm font-light text-gray-600">
             Already have an account?{' '}
-            <Link href="/sign-in" className="font-medium text-emerald-700 hover:underline">
-              Sign in
-            </Link>{' '}
+            <Button variant="link" className="p-0 text-emerald-700" asChild>
+              <Link href="/sign-in">Sign in</Link>
+            </Button>{' '}
             instead
           </p>
         </div>

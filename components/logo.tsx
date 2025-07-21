@@ -14,7 +14,7 @@ export function Logo({ className }: LogoProps) {
     <Link
       href="/"
       className={cn(
-        'text-2xl leading-none tracking-tighter text-emerald-800',
+        'text-2xl leading-none tracking-tighter whitespace-nowrap text-emerald-800',
         fontLogo.className,
         className,
       )}>

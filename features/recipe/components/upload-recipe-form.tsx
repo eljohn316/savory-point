@@ -17,6 +17,7 @@ import { renderFormErrors } from '@/components/form/utils/render-form-errors';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { NumInput, NumInputField } from '@/components/ui/num-input';
+import { Button } from '@/components/ui/button';
 import { errorToast } from '@/components/ui/sonner';
 import { FieldListWrapper } from '@/components/field-list-wrapper';
 import { useUser } from '@/components/user-provider';
@@ -39,12 +40,7 @@ export function UploadRecipeForm() {
       preparation: 0,
       total: 0,
       ingredients: [{ ingredient: '' }],
-      instructions: [
-        {
-          step: 1,
-          instruction: '',
-        },
-      ],
+      instructions: [{ step: 1, instruction: '' }],
       nutrition: [{ name: '', value: '' }],
     },
   });
@@ -391,12 +387,9 @@ export function UploadRecipeForm() {
             />
           </div>
           <div className="flex justify-end border-t border-gray-200 pt-6">
-            <button
-              type="submit"
-              className="rounded-md bg-green-700 px-4 py-2 text-sm text-green-50 hover:bg-green-800 focus:ring-1 focus:ring-green-700 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
-              disabled={isPending}>
+            <Button type="submit" size="lg" disabled={isPending}>
               {isPending ? 'Uploading recipe...' : 'Upload recipe'}
-            </button>
+            </Button>
           </div>
         </div>
       </form>

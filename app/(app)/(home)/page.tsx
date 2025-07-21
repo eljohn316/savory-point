@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Home',
 };
 
-export default async function Home() {
+export default async function Page() {
   const recipes = await getAllRecipes();
 
   return (

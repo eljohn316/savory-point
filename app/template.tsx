@@ -8,7 +8,7 @@ type TemplateProps = {
 export default function Template({ children }: TemplateProps) {
   return (
     <>
-      <>{children}</>
+      {children}
       <RedirectToast />
     </>
   );

@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { MenuIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { BellIcon, MenuIcon } from 'lucide-react';
 import { useSession } from '@/lib/auth-client';
 import { Container } from '@/components/container';
 import { Logo } from '@/components/logo';
@@ -18,45 +18,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { SignoutModal } from '@/features/auth/components/sign-out-modal';
 
 function NavigationLinks() {
   const [showSignoutModal, setShowSignoutModal] = useState(false);
   const { isPending, data } = useSession();
-  const pathname = usePathname();
   const router = useRouter();
 
-  if (isPending) return <Skeleton className="size-10 rounded-md md:h-10 md:w-full md:max-w-80" />;
+  if (isPending) return <Skeleton className="size-10 rounded-md sm:h-10 sm:w-full sm:max-w-80" />;
 
   if (!data)
     return (
       <>
-        <div className="hidden md:flex md:items-center md:gap-x-10">
-          <Link href="/sign-in" className="text-base text-gray-700 hover:text-emerald-700">
-            Sign in
-          </Link>
-          <Link href="/sign-up" className="text-base text-gray-700 hover:text-emerald-700">
-            Sign up
-          </Link>
-          <Link
-            href="/upload-recipe"
-            className="rounded-md bg-emerald-700 px-4 py-2 text-[15px] text-emerald-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none">
-            Upload recipe
-          </Link>
+        <div className="hidden sm:flex sm:items-center sm:gap-x-4">
+          <Button variant="outline" className="text-base" asChild>
+            <Link href="/sign-in">Sign in</Link>
+          </Button>
+          <Button variant="primary" className="text-base" asChild>
+            <Link href="/sign-up">Sign up</Link>
+          </Button>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-md p-1 text-gray-400 hover:text-gray-500 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none md:hidden">
+          <DropdownMenuTrigger className="rounded-md p-1 text-gray-400 hover:text-gray-500 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none sm:hidden">
             <MenuIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40 p-2" hideWhenDetached>
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onSelect={() => router.push('/upload-recipe')}
-                className="text-base text-gray-600">
-                Upload recipe
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup className="space-y-1">
               <DropdownMenuItem
                 onSelect={() => router.push('/sign-in')}
@@ -77,14 +64,11 @@ function NavigationLinks() {
   return (
     <>
       <SignoutModal open={showSignoutModal} onOpenChange={setShowSignoutModal} />
-      <div className="flex items-center gap-x-6">
-        {pathname !== '/upload-recipe' && (
-          <Link
-            href="/upload-recipe"
-            className="hidden rounded-md bg-emerald-700 px-4 py-2 text-[15px] text-emerald-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none md:inline-block">
-            Upload recipe
-          </Link>
-        )}
+      <div className="flex items-center gap-x-4 sm:gap-x-6">
+        <button type="button" className="text-gray-400 hover:text-gray-500">
+          <span className="sr-only">Open notifications</span>
+          <BellIcon className="size-5" />
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger className="overflow-hidden rounded-full outline-none focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2">
             <Image
@@ -134,8 +118,8 @@ function NavigationLinks() {
 export function Navigation() {
   return (
     <nav className="border-b border-gray-200 shadow-xs">
-      <Container className="flex max-w-4xl items-center justify-between py-4">
-        <Logo />
+      <Container className="flex h-[72px] max-w-4xl items-center justify-between py-0">
+        <Logo className="text-[22px] sm:text-2xl" />
         <NavigationLinks />
       </Container>
     </nav>

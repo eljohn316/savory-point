@@ -12,6 +12,7 @@ import { FormLabel } from '@/components/form/form-label';
 import { FormControl } from '@/components/form/form-control';
 import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { PasswordInput } from '@/components/ui/password-input';
 import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
 import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
@@ -90,17 +91,14 @@ export function SigninForm() {
           />
         </div>
         <div className="mt-10 space-y-5 text-center">
-          <button
-            type="submit"
-            className="block w-full rounded-md bg-emerald-700 px-4 py-2 text-base font-medium text-green-50 hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={isPending}>
-            {isPending ? 'Signing in' : 'Sign in'}
-          </button>
+          <Button type="submit" className="w-full text-base" disabled={isPending}>
+            {isPending ? 'Signing in...' : 'Sign in'}
+          </Button>
           <p className="text-sm font-light text-gray-600">
             Don&apos;t have an account yet?{' '}
-            <Link href="/sign-up" className="font-medium text-emerald-700 hover:underline">
-              Sign up
-            </Link>{' '}
+            <Button variant="link" className="p-0 text-emerald-700" asChild>
+              <Link href="/sign-up">Sign up</Link>
+            </Button>{' '}
             instead
           </p>
         </div>

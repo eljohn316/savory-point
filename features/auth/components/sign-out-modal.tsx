@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { signout } from '@/features/auth/actions/sign-out';
 
 type SignoutModalProps = React.ComponentProps<typeof Dialog> & {
@@ -40,25 +41,19 @@ export function SignoutModal({ open, onOpenChange, ...props }: SignoutModalProps
 
 function CancelButton(props: React.ComponentProps<'button'>) {
   const { pending } = useFormStatus();
+
   return (
-    <button
-      type="button"
-      className="rounded-md bg-white px-4 py-2 text-sm font-medium text-gray-700 outline-none hover:bg-gray-100 focus:ring-1 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-75"
-      disabled={pending}
-      {...props}>
+    <Button type="button" variant="ghost" disabled={pending} {...props}>
       Cancel
-    </button>
+    </Button>
   );
 }
 function SignoutButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      type="submit"
-      className="rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-emerald-50 outline-none hover:bg-emerald-800 focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2 disabled:opacity-75"
-      disabled={pending}>
-      {pending ? 'Signing out' : 'Sign out'}
-    </button>
+    <Button type="submit" disabled={pending}>
+      {pending ? 'Signing out...' : 'Sign out'}
+    </Button>
   );
 }
