@@ -3,50 +3,70 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function Loading() {
   return (
     <>
-      <div className="space-y-4">
-        <Skeleton className="h-10 max-w-2/3" />
-        <div className="flex items-center gap-x-2">
-          <Skeleton className="size-7 flex-none rounded-full" />
-          <Skeleton className="h-5 w-full max-w-16 flex-auto" />
+      <div className="space-y-5">
+        <Skeleton className="h-10" />
+        <div className="flex items-center gap-x-4">
+          <Skeleton className="size-8 flex-none rounded-full" />
+          <div className="max-w-40 flex-auto space-y-1">
+            <Skeleton className="h-3.5" />
+            <Skeleton className="h-3.5" />
+          </div>
         </div>
       </div>
-      <div className="mt-6 space-y-8">
-        <div className="flex items-center justify-between gap-x-5 border-y border-gray-200 py-4">
-          <Skeleton className="h-5 w-full max-w-28 flex-auto" />
-          <Skeleton className="h-5 w-full max-w-16 flex-auto" />
+      <div className="mt-10 space-y-12">
+        <div className="border-y border-gray-200 py-4">
+          <Skeleton className="h-5" />
         </div>
-        <Skeleton className="h-80" />
+
+        <Skeleton className="h-90 rounded-md sm:h-96" />
         <div className="space-y-2">
           <Skeleton className="h-4" />
           <Skeleton className="h-4" />
           <Skeleton className="h-4" />
+          <Skeleton className="h-4" />
         </div>
-        <div className="space-y-2 rounded-xl bg-gray-100 p-6">
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-4 w-1/2" />
-        </div>
+        <Skeleton className="h-[168px]" />
         <div className="space-y-6">
-          <Skeleton className="h-7 w-full max-w-40" />
+          <h3 className="font-serif text-[28px] font-bold text-emerald-800">Ingredients</h3>
           <div className="space-y-2">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
+            <Skeleton className="h-4 max-w-3/4" />
           </div>
         </div>
         <div className="space-y-6">
-          <Skeleton className="h-7 w-full max-w-40" />
+          <h3 className="font-serif text-[28px] font-bold text-emerald-800">Instructions</h3>
           <div className="space-y-2">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+            <Skeleton className="h-4" />
+          </div>
+        </div>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h3 className="font-serif text-[28px] font-bold text-emerald-800">Nutrition</h3>
+            <p className="text-sm font-light text-gray-500">
+              The table below shows nutritional values per serving without the additional fillings.
+            </p>
+          </div>
+          <div className="divide-y divide-gray-200">
+            <div className="py-3 first:pt-0 last:pb-0">
+              <Skeleton className="h-4" />
+            </div>
+            <div className="py-3 first:pt-0 last:pb-0">
+              <Skeleton className="h-4" />
+            </div>
+            <div className="py-3 first:pt-0 last:pb-0">
+              <Skeleton className="h-4" />
+            </div>
           </div>
         </div>
       </div>

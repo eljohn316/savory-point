@@ -12,6 +12,7 @@ export const getRecipeBySlug = cache(async function getRecipeBySlug(slug: string
       slug: true,
       summary: true,
       uploadedAt: true,
+      updatedAt: true,
       preparation: true,
       cooking: true,
       total: true,

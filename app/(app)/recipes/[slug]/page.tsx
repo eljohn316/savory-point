@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { BookmarkIcon, HeartIcon, MessageCircleIcon, ArrowLeftIcon } from 'lucide-react';
+import { formatDate } from '@/lib/helpers';
 import { CloudinaryImage } from '@/components/cloudinary-image';
 import {
   Placeholder,
@@ -12,6 +13,7 @@ import {
 import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
+import { CommentListItems } from '@/features/comment/components/comment-list-items';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -29,6 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
+  console.log(recipe);
 
   if (!recipe)
     return (
@@ -50,16 +53,16 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-5">
         <h2 className="font-serif text-4xl font-bold text-gray-900">{recipe.name}</h2>
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-4">
           {recipe.uploader.image ? (
             <CloudinaryImage
               src={recipe.uploader.image}
               alt={recipe.uploader.name}
               height={40}
               width={40}
-              className="size-7 rounded-full"
+              className="size-8 flex-none rounded-full"
             />
           ) : (
             <Image
@@ -67,17 +70,22 @@ export default async function Page({ params }: PageProps) {
               alt={recipe.uploader.name}
               height={40}
               width={40}
-              className="size-7 rounded-full"
+              className="size-8 flex-none rounded-full"
             />
           )}
-          <p className="text-sm text-gray-600">{recipe.uploader.name}</p>
+          <div className="flex-auto space-y-1">
+            <p className="text-sm leading-none text-gray-900">by {recipe.uploader.name}</p>
+            <p className="text-sm leading-none text-gray-500">
+              uploaded on {formatDate(recipe.uploadedAt)}
+            </p>
+          </div>
         </div>
       </div>
-      <div className="mt-6 space-y-12">
+      <div className="mt-10 space-y-12">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
           <button className="group inline-flex cursor-pointer items-center gap-x-2">
             <MessageCircleIcon className="size-5 text-gray-400 group-hover:text-gray-500" />
-            <p className="text-sm text-gray-500 group-hover:text-gray-600">41 comments</p>
+            <p className="text-sm text-gray-500 group-hover:text-gray-600">0</p>
           </button>
           <button className="ml-auto cursor-pointer text-gray-400 hover:text-gray-500">
             <HeartIcon className="size-5" />
@@ -149,9 +157,7 @@ export default async function Page({ params }: PageProps) {
             {(recipe.nutrition as Nutrition[]).map(({ name, value }) => {
               const id = crypto.randomUUID();
               return (
-                <ListItem
-                  key={id}
-                  className="flex items-center gap-x-4 px-8 py-3 first:pt-0 last:pb-0">
+                <ListItem key={id} className="flex items-center gap-x-4 py-3 first:pt-0 last:pb-0">
                   <p className="flex-1">{name}</p>
                   <p className="flex-1 font-semibold text-green-700">{value}</p>
                 </ListItem>
@@ -160,6 +166,7 @@ export default async function Page({ params }: PageProps) {
           </List>
         </div>
       </div>
+      <CommentListItems />
     </>
   );
 }
