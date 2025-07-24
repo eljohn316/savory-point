@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { prisma } from '@/lib/prisma';
+import { hashPassword, verifyPassword } from '@/lib/password';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -9,6 +10,10 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    password: {
+      hash: async (password: string) => await hashPassword(password),
+      verify: async ({ hash, password }) => await verifyPassword(hash, password),
+    },
   },
   user: {
     additionalFields: {
@@ -30,6 +35,12 @@ export const auth = betterAuth({
         fieldName: 'defaultImage',
         returned: true,
       },
+      bio: {
+        type: 'string',
+        required: false,
+        fieldName: 'bio',
+        returned: true,
+      },
     },
     fields: {
       image: 'image',
@@ -39,6 +50,7 @@ export const auth = betterAuth({
       lastName: 'lastName',
       name: 'name',
       email: 'email',
+      bio: 'bio',
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
       emailVerified: 'emailVerified',

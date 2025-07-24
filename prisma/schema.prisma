@@ -9,12 +9,12 @@ datasource db {
 }
 
 model Recipe {
-  id            String   @id @default(cuid())
-  uploadedAt    DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id            String         @id @default(cuid())
+  uploadedAt    DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   imagePublicId String
-  name          String   @unique
-  slug          String   @unique
+  name          String         @unique
+  slug          String         @unique
   summary       String
   servings      Int
   cooking       Float
@@ -23,12 +23,26 @@ model Recipe {
   ingredients   Json
   instructions  Json
   nutrition     Json
-  uploader      User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploader      User           @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
   uploaderId    String
+  likes         LikedRecipes[]
+
+  @@map("recipe")
+}
+
+model LikedRecipes {
+  id        String   @id @default(cuid())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId  String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("likedRecipes")
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   firstName     String
   lastName      String
   name          String
@@ -42,6 +56,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   recipes       Recipe[]
+  likedRecipes  LikedRecipes[]
 
   @@unique([email])
   @@map("user")

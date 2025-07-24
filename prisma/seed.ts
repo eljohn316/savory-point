@@ -382,6 +382,7 @@ async function main() {
         name: recipe.uploader.firstName + ' ' + recipe.uploader.lastName,
         defaultImage: `https://api.dicebear.com/9.x/initials/svg?seed=${recipe.uploader.firstName}%20${recipe.uploader.lastName}`,
         email: recipe.uploader.email,
+        bio: recipe.uploader.profile.bio,
         password: 'password',
       },
     });
