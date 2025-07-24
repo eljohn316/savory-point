@@ -31,7 +31,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
-  console.log(recipe);
 
   if (!recipe)
     return (
