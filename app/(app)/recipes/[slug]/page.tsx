@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { BookmarkIcon, HeartIcon, MessageCircleIcon, ArrowLeftIcon } from 'lucide-react';
+import { headers } from 'next/headers';
+import { ArrowLeftIcon } from 'lucide-react';
+import { auth } from '@/lib/auth';
 import { formatDate } from '@/lib/helpers';
 import { CloudinaryImage } from '@/components/cloudinary-image';
 import {
@@ -14,6 +16,10 @@ import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types
 import { List, ListItem } from '@/features/recipe/components/list';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 import { CommentListItems } from '@/features/comment/components/comment-list-items';
+import { CommentsButton } from '@/features/recipe/components/comments-button';
+import { LikeButton } from '@/features/recipe/components/like-button';
+import { SaveButton } from '@/features/recipe/components/save-button';
+import { isRecipeLiked } from '@/features/recipe/queries/is-recipe-liked';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -50,6 +56,10 @@ export default async function Page({ params }: PageProps) {
       </Placeholder>
     );
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  const liked = await isRecipeLiked(recipe.id, session?.user.id);
+  const saved = false;
+
   return (
     <>
       <div className="space-y-5">
@@ -82,18 +92,9 @@ export default async function Page({ params }: PageProps) {
       </div>
       <div className="mt-10 space-y-12">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
-          <button className="group inline-flex cursor-pointer items-center gap-x-2">
-            <MessageCircleIcon className="size-5 text-gray-400 group-hover:text-gray-500" />
-            <p className="text-sm text-gray-500 group-hover:text-gray-600">0</p>
-          </button>
-          <button className="ml-auto cursor-pointer text-gray-400 hover:text-gray-500">
-            <HeartIcon className="size-5" />
-            <span className="sr-only">Like</span>
-          </button>
-          <button className="cursor-pointer text-gray-400 hover:text-gray-500">
-            <BookmarkIcon className="size-5" />
-            <span className="sr-only">Save</span>
-          </button>
+          <CommentsButton comments={0} />
+          <LikeButton liked={liked} recipeId={recipe.id} userId={session?.user.id} />
+          <SaveButton saved={saved} />
         </div>
         <CloudinaryImage
           src={recipe.imagePublicId}

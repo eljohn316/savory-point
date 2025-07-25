@@ -35,7 +35,7 @@ model LikedRecipes {
   recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId  String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
+  userId    String
   createdAt DateTime @default(now())
 
   @@map("likedRecipes")

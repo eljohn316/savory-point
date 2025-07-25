@@ -13,13 +13,13 @@ export function useActionFeedback(
 ) {
   useEffect(() => {
     if (actionState.status === 'success' && onSuccess) {
-      return onSuccess(actionState);
+      onSuccess(actionState);
     }
     if (actionState.status === 'error' && onError) {
-      return onError(actionState);
+      onError(actionState);
     }
     if (actionState.status === 'fail' && onFail) {
-      return onFail(actionState);
+      onFail(actionState);
     }
   }, [actionState, onError, onFail, onSuccess]);
 }

@@ -54,7 +54,7 @@ export function CommentListItems() {
         <Textarea placeholder="Write a comment..." />
         <Button>Post comment</Button>
       </div>
-      <div className="mt-16 space-y-8">
+      <div className="mt-16 space-y-8" id="recipe-comments">
         <p className="text-xl font-bold text-gray-700">Comments ({COMMENTS.length})</p>
         <div className="divide-y divide-gray-200">
           {COMMENTS.map((comment) => (
