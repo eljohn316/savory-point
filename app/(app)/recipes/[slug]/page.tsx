@@ -20,6 +20,7 @@ import { CommentsButton } from '@/features/recipe/components/comments-button';
 import { LikeButton } from '@/features/recipe/components/like-button';
 import { SaveButton } from '@/features/recipe/components/save-button';
 import { isRecipeLiked } from '@/features/recipe/queries/is-recipe-liked';
+import { isRecipeSaved } from '@/features/recipe/queries/is-recipe-saved';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -57,8 +58,10 @@ export default async function Page({ params }: PageProps) {
     );
 
   const session = await auth.api.getSession({ headers: await headers() });
-  const liked = await isRecipeLiked(recipe.id, session?.user.id);
-  const saved = false;
+  const [liked, saved] = await Promise.all([
+    await isRecipeLiked(recipe.id, session?.user.id),
+    await isRecipeSaved(recipe.id, session?.user.id),
+  ]);
 
   return (
     <>
@@ -94,7 +97,7 @@ export default async function Page({ params }: PageProps) {
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
           <CommentsButton comments={0} />
           <LikeButton liked={liked} recipeId={recipe.id} userId={session?.user.id} />
-          <SaveButton saved={saved} />
+          <SaveButton saved={saved} recipeId={recipe.id} userId={session?.user.id} />
         </div>
         <CloudinaryImage
           src={recipe.imagePublicId}

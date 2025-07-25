@@ -26,6 +26,7 @@ model Recipe {
   uploader      User           @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
   uploaderId    String
   likes         LikedRecipes[]
+  saves         SavedRecipes[]
 
   @@map("recipe")
 }
@@ -39,6 +40,17 @@ model LikedRecipes {
   createdAt DateTime @default(now())
 
   @@map("likedRecipes")
+}
+
+model SavedRecipes {
+  id        String   @id @default(cuid())
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId  String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@map("savedRecipes")
 }
 
 model User {
@@ -57,6 +69,7 @@ model User {
   accounts      Account[]
   recipes       Recipe[]
   likedRecipes  LikedRecipes[]
+  savedRecipes  SavedRecipes[]
 
   @@unique([email])
   @@map("user")
