@@ -14,13 +14,16 @@ import {
 } from '@/components/ui/placeholder';
 import type { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 import { List, ListItem } from '@/features/recipe/components/list';
-import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
-import { CommentListItems } from '@/features/comment/components/comment-list-items';
 import { CommentsButton } from '@/features/recipe/components/comments-button';
 import { LikeButton } from '@/features/recipe/components/like-button';
 import { SaveButton } from '@/features/recipe/components/save-button';
+import { CommentForm } from '@/features/recipe/components/comment-form';
+import { CommentList } from '@/features/recipe/components/comment-list';
+import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 import { isRecipeLiked } from '@/features/recipe/queries/is-recipe-liked';
 import { isRecipeSaved } from '@/features/recipe/queries/is-recipe-saved';
+import { getRecipeComments } from '@/features/recipe/queries/get-recipe-comments';
+import { RecipeSlugPageProvider } from '@/features/recipe/providers/recipe-slug-page-provider';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -58,13 +61,14 @@ export default async function Page({ params }: PageProps) {
     );
 
   const session = await auth.api.getSession({ headers: await headers() });
-  const [liked, saved] = await Promise.all([
+  const [liked, saved, { comments, totalComments }] = await Promise.all([
     await isRecipeLiked(recipe.id, session?.user.id),
     await isRecipeSaved(recipe.id, session?.user.id),
+    await getRecipeComments(recipe.id, 3),
   ]);
 
   return (
-    <>
+    <RecipeSlugPageProvider userId={session?.user.id} recipeId={recipe.id}>
       <div className="space-y-5">
         <h2 className="font-serif text-4xl font-bold text-gray-900">{recipe.name}</h2>
         <div className="flex items-center gap-x-4">
@@ -95,9 +99,9 @@ export default async function Page({ params }: PageProps) {
       </div>
       <div className="mt-10 space-y-12">
         <div className="flex items-center gap-x-5 border-y border-gray-200 py-4">
-          <CommentsButton comments={0} />
-          <LikeButton liked={liked} recipeId={recipe.id} userId={session?.user.id} />
-          <SaveButton saved={saved} recipeId={recipe.id} userId={session?.user.id} />
+          <CommentsButton comments={totalComments} />
+          <LikeButton liked={liked} />
+          <SaveButton saved={saved} />
         </div>
         <CloudinaryImage
           src={recipe.imagePublicId}
@@ -169,7 +173,10 @@ export default async function Page({ params }: PageProps) {
           </List>
         </div>
       </div>
-      <CommentListItems />
-    </>
+      <div className="mt-28">
+        <CommentForm />
+        <CommentList comments={comments} totalComments={totalComments} />
+      </div>
+    </RecipeSlugPageProvider>
   );
 }

@@ -3,21 +3,28 @@
 import { useState } from 'react';
 import { EllipsisVerticalIcon, MessageCircleIcon, ThumbsUpIcon } from 'lucide-react';
 import { formatDate } from '@/lib/helpers';
-import { Comment } from './comment-list-items';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { Comment } from './comment-list';
 
-type CommentProps = {
+type RecipeCommentProps = {
   comment: Comment;
 };
 
-export function CommentListItem({ comment }: CommentProps) {
+export function CommentListItem({ comment }: RecipeCommentProps) {
   const [toggleReplyForm, setToggleReplyForm] = useState(false);
 
   return (
     <div className="py-8 first:pt-0 last:pb-0">
       <div className="relative flex items-center gap-x-4">
-        <div className="size-9 shrink-0 rounded-full bg-gray-200" />
+        <Image
+          src={comment.user.image ?? comment.user.defaultImage}
+          alt="User avatar"
+          height={40}
+          width={40}
+          className="size-9 rounded-full"
+        />
         <div className="flex-auto space-y-1.5">
           <p className="text-sm leading-none font-medium text-gray-700">{comment.user.name}</p>
           <p className="text-sm leading-none text-gray-500">{formatDate(comment.createdAt)}</p>
@@ -28,7 +35,7 @@ export function CommentListItem({ comment }: CommentProps) {
           </button>
         </div>
       </div>
-      <p className="mt-6 text-base text-gray-900">{comment.content}</p>
+      <p className="mt-6 text-base text-gray-700">{comment.content}</p>
       <div className="mt-6 flex items-center gap-x-6">
         <button
           type="button"
@@ -36,14 +43,12 @@ export function CommentListItem({ comment }: CommentProps) {
           <ThumbsUpIcon className="size-4" />
           Like
         </button>
-        {comment.replyCount >= 1 && (
-          <button
-            type="button"
-            className="inline-flex items-center gap-x-2 text-sm text-gray-500 hover:text-emerald-600">
-            <MessageCircleIcon className="size-4" />
-            Replies ({comment.replyCount})
-          </button>
-        )}
+        <button
+          type="button"
+          className="inline-flex items-center gap-x-2 text-sm text-gray-500 hover:text-emerald-600">
+          <MessageCircleIcon className="size-4" />
+          Replies (0)
+        </button>
         <button
           type="button"
           className="ml-auto text-sm font-medium text-emerald-700 hover:text-emerald-800"

@@ -1,4 +1,6 @@
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function Loading() {
   return (
@@ -66,6 +68,68 @@ export default function Loading() {
             </div>
             <div className="py-3 first:pt-0 last:pb-0">
               <Skeleton className="h-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-28">
+        <div className="space-y-4">
+          <Textarea name="content" rows={4} placeholder="Write a comment..." required />
+          <Button type="button">Post comment</Button>
+        </div>
+        <div className="mt-16 space-y-10">
+          <p className="text-xl font-bold text-gray-700">Comments</p>
+          <div className="divide-y divide-gray-200">
+            <div className="py-8 first:pt-0 last:pb-0">
+              <div className="flex items-center gap-x-4">
+                <Skeleton className="size-9 rounded-full" />
+                <div className="flex-auto space-y-1">
+                  <Skeleton className="h-3 max-w-32" />
+                  <Skeleton className="h-3 max-w-32" />
+                </div>
+              </div>
+              <div className="mt-6 space-y-2">
+                <Skeleton className="h-3.5" />
+                <Skeleton className="h-3.5" />
+              </div>
+              <div className="mt-6 flex justify-between">
+                <Skeleton className="h-3.5 max-w-24 flex-auto" />
+                <Skeleton className="h-3.5 max-w-10 flex-auto" />
+              </div>
+            </div>
+            <div className="py-8 first:pt-0 last:pb-0">
+              <div className="flex items-center gap-x-4">
+                <Skeleton className="size-9 rounded-full" />
+                <div className="flex-auto space-y-1">
+                  <Skeleton className="h-3 max-w-32" />
+                  <Skeleton className="h-3 max-w-32" />
+                </div>
+              </div>
+              <div className="mt-6 space-y-2">
+                <Skeleton className="h-3.5" />
+                <Skeleton className="h-3.5" />
+              </div>
+              <div className="mt-6 flex justify-between">
+                <Skeleton className="h-3.5 max-w-24 flex-auto" />
+                <Skeleton className="h-3.5 max-w-10 flex-auto" />
+              </div>
+            </div>
+            <div className="py-8 first:pt-0 last:pb-0">
+              <div className="flex items-center gap-x-4">
+                <Skeleton className="size-9 rounded-full" />
+                <div className="flex-auto space-y-1">
+                  <Skeleton className="h-3 max-w-32" />
+                  <Skeleton className="h-3 max-w-32" />
+                </div>
+              </div>
+              <div className="mt-6 space-y-2">
+                <Skeleton className="h-3.5" />
+                <Skeleton className="h-3.5" />
+              </div>
+              <div className="mt-6 flex justify-between">
+                <Skeleton className="h-3.5 max-w-24 flex-auto" />
+                <Skeleton className="h-3.5 max-w-10 flex-auto" />
+              </div>
             </div>
           </div>
         </div>

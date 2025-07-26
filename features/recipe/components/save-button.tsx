@@ -8,14 +8,14 @@ import { redirectToast } from '@/lib/actions';
 import { successToast } from '@/components/ui/sonner';
 import { saveRecipe } from '@/features/recipe/actions/save-recipe';
 import { unsaveRecipe } from '@/features/recipe/actions/unsave-recipe';
+import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
 
 type SaveButtonProps = {
   saved: boolean;
-  recipeId: string;
-  userId?: string;
 };
 
-export function SaveButton({ saved, userId, recipeId }: SaveButtonProps) {
+export function SaveButton({ saved }: SaveButtonProps) {
+  const { userId, recipeId } = useRecipeSlugContext();
   const { slug } = useParams<{ slug: string }>();
 
   const [isSaved, setIsSaved] = useState(saved);

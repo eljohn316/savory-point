@@ -27,6 +27,7 @@ model Recipe {
   uploaderId    String
   likes         LikedRecipes[]
   saves         SavedRecipes[]
+  comments      Comment[]
 
   @@map("recipe")
 }
@@ -53,6 +54,18 @@ model SavedRecipes {
   @@map("savedRecipes")
 }
 
+model Comment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  content   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId  String
+
+  @@map("comment")
+}
+
 model User {
   id            String         @id
   firstName     String
@@ -70,6 +83,7 @@ model User {
   recipes       Recipe[]
   likedRecipes  LikedRecipes[]
   savedRecipes  SavedRecipes[]
+  comments      Comment[]
 
   @@unique([email])
   @@map("user")

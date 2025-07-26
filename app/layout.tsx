@@ -2,6 +2,7 @@ import '@/app/globals.css';
 import type { Metadata } from 'next';
 import { Outfit, Neuton } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
+import { Providers } from '@/app/_providers/providers';
 
 const fontSans = Outfit({
   variable: '--font-sans',
@@ -31,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} ${fontSerif.variable} overflow-y-scroll antialiased`}>
-        {children}
-        <Toaster expand />
+        <Providers>
+          {children}
+          <Toaster expand />
+        </Providers>
       </body>
     </html>
   );

@@ -8,14 +8,14 @@ import { redirectToast } from '@/lib/actions';
 import { successToast } from '@/components/ui/sonner';
 import { likeRecipe } from '@/features/recipe/actions/like-recipe';
 import { unLikeRecipe } from '@/features/recipe/actions/unlike-recipe';
+import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
 
 type LikeButtonProps = {
   liked: boolean;
-  recipeId: string;
-  userId?: string;
 };
 
-export function LikeButton({ liked, recipeId, userId }: LikeButtonProps) {
+export function LikeButton({ liked }: LikeButtonProps) {
+  const { userId, recipeId } = useRecipeSlugContext();
   const { slug } = useParams<{ slug: string }>();
   const [isLiked, setIsLiked] = useState(liked);
 
