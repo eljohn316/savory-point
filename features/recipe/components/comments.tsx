@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { CommentForm } from '@/features/recipe/components/comment-form';
 import { CommentList } from '@/features/recipe/components/comment-list';
@@ -19,11 +18,10 @@ type CommentsProps = {
 const COMMENTS_PER_PAGE = 4;
 
 export function Comments({ totalComments }: CommentsProps) {
-  const { slug } = useParams<{ slug: string }>();
   const [currentPage, setCurrentPage] = useState(1);
   const { recipeId } = useRecipeSlugContext();
   const { isPending, data } = useQuery({
-    queryKey: ['comments', currentPage, slug],
+    queryKey: ['comments', currentPage, recipeId],
     queryFn: () =>
       getRecipeComments(recipeId, {
         take: COMMENTS_PER_PAGE,
