@@ -17,13 +17,12 @@ import { List, ListItem } from '@/features/recipe/components/list';
 import { CommentsButton } from '@/features/recipe/components/comments-button';
 import { LikeButton } from '@/features/recipe/components/like-button';
 import { SaveButton } from '@/features/recipe/components/save-button';
-import { CommentForm } from '@/features/recipe/components/comment-form';
-import { CommentList } from '@/features/recipe/components/comment-list';
+import { Comments } from '@/features/recipe/components/comments';
+import { RecipeSlugPageProvider } from '@/features/recipe/providers/recipe-slug-page-provider';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
+import { getTotalRecipeComments } from '@/features/recipe/queries/get-total-recipe-comments';
 import { isRecipeLiked } from '@/features/recipe/queries/is-recipe-liked';
 import { isRecipeSaved } from '@/features/recipe/queries/is-recipe-saved';
-import { getRecipeComments } from '@/features/recipe/queries/get-recipe-comments';
-import { RecipeSlugPageProvider } from '@/features/recipe/providers/recipe-slug-page-provider';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -61,10 +60,10 @@ export default async function Page({ params }: PageProps) {
     );
 
   const session = await auth.api.getSession({ headers: await headers() });
-  const [liked, saved, { comments, totalComments }] = await Promise.all([
+  const [liked, saved, totalComments] = await Promise.all([
     await isRecipeLiked(recipe.id, session?.user.id),
     await isRecipeSaved(recipe.id, session?.user.id),
-    await getRecipeComments(recipe.id, 3),
+    await getTotalRecipeComments(recipe.id),
   ]);
 
   return (
@@ -109,7 +108,7 @@ export default async function Page({ params }: PageProps) {
           height="600"
           width="960"
           sizes="100vw"
-          className="h-80 rounded-md object-cover sm:h-96"
+          className="h-80 rounded-md bg-gray-200 object-cover sm:h-96"
           format="webp"
           quality="auto"
         />
@@ -174,8 +173,7 @@ export default async function Page({ params }: PageProps) {
         </div>
       </div>
       <div className="mt-28">
-        <CommentForm />
-        <CommentList comments={comments} totalComments={totalComments} />
+        <Comments totalComments={totalComments} />
       </div>
     </RecipeSlugPageProvider>
   );

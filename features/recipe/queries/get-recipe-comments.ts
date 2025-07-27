@@ -2,36 +2,36 @@
 
 import { prisma } from '@/lib/prisma';
 
-export async function getRecipeComments(recipeId: string, take?: number) {
-  const [comments, totalComments] = await prisma.$transaction([
-    prisma.comment.findMany({
-      where: {
-        recipeId,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: take,
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        recipeId: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            defaultImage: true,
-          },
+type Options = {
+  take?: number;
+  skip?: number;
+};
+
+export async function getRecipeComments(recipeId: string, opts?: Options) {
+  const comments = await prisma.comment.findMany({
+    where: {
+      recipeId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+    take: opts?.take,
+    skip: opts?.skip,
+    select: {
+      id: true,
+      content: true,
+      createdAt: true,
+      recipeId: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          defaultImage: true,
         },
       },
-    }),
-    prisma.comment.count(),
-  ]);
+    },
+  });
 
-  return {
-    comments,
-    totalComments,
-  };
+  return comments;
 }
