@@ -96,9 +96,21 @@ function NavigationLinks() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup className="space-y-1">
-              <DropdownMenuItem className="text-base text-gray-600">Account</DropdownMenuItem>
-              <DropdownMenuItem className="text-base text-gray-600">Profile</DropdownMenuItem>
-              <DropdownMenuItem className="text-base text-gray-600">Settings</DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => router.push('/my-recipes')}
+                className="text-base text-gray-600">
+                My Recipes
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => router.push('/settings/profile')}
+                className="text-base text-gray-600">
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => router.push('/notifications')}
+                className="text-base text-gray-600">
+                Notifications
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup>
