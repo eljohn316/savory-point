@@ -17,7 +17,8 @@ import { List, ListItem } from '@/features/recipe/components/list';
 import { CommentsButton } from '@/features/recipe/components/comments-button';
 import { LikeButton } from '@/features/recipe/components/like-button';
 import { SaveButton } from '@/features/recipe/components/save-button';
-import { Comments } from '@/features/recipe/components/comments';
+import { CommentList } from '@/features/recipe/components/comment-list';
+import { CommentForm } from '@/features/recipe/components/comment-form';
 import { RecipeSlugPageProvider } from '@/features/recipe/providers/recipe-slug-page-provider';
 import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 import { getTotalRecipeComments } from '@/features/recipe/queries/get-total-recipe-comments';
@@ -172,8 +173,12 @@ export default async function Page({ params }: PageProps) {
           </List>
         </div>
       </div>
-      <div className="mt-28">
-        <Comments totalComments={totalComments} />
+      <div className="mt-28 space-y-14">
+        <CommentForm />
+        <div id="recipe-comments">
+          <p className="text-xl font-bold text-gray-700">Comments ({totalComments})</p>
+          <CommentList totalComments={totalComments} />
+        </div>
       </div>
     </RecipeSlugPageProvider>
   );

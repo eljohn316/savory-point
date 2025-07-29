@@ -16,10 +16,6 @@ export function CommentListSkeleton({ num = 1 }: { num?: number }) {
             <Skeleton className="h-4" />
             <Skeleton className="h-4" />
           </div>
-          <div className="mt-6 flex justify-between">
-            <Skeleton className="h-3.5 max-w-24 flex-auto" />
-            <Skeleton className="h-3.5 max-w-10 flex-auto" />
-          </div>
         </div>
       ))}
     </div>
