@@ -102,7 +102,7 @@ function NavigationLinks() {
                 My Recipes
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() => router.push('/settings/profile')}
+                onSelect={() => router.push('/settings')}
                 className="text-base text-gray-600">
                 Settings
               </DropdownMenuItem>
