@@ -19,12 +19,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { SignoutModal } from '@/features/auth/components/sign-out-modal';
 
 function NavigationLinks() {
+  const router = useRouter();
   const [showSignoutModal, setShowSignoutModal] = useState(false);
   const { isPending, data } = useSession();
-  const router = useRouter();
 
   if (isPending) return <Skeleton className="size-10 rounded-md sm:h-10 sm:w-full sm:max-w-80" />;
 
@@ -71,13 +72,23 @@ function NavigationLinks() {
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger className="overflow-hidden rounded-full outline-none focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2">
-            <Image
-              src={data.user.image ?? data.user.defaultImage}
-              alt={`${data.user.firstName}'s avatar`}
-              height={36}
-              width={36}
-              className="size-9"
-            />
+            {data.user.image ? (
+              <CloudinaryImage
+                src={data.user.image}
+                alt={`${data.user.firstName}'s profile photo`}
+                height={36}
+                width={36}
+                className="size-9 object-cover"
+              />
+            ) : (
+              <Image
+                src={data.user.image ?? data.user.defaultImage}
+                alt={`${data.user.firstName}'s avatar`}
+                height={36}
+                width={36}
+                className="size-9 object-cover"
+              />
+            )}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-52 p-2" sideOffset={8} hideWhenDetached>
             <DropdownMenuGroup>

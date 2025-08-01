@@ -9,3 +9,7 @@ cloudinary.config({
 export const upload = async (file: string, uploadOptions?: UploadApiOptions) => {
   return await cloudinary.uploader.upload(file, uploadOptions);
 };
+
+export const destroy = async (publicId: string) => {
+  return await cloudinary.uploader.destroy(publicId, { invalidate: true });
+};

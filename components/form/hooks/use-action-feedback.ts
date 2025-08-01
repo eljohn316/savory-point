@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { ActionState } from '../utils/action-state-utils';
+import { useEffect, useRef } from 'react';
+import { ActionState } from '@/components/form/utils/action-state-utils';
 
 type ActionOptions = {
   onSuccess?: (actionState: ActionState) => void;
@@ -11,7 +11,12 @@ export function useActionFeedback(
   actionState: ActionState,
   { onSuccess, onError, onFail }: ActionOptions,
 ) {
+  const prevActionState = useRef(actionState.timestamp);
+  const isUpdated = prevActionState.current !== actionState.timestamp;
+
   useEffect(() => {
+    if (!isUpdated) return;
+
     if (actionState.status === 'success' && onSuccess) {
       onSuccess(actionState);
     }
@@ -21,5 +26,7 @@ export function useActionFeedback(
     if (actionState.status === 'fail' && onFail) {
       onFail(actionState);
     }
-  }, [actionState, onError, onFail, onSuccess]);
+
+    prevActionState.current = actionState.timestamp;
+  }, [actionState, onError, onFail, onSuccess, isUpdated]);
 }
