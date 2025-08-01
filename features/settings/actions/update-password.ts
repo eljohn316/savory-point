@@ -26,7 +26,6 @@ export async function updatePassword(_actionState: ActionState, formData: FormDa
       headers: await headers(),
     });
   } catch (error) {
-    console.log(error);
     return fromErrorToActionState(error);
   }
 
