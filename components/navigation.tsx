@@ -108,7 +108,7 @@ function NavigationLinks() {
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuGroup className="space-y-1">
               <DropdownMenuItem
-                onSelect={() => router.push('/my-recipes')}
+                onSelect={() => router.push('/my-recipes/uploads')}
                 className="text-base text-gray-600">
                 My Recipes
               </DropdownMenuItem>
