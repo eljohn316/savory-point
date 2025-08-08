@@ -6,6 +6,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { formatDate } from '@/lib/helpers';
 import { CloudinaryImage } from '@/components/cloudinary-image';
+import { RecipeImage } from '@/components/recipe-image';
 import {
   Placeholder,
   PlaceholderTitle,
@@ -103,15 +104,13 @@ export default async function Page({ params }: PageProps) {
           <LikeButton liked={liked} />
           <SaveButton saved={saved} />
         </div>
-        <CloudinaryImage
+        <RecipeImage
           src={recipe.imagePublicId}
           alt={recipe.name}
           height="600"
           width="960"
           sizes="100vw"
           className="h-80 rounded-md bg-gray-200 object-cover sm:h-96"
-          format="webp"
-          quality="auto"
         />
         <p className="text-gray-700">{recipe.summary}</p>
         <div className="rounded-xl bg-green-50 p-6">

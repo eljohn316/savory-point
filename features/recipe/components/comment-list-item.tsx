@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { Comment } from '@/features/recipe/components/comment-list';
 import { DeleteCommentModal } from '@/features/recipe/components/delete-comment-modal';
 import { useUpdateComment } from '@/features/recipe/hooks/use-update-comment';
@@ -73,13 +74,23 @@ export function CommentListItem({ comment }: RecipeCommentProps) {
       />
       <div className="py-8 first:pt-0 last:pb-0">
         <div className="relative flex items-center gap-x-4">
-          <Image
-            src={comment.user.image ?? comment.user.defaultImage}
-            alt="User avatar"
-            height={40}
-            width={40}
-            className="size-9 rounded-full"
-          />
+          {comment.user.image ? (
+            <CloudinaryImage
+              src={comment.user.image}
+              alt="User avatar"
+              height={40}
+              width={40}
+              className="size-9 rounded-full"
+            />
+          ) : (
+            <Image
+              src={comment.user.defaultImage}
+              alt="User avatar"
+              height={40}
+              width={40}
+              className="size-9 rounded-full"
+            />
+          )}
           <div className="flex-auto space-y-1.5">
             <p className="text-sm leading-none font-medium text-gray-700">{comment.user.name}</p>
             <p className="text-sm leading-none text-gray-500">
