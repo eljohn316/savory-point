@@ -6,7 +6,7 @@ import { UploadedRecipeItem } from '@/features/my-recipes/components/uploaded-re
 import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
 
 export const metadata: Metadata = {
-  title: 'Uploads',
+  title: 'Uploaded recipes',
 };
 
 export default async function Page() {

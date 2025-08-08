@@ -1,7 +1,7 @@
 import { EllipsisVerticalIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function UploadedRecipeItemSkeleton() {
+export function RecipeItemSkeleton() {
   return (
     <div className="py-4 first:pt-0 last:pb-0 min-[24rem]:flex min-[24rem]:items-center min-[24rem]:gap-x-3 md:gap-x-4">
       <Skeleton className="h-40 w-full rounded-md min-[24rem]:size-12 min-[24rem]:shrink-0" />
