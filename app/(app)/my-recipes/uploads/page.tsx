@@ -1,7 +1,15 @@
+import Link from 'next/link';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { redirectToast } from '@/lib/actions';
+import {
+  Placeholder,
+  PlaceholderActions,
+  PlaceholderDescription,
+  PlaceholderTitle,
+} from '@/components/ui/placeholder';
+import { Button } from '@/components/ui/button';
 import { UploadedRecipeItem } from '@/features/my-recipes/components/uploaded-recipe-item';
 import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
 
@@ -15,6 +23,21 @@ export default async function Page() {
   if (!session) return redirectToast('/sign-in', 'Please sign in to continue');
 
   const recipes = await getUploadedRecipes(session.user.id);
+
+  if (recipes.length === 0)
+    return (
+      <Placeholder>
+        <PlaceholderTitle className="text-xl">No uploaded recipes yet</PlaceholderTitle>
+        <PlaceholderDescription>
+          Share your favorite recipes to the community now
+        </PlaceholderDescription>
+        <PlaceholderActions>
+          <Button asChild>
+            <Link href="/upload-recipe">Upload recipe</Link>
+          </Button>
+        </PlaceholderActions>
+      </Placeholder>
+    );
 
   return (
     <div className="divide-y divide-gray-200">
