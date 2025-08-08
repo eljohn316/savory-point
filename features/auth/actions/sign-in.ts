@@ -1,6 +1,7 @@
 'use server';
 
-import { redirect } from 'next/navigation';
+import { redirect, RedirectType } from 'next/navigation';
+import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { setCookie } from '@/lib/cookie';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
@@ -23,6 +24,12 @@ export async function signin(_actionState: ActionState, formData: FormData) {
     return fromErrorToActionState(error);
   }
 
+  const headerStore = await headers();
+  const referer = headerStore.get('referer') as string;
+  const url = new URL(referer);
+  const redirectSearchParam = url.searchParams.get('redirect');
+  const redirectPath = typeof redirectSearchParam === 'string' ? redirectSearchParam : '/';
+
   setCookie('toast', 'Successfully signed in');
-  redirect('/');
+  redirect(redirectPath, RedirectType.replace);
 }
