@@ -2,8 +2,8 @@
 
 import { prisma } from '@/lib/prisma';
 
-export async function getSavedRecipes(userId: string) {
-  return await prisma.savedRecipes.findMany({
+export async function getLikedRecipes(userId: string) {
+  return await prisma.likedRecipes.findMany({
     where: {
       userId,
     },

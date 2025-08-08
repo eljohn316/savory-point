@@ -14,12 +14,12 @@ export default async function Page() {
 
   if (!session) return redirectToast('/sign-in', 'Please sign in to continue');
 
-  const recipes = await getSavedRecipes(session.user.id);
+  const savedRecipes = await getSavedRecipes(session.user.id);
 
   return (
     <div className="divide-y divide-gray-200">
-      {recipes.map((recipe) => (
-        <SavedRecipeItem key={recipe.id} saved={recipe} />
+      {savedRecipes.map((saved) => (
+        <SavedRecipeItem key={saved.id} saved={saved} />
       ))}
     </div>
   );

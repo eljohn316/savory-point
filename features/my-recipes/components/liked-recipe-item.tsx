@@ -1,20 +1,20 @@
 import { EllipsisVerticalIcon } from 'lucide-react';
 import { formatDate } from '@/lib/helpers';
 import { RecipeImage } from '@/components/recipe-image';
-import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
+import { getSavedRecipes } from '@/features/my-recipes/queries/get-saved-recipes';
 
-type UploadedRecipeItemProps = {
-  recipe: Awaited<ReturnType<typeof getUploadedRecipes>>[number];
+type LikedRecipeItemProps = {
+  liked: Awaited<ReturnType<typeof getSavedRecipes>>[number];
 };
 
-export function UploadedRecipeItem({ recipe }: UploadedRecipeItemProps) {
+export function LikedRecipeItem({ liked }: LikedRecipeItemProps) {
   return (
     <div
-      key={recipe.id}
+      key={liked.id}
       className="py-4 first:pt-0 last:pb-0 min-[24rem]:flex min-[24rem]:items-center min-[24rem]:gap-x-3 md:gap-x-4">
       <RecipeImage
-        src={recipe.imagePublicId}
-        alt={recipe.name}
+        src={liked.recipe.imagePublicId}
+        alt={liked.recipe.name}
         height={160}
         width={160}
         crop="fill"
@@ -22,8 +22,8 @@ export function UploadedRecipeItem({ recipe }: UploadedRecipeItemProps) {
       />
       <div className="mt-6 flex items-start min-[24rem]:mt-0 min-[24rem]:flex-1 min-[24rem]:items-center">
         <div className="flex-1">
-          <h3 className="line-clamp-1 text-base text-gray-900">{recipe.name}</h3>
-          <p className="text-sm text-gray-500">uploaded on {formatDate(recipe.uploadedAt)}</p>
+          <h3 className="line-clamp-1 text-base text-gray-900">{liked.recipe.name}</h3>
+          <p className="text-sm text-gray-500">liked on {formatDate(liked.createdAt)}</p>
         </div>
         <button className="py-1 text-gray-400 hover:text-gray-500">
           <EllipsisVerticalIcon className="size-5 min-[24rem]:size-4" />

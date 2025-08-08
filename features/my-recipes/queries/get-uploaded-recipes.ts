@@ -13,5 +13,8 @@ export async function getUploadedRecipes(uploaderId: string) {
       name: true,
       uploadedAt: true,
     },
+    orderBy: {
+      uploadedAt: 'desc',
+    },
   });
 }
