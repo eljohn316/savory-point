@@ -1,35 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
 import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { redirectToast } from '@/lib/actions';
+import { useSession } from '@/lib/auth-client';
 import { successToast } from '@/components/ui/sonner';
 import { likeRecipe } from '@/features/recipe/actions/like-recipe';
 import { unLikeRecipe } from '@/features/recipe/actions/unlike-recipe';
-import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type LikeButtonProps = {
   liked: boolean;
+  recipeId: string;
 };
 
-export function LikeButton({ liked }: LikeButtonProps) {
-  const { userId, recipeId } = useRecipeSlugContext();
-  const { slug } = useParams<{ slug: string }>();
+export function LikeButton({ liked, recipeId }: LikeButtonProps) {
   const [isLiked, setIsLiked] = useState(liked);
+  const { data: session } = useSession();
+  const authRedirect = useAuthRedirect();
 
   async function handleLike() {
-    if (!userId) {
-      await redirectToast('/sign-in', 'You need to sign in first!');
-      return;
-    }
+    if (!session) return await authRedirect();
+
     const newValue = !isLiked;
-    setIsLiked(newValue);
-    successToast(newValue ? 'Added to liked recipes' : 'Removed from liked recipes');
-    newValue
-      ? await likeRecipe(slug, { userId, recipeId })
-      : await unLikeRecipe(slug, { userId, recipeId });
+
+    if (newValue) {
+      setIsLiked(newValue);
+      successToast('Added to liked recipes');
+
+      await likeRecipe(recipeId, session.user.id);
+    } else {
+      setIsLiked(newValue);
+      successToast('Removed from liked recipes');
+
+      await unLikeRecipe(recipeId, session.user.id);
+    }
   }
 
   return (

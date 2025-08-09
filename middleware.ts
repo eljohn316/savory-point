@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionCookie } from 'better-auth/cookies';
+import { setCookie } from '@/lib/cookie';
 
 const protectedRoutes = [
   '/upload-recipe',
@@ -27,6 +28,7 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute && !sessionCookie) {
     const redirectURL = new URL('/sign-in', request.nextUrl);
     redirectURL.searchParams.set('redirect', path);
+    await setCookie('toast', 'You need to sign to continue');
     return NextResponse.redirect(redirectURL);
   }
 

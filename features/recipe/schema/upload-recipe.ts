@@ -69,6 +69,7 @@ export const uploadRecipeClientSchema = baseSchema.extend({
 
 export const uploadRecipeServerSchema = baseSchema
   .extend({
+    uploaderId: z.string(),
     image: z.string().min(1, { message: 'Image is required' }),
   })
   .refine(async (val) => !(await getRecipeByName(val.name)), {

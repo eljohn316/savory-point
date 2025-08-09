@@ -4,7 +4,6 @@ import Image from 'next/image';
 import React, { startTransition, useActionState, useState } from 'react';
 import { CameraIcon } from 'lucide-react';
 import { useSession, type User } from '@/lib/auth-client';
-import { redirectToast } from '@/lib/actions';
 import { CloudinaryImage } from '@/components/cloudinary-image';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +18,7 @@ import { errorToast, successToast } from '@/components/ui/sonner';
 import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
 import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
 import { removeProfilePhoto, updateProfilePhoto } from '@/features/settings/actions/update-profile';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type UpdateUserPhotoProps = {
   user: User;
@@ -75,6 +75,7 @@ type UploadPhotoDialogProps = React.ComponentProps<typeof Dialog> & {
 };
 
 function UploadPhotoDialog({ user, open, onOpenChange, ...props }: UploadPhotoDialogProps) {
+  const authRedirect = useAuthRedirect();
   const [preview, setPreview] = useState<string | null>(null);
   const [actionState, action, isPending] = useActionState(updateProfilePhoto, INITIAL_ACTION_STATE);
   const { data: session, refetch } = useSession();
@@ -109,11 +110,11 @@ function UploadPhotoDialog({ user, open, onOpenChange, ...props }: UploadPhotoDi
     });
   }
 
-  function handleUpdateUserPhoto(e: React.FormEvent<HTMLFormElement>) {
+  async function handleUpdateUserPhoto(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!preview) return;
-    if (!session) return redirectToast('/sign-in', 'You need to sign in to continue');
+    if (!session) return await authRedirect();
 
     const formData = new FormData();
     formData.set('photo', preview);
@@ -188,6 +189,7 @@ type RemovePhotoDialogProps = React.ComponentProps<typeof Dialog> & {
 };
 
 function RemovePhotoDialog({ user, open, onOpenChange, ...props }: RemovePhotoDialogProps) {
+  const authRedirect = useAuthRedirect();
   const [actionState, action, isPending] = useActionState(removeProfilePhoto, INITIAL_ACTION_STATE);
   const { data: session, refetch } = useSession();
 
@@ -203,10 +205,10 @@ function RemovePhotoDialog({ user, open, onOpenChange, ...props }: RemovePhotoDi
     },
   });
 
-  function handleRemoveUserPhoto(e: React.FormEvent<HTMLFormElement>) {
+  async function handleRemoveUserPhoto(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'You need to sign in to continue');
+    if (!session) return await authRedirect();
 
     const formData = new FormData();
     if (user.image) formData.set('image', user.image);

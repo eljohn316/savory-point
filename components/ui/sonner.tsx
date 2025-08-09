@@ -1,9 +1,12 @@
 'use client';
 
+import * as React from 'react';
 import { CircleCheckIcon, CircleXIcon, XIcon } from 'lucide-react';
 import { toast as sonnerToast, Toaster as Sonner } from 'sonner';
 
-export const Toaster = Sonner;
+export function Toaster(props: React.ComponentProps<typeof Sonner>) {
+  return <Sonner {...props} />;
+}
 
 type SuccessToastProps = {
   id: string | number;

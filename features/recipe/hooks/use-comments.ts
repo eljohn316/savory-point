@@ -1,16 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
 import { getRecipeComments } from '@/features/recipe/queries/get-recipe-comments';
 
 type useCommentProps = {
   totalComments: number;
+  recipeId: string;
 };
 
 export const COMMENTS_PER_PAGE = 4;
 
-export function useComments({ totalComments }: useCommentProps) {
-  const { recipeId } = useRecipeSlugContext();
+export function useComments({ totalComments, recipeId }: useCommentProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = useMemo(() => Math.ceil(totalComments / COMMENTS_PER_PAGE), [totalComments]);
 

@@ -3,7 +3,6 @@
 import { startTransition, useActionState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { redirectToast } from '@/lib/actions';
 import { useSession } from '@/lib/auth-client';
 import { Form } from '@/components/form/form';
 import { FormField } from '@/components/form/form-field';
@@ -18,12 +17,14 @@ import { errorToast, successToast } from '@/components/ui/sonner';
 import { updateEmailSchema, type UpdateEmailValues } from '@/features/settings/schema/update-email';
 import { updateEmail } from '@/features/settings/actions/update-email';
 import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type UpdateEmailFormProps = {
   email: string;
 };
 
 export function UpdateEmailForm({ email }: UpdateEmailFormProps) {
+  const authRedirect = useAuthRedirect();
   const form = useForm<UpdateEmailValues>({
     resolver: zodResolver(updateEmailSchema),
     defaultValues: {
@@ -42,10 +43,10 @@ export function UpdateEmailForm({ email }: UpdateEmailFormProps) {
     },
   });
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'You need to sign in to continue');
+    if (!session) return await authRedirect();
 
     form.handleSubmit((data) => {
       startTransition(() => {

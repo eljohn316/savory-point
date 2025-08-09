@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { CircleAlertIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from '@/lib/auth-client';
-import { redirectToast } from '@/lib/actions';
 import { Form } from '@/components/form/form';
 import { FormField } from '@/components/form/form-field';
 import { FormItem } from '@/components/form/form-item';
@@ -23,8 +22,10 @@ import {
   type UpdatePasswordValues,
 } from '@/features/settings/schema/update-password';
 import { updatePassword } from '@/features/settings/actions/update-password';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 export function UpdatePasswordForm() {
+  const authRedirect = useAuthRedirect();
   const form = useForm<UpdatePasswordValues>({
     resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
@@ -51,10 +52,10 @@ export function UpdatePasswordForm() {
     },
   });
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'You need to sign in to continue');
+    if (!session) return await authRedirect();
 
     form.handleSubmit((data) => {
       setAlert(null);

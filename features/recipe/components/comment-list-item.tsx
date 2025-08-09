@@ -5,7 +5,6 @@ import React, { useRef, useState } from 'react';
 import { EllipsisVerticalIcon } from 'lucide-react';
 import { formatDateFromNow } from '@/lib/helpers';
 import { useSession } from '@/lib/auth-client';
-import { redirectToast } from '@/lib/actions';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,6 +19,7 @@ import { Comment } from '@/features/recipe/components/comment-list';
 import { DeleteCommentModal } from '@/features/recipe/components/delete-comment-modal';
 import { useUpdateComment } from '@/features/recipe/hooks/use-update-comment';
 import { useDeleteComment } from '@/features/recipe/hooks/use-delete-comment';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type RecipeCommentProps = {
   comment: Comment;
@@ -28,6 +28,7 @@ type RecipeCommentProps = {
 export function CommentListItem({ comment }: RecipeCommentProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const authRedirect = useAuthRedirect();
   const [toggleEditForm, setToggleEditForm] = useState(false);
   const [toggleDeleteModal, setToggleDeleteModal] = useState(false);
   const { data: session } = useSession();
@@ -45,10 +46,10 @@ export function CommentListItem({ comment }: RecipeCommentProps) {
     }
   }
 
-  function handleUpdateComment(e: React.FormEvent<HTMLFormElement>) {
+  async function handleUpdateComment(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'Sign in to continue');
+    if (!session) return await authRedirect();
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -59,8 +60,8 @@ export function CommentListItem({ comment }: RecipeCommentProps) {
     });
   }
 
-  function handleDeleteComment() {
-    if (!session) return redirectToast('/sign-in', 'Sign in to continue');
+  async function handleDeleteComment() {
+    if (!session) return await authRedirect();
     deleteComment(comment.id);
   }
 

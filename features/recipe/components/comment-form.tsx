@@ -1,22 +1,25 @@
 'use client';
 
 import * as React from 'react';
-import { redirectToast } from '@/lib/actions';
 import { useSession } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
 import { useAddComment } from '@/features/recipe/hooks/use-add-comment';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
-export function CommentForm() {
-  const { recipeId } = useRecipeSlugContext();
+type CommentFormProps = {
+  recipeId: string;
+};
+
+export function CommentForm({ recipeId }: CommentFormProps) {
   const { data: session } = useSession();
   const { isPending, mutate } = useAddComment();
+  const authRedirect = useAuthRedirect();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'You need to sign in first');
+    if (!session) return await authRedirect();
 
     const form = e.currentTarget;
     const formData = new FormData(form);

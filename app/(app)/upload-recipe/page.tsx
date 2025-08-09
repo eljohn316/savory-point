@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { UserProvider } from '@/components/user-provider';
 import { UploadRecipeForm } from '@/features/recipe/components/upload-recipe-form';
+import { authRedirect } from '@/features/auth/actions/auth-redirect';
 
 export const metadata: Metadata = {
   title: 'Upload recipe',
@@ -12,13 +11,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) {
-    redirect('/sign-in');
-  }
+  if (!session) return await authRedirect('/upload-recipe');
 
-  return (
-    <UserProvider user={session.user}>
-      <UploadRecipeForm />
-    </UserProvider>
-  );
+  return <UploadRecipeForm />;
 }

@@ -1,36 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
 import { BookmarkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { redirectToast } from '@/lib/actions';
+import { useSession } from '@/lib/auth-client';
 import { successToast } from '@/components/ui/sonner';
 import { saveRecipe } from '@/features/recipe/actions/save-recipe';
 import { unsaveRecipe } from '@/features/recipe/actions/unsave-recipe';
-import { useRecipeSlugContext } from '@/features/recipe/providers/recipe-slug-page-provider';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type SaveButtonProps = {
   saved: boolean;
+  recipeId: string;
 };
 
-export function SaveButton({ saved }: SaveButtonProps) {
-  const { userId, recipeId } = useRecipeSlugContext();
-  const { slug } = useParams<{ slug: string }>();
-
+export function SaveButton({ saved, recipeId }: SaveButtonProps) {
   const [isSaved, setIsSaved] = useState(saved);
+  const { data: session } = useSession();
+  const authRedirect = useAuthRedirect();
 
   async function handleSave() {
-    if (!userId) {
-      await redirectToast('/sign-in', 'You need to sign in first!');
-      return;
-    }
+    if (!session) return await authRedirect();
+
     const newValue = !isSaved;
-    setIsSaved(newValue);
-    successToast(newValue ? 'Added to saved recipes' : 'Removed from saved recipes');
-    newValue
-      ? await saveRecipe(slug, { userId, recipeId })
-      : await unsaveRecipe(slug, { userId, recipeId });
+
+    if (newValue) {
+      setIsSaved(newValue);
+      successToast('Added to saved recipes');
+
+      await saveRecipe(recipeId, session.user.id);
+    } else {
+      setIsSaved(newValue);
+      successToast('Removed from saved recipes');
+
+      await unsaveRecipe(recipeId, session.user.id);
+    }
   }
 
   return (

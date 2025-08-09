@@ -10,9 +10,10 @@ export type Comment = Awaited<ReturnType<typeof getRecipeComments>>[number];
 
 type CommentsProps = {
   totalComments: number;
+  recipeId: string;
 };
 
-export function CommentList({ totalComments }: CommentsProps) {
+export function CommentList({ totalComments, recipeId }: CommentsProps) {
   const {
     isPending,
     data: comments,
@@ -22,6 +23,7 @@ export function CommentList({ totalComments }: CommentsProps) {
     handleNextPage,
   } = useComments({
     totalComments,
+    recipeId,
   });
 
   if (isPending) return <CommentListSkeleton num={4} />;

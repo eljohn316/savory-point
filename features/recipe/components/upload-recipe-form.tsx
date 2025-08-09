@@ -5,6 +5,8 @@ import { ChangeEvent, startTransition, useActionState, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { CameraIcon, ImageIcon, XIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { cn } from '@/lib/utils';
+import { useSession } from '@/lib/auth-client';
 import { Form } from '@/components/form/form';
 import { FormControl } from '@/components/form/form-control';
 import { FormField } from '@/components/form/form-field';
@@ -20,13 +22,12 @@ import { NumInput, NumInputField } from '@/components/ui/num-input';
 import { Button } from '@/components/ui/button';
 import { errorToast } from '@/components/ui/sonner';
 import { FieldListWrapper } from '@/components/field-list-wrapper';
-import { useUser } from '@/components/user-provider';
 import { uploadRecipe } from '@/features/recipe/actions/upload-recipe';
 import {
   uploadRecipeClientSchema,
   UploadRecipeClientValues,
 } from '@/features/recipe/schema/upload-recipe';
-import { cn } from '@/lib/utils';
+import { authRedirect } from '@/features/auth/actions/auth-redirect';
 
 export function UploadRecipeForm() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -72,11 +73,8 @@ export function UploadRecipeForm() {
     name: 'nutrition',
   });
 
-  const { user } = useUser();
-  const [actionState, action, isPending] = useActionState(
-    uploadRecipe.bind(null, user.id),
-    INITIAL_ACTION_STATE,
-  );
+  const { data: session } = useSession();
+  const [actionState, action, isPending] = useActionState(uploadRecipe, INITIAL_ACTION_STATE);
 
   useActionFeedback(actionState, {
     onFail: ({ fieldErrors }) => {
@@ -87,8 +85,11 @@ export function UploadRecipeForm() {
     },
   });
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (!session) return await authRedirect('/upload-recipe');
+
     form.handleSubmit((data) => {
       startTransition(() => {
         const formData = new FormData();
@@ -102,7 +103,7 @@ export function UploadRecipeForm() {
         formData.append('instructions', JSON.stringify(data.instructions));
         formData.append('nutrition', JSON.stringify(data.nutrition));
         formData.append('image', preview as string);
-        formData.append('uploaderId', user.id);
+        formData.append('uploaderId', session.user.id);
         action(formData);
       });
     })(e);

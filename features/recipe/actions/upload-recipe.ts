@@ -10,7 +10,6 @@ import { ActionState, fromErrorToActionState } from '@/components/form/utils/act
 import { uploadRecipeServerSchema } from '@/features/recipe/schema/upload-recipe';
 
 export async function uploadRecipe(
-  uploaderId: string,
   _actionState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
@@ -26,6 +25,7 @@ export async function uploadRecipe(
       instructions,
       nutrition,
       image,
+      uploaderId,
     } = await uploadRecipeServerSchema.parseAsync({
       name: formData.get('name'),
       summary: formData.get('summary'),
@@ -37,6 +37,7 @@ export async function uploadRecipe(
       instructions: JSON.parse(formData.get('instructions') as string),
       nutrition: JSON.parse(formData.get('nutrition') as string),
       image: formData.get('image'),
+      uploaderId: formData.get('uploaderId'),
     });
 
     const slug = createSlug(name);

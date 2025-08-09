@@ -2,7 +2,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { redirectToast } from '@/lib/actions';
 import {
   Placeholder,
   PlaceholderActions,
@@ -12,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { UploadedRecipeItem } from '@/features/my-recipes/components/uploaded-recipe-item';
 import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
+import { authRedirect } from '@/features/auth/actions/auth-redirect';
 
 export const metadata: Metadata = {
   title: 'Uploaded recipes',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) return redirectToast('/sign-in', 'Please sign in to continue');
+  if (!session) return await authRedirect('/my-recipes/uploads');
 
   const recipes = await getUploadedRecipes(session.user.id);
 

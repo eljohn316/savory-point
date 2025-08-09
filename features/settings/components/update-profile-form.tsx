@@ -2,7 +2,6 @@
 
 import { startTransition, useActionState } from 'react';
 import { useForm } from 'react-hook-form';
-import { redirectToast } from '@/lib/actions';
 import { useSession, type User } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/form/form';
@@ -24,13 +23,14 @@ import {
 } from '@/features/settings/schema/update-profile';
 import { UpdateUserPhoto } from '@/features/settings/components/update-user-photo';
 import { updateProfile } from '@/features/settings/actions/update-profile';
+import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect';
 
 type UpdateProfileFormProps = {
   user: User;
 };
 
 export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
-  const { data: session, refetch } = useSession();
+  const authRedirect = useAuthRedirect();
   const form = useForm<UpdateProfileValues>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
@@ -39,6 +39,8 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
       bio: user.bio ?? '',
     },
   });
+
+  const { data: session, refetch } = useSession();
   const [actionState, action, isPending] = useActionState(updateProfile, INITIAL_ACTION_STATE);
 
   useActionFeedback(actionState, {
@@ -54,10 +56,10 @@ export function UpdateProfileForm({ user }: UpdateProfileFormProps) {
     },
   });
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (!session) return redirectToast('/sign-in', 'You need to sign in to continue');
+    if (!session) return await authRedirect();
 
     form.handleSubmit((data) => {
       startTransition(() => {
