@@ -32,9 +32,7 @@ export function SigninForm() {
   const [actionState, action, isPending] = useActionState(signin, INITIAL_ACTION_STATE);
 
   useActionFeedback(actionState, {
-    onError: ({ message }) => {
-      setAlert(message);
-    },
+    onError: ({ message }) => setAlert(message),
   });
 
   function handleSignin(e: FormEvent<HTMLFormElement>) {

@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import {
   Placeholder,
   PlaceholderActions,
@@ -12,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { LikedRecipeItem } from '@/features/my-recipes/components/liked-recipe-item';
 import { getLikedRecipes } from '@/features/my-recipes/queries/get-liked-recipes';
 import { authRedirect } from '@/features/auth/actions/auth-redirect';
+import { getAuthSession } from '@/features/auth/queries/get-auth-session';
 
 export const metadata: Metadata = {
   title: 'Liked recipes',
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getAuthSession();
 
   if (!session) return await authRedirect('/my-recipes/liked');
 

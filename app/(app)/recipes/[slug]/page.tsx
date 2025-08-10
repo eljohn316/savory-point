@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
+
 import { ArrowLeftIcon } from 'lucide-react';
-import { auth } from '@/lib/auth';
 import { formatDate } from '@/lib/helpers';
 import { CloudinaryImage } from '@/components/cloudinary-image';
 import { RecipeImage } from '@/components/recipe-image';
@@ -24,6 +23,7 @@ import { getRecipeBySlug } from '@/features/recipe/queries/get-recipe-by-slug';
 import { getTotalRecipeComments } from '@/features/recipe/queries/get-total-recipe-comments';
 import { isRecipeLiked } from '@/features/recipe/queries/is-recipe-liked';
 import { isRecipeSaved } from '@/features/recipe/queries/is-recipe-saved';
+import { getAuthSession } from '@/features/auth/queries/get-auth-session';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -60,7 +60,7 @@ export default async function Page({ params }: PageProps) {
       </Placeholder>
     );
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getAuthSession();
   const [liked, saved, totalComments] = await Promise.all([
     await isRecipeLiked(recipe.id, session?.user.id),
     await isRecipeSaved(recipe.id, session?.user.id),

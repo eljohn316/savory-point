@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import {
   Placeholder,
   PlaceholderActions,
@@ -12,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { SavedRecipeItem } from '@/features/my-recipes/components/saved-recipe-item';
 import { getSavedRecipes } from '@/features/my-recipes/queries/get-saved-recipes';
 import { authRedirect } from '@/features/auth/actions/auth-redirect';
+import { getAuthSession } from '@/features/auth/queries/get-auth-session';
 
 export const metadata: Metadata = {
   title: 'Saved recipes',
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getAuthSession();
 
   if (!session) return await authRedirect('/my-recipes/saved');
 

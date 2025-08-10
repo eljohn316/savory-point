@@ -2,19 +2,25 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { deleteCookieByKey, getCookieByKey } from '@/lib/cookie';
-import { successToast } from '@/components/ui/sonner';
+import { getToastCookie, deleteToastCookie } from '@/lib/toast-cookies';
+import { errorToast, successToast } from '@/components/ui/sonner';
 
 export function RedirectToast() {
   const pathname = usePathname();
 
   useEffect(() => {
     const showCookieToast = async () => {
-      const toast = await getCookieByKey('toast');
-      if (toast) {
-        successToast(toast);
+      const toast = await getToastCookie();
+
+      if (!toast) return;
+
+      if (toast.type === 'success') {
+        successToast(toast.message);
+      } else {
+        errorToast(toast.message);
       }
-      await deleteCookieByKey('toast');
+
+      await deleteToastCookie();
     };
 
     showCookieToast();

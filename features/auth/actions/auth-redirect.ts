@@ -1,9 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { setCookie } from '@/lib/cookie';
+import { setToastCookie } from '@/lib/toast-cookies';
 
 export async function authRedirect(redirectToPath: string) {
-  await setCookie('toast', 'You need to sign in first!');
+  await setToastCookie({ type: 'error', message: 'Please sign in to continue' });
   redirect(`/sign-in?redirect=${redirectToPath}`);
 }

@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import {
   Placeholder,
   PlaceholderActions,
@@ -12,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { UploadedRecipeItem } from '@/features/my-recipes/components/uploaded-recipe-item';
 import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
 import { authRedirect } from '@/features/auth/actions/auth-redirect';
+import { getAuthSession } from '@/features/auth/queries/get-auth-session';
 
 export const metadata: Metadata = {
   title: 'Uploaded recipes',
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getAuthSession();
 
   if (!session) return await authRedirect('/my-recipes/uploads');
 

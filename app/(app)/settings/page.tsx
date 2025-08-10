@@ -1,18 +1,17 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
 import { UpdateEmailForm } from '@/features/settings/components/update-email-form';
 import { UpdatePasswordForm } from '@/features/settings/components/update-password-form';
 import { UpdateProfileForm } from '@/features/settings/components/update-profile-form';
 import { AccountSettings } from '@/features/settings/components/account-settings';
 import { authRedirect } from '@/features/auth/actions/auth-redirect';
+import { getAuthSession } from '@/features/auth/queries/get-auth-session';
 
 export const metadata: Metadata = {
   title: 'Settings',
 };
 
 export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getAuthSession();
 
   if (!session) return await authRedirect('/settings');
 

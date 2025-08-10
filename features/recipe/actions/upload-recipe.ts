@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { createSlug } from '@/lib/utils';
-import { setCookie } from '@/lib/cookie';
+import { setToastCookie } from '@/lib/toast-cookies';
 import { upload } from '@/lib/cloudinary';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
 import { uploadRecipeServerSchema } from '@/features/recipe/schema/upload-recipe';
@@ -65,7 +65,7 @@ export async function uploadRecipe(
     return fromErrorToActionState(error);
   }
 
-  await setCookie('toast', 'Recipe successfully uploaded');
+  await setToastCookie({ type: 'success', message: 'Recipe successfully uploaded' });
   revalidatePath('/');
   redirect('/');
 }

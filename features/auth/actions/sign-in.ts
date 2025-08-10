@@ -3,7 +3,7 @@
 import { redirect, RedirectType } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { setCookie } from '@/lib/cookie';
+import { setToastCookie } from '@/lib/toast-cookies';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
 import { signinSchema } from '@/features/auth/schema/sign-in';
 
@@ -30,6 +30,6 @@ export async function signin(_actionState: ActionState, formData: FormData) {
   const redirectSearchParam = url.searchParams.get('redirect');
   const redirectPath = typeof redirectSearchParam === 'string' ? redirectSearchParam : '/';
 
-  setCookie('toast', 'Successfully signed in');
+  await setToastCookie({ type: 'success', message: 'Successfully signed in' });
   redirect(redirectPath, RedirectType.replace);
 }

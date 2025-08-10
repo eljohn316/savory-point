@@ -6,7 +6,7 @@ import { generateDefaultUserAvatar } from '@/lib/utils';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
 import { signupSchema as schema } from '@/features/auth/schema/sign-up';
 import { getUserbyEmail } from '@/features/auth/queries/get-user-by-email';
-import { setCookie } from '@/lib/cookie';
+import { setToastCookie } from '@/lib/toast-cookies';
 
 const signupSchema = schema.superRefine(async (val, ctx) => {
   if (await getUserbyEmail(val.email)) {
@@ -42,6 +42,6 @@ export async function signup(_actionState: ActionState, formData: FormData) {
     return fromErrorToActionState(error);
   }
 
-  await setCookie('toast', 'Account successfully created');
+  await setToastCookie({ type: 'success', message: 'Account successfully created' });
   redirect('/');
 }

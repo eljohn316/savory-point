@@ -1,4 +1,5 @@
 import { ZodError } from 'zod';
+import { APIError } from 'better-auth/api';
 
 export type ActionState = {
   status: 'success' | 'error' | 'fail' | 'idle';
@@ -20,6 +21,13 @@ export function fromErrorToActionState(error: unknown): ActionState {
       message: '',
       status: 'fail',
       fieldErrors: error.flatten().fieldErrors,
+      timestamp: Date.now(),
+    };
+  } else if (error instanceof APIError) {
+    return {
+      message: error.message,
+      status: 'error',
+      fieldErrors: {},
       timestamp: Date.now(),
     };
   } else if (error instanceof Error) {
