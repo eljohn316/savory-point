@@ -1,8 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-
-const COOKIE_STORE_KEY = 'toast-message';
+import { TOAST_COOKIE_KEY } from '@/lib/constants';
 
 type CookieToast = {
   type: 'success' | 'error';
@@ -11,7 +10,7 @@ type CookieToast = {
 
 export async function getToastCookie(): Promise<CookieToast | undefined> {
   const cookieStore = await cookies();
-  const existingCookie = cookieStore.get(COOKIE_STORE_KEY);
+  const existingCookie = cookieStore.get(TOAST_COOKIE_KEY);
 
   if (!existingCookie) return;
 
@@ -20,10 +19,10 @@ export async function getToastCookie(): Promise<CookieToast | undefined> {
 
 export async function setToastCookie({ type, message }: CookieToast) {
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_STORE_KEY, JSON.stringify({ type, message }));
+  cookieStore.set(TOAST_COOKIE_KEY, JSON.stringify({ type, message }));
 }
 
 export async function deleteToastCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_STORE_KEY);
+  cookieStore.delete(TOAST_COOKIE_KEY);
 }
