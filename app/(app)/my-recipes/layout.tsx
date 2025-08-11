@@ -21,9 +21,10 @@ const tabs = [
 export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const isRoot = tabs.map(({ href }) => href).includes(pathname);
 
   return (
-    <Container className="max-w-4xl">
+    <Container className={cn(isRoot ? 'max-w-4xl' : 'max-w-xl')}>
       <div className="space-y-6">
         <button
           type="button"
@@ -32,33 +33,43 @@ export default function Layout({ children }: LayoutProps) {
           <ChevronLeftIcon className="size-4" />
           Return
         </button>
-        <div className="relative border-b border-gray-200 pb-0">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl leading-6 font-semibold text-gray-900">My Recipes</h3>
-            <Button asChild>
-              <Link href="/upload-recipe">Upload</Link>
-            </Button>
-          </div>
-          <div className="mt-8">
-            <nav className="-mb-px flex space-x-8">
-              {tabs.map((tab) => (
-                <Link
-                  key={tab.name}
-                  href={tab.href}
-                  className={cn(
-                    tab.href === pathname
-                      ? 'border-emerald-700 text-emerald-700'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                    'border-b-2 px-1 pb-4 text-sm font-medium whitespace-nowrap',
-                  )}>
-                  {tab.name}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
+        {isRoot && <Header pathname={pathname} />}
       </div>
-      <div className="mt-10">{children}</div>
+      <div className={cn(isRoot ? 'mt-10' : 'mt-8')}>{children}</div>
     </Container>
+  );
+}
+
+type HeaderProps = {
+  pathname: string;
+};
+
+function Header({ pathname }: HeaderProps) {
+  return (
+    <div className="relative border-b border-gray-200 pb-0">
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl leading-6 font-semibold text-gray-900">My Recipes</h3>
+        <Button asChild>
+          <Link href="/upload-recipe">Upload</Link>
+        </Button>
+      </div>
+      <div className="mt-8">
+        <nav className="-mb-px flex space-x-8">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.name}
+              href={tab.href}
+              className={cn(
+                tab.href === pathname
+                  ? 'border-emerald-700 text-emerald-700'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                'border-b-2 px-1 pb-4 text-sm font-medium whitespace-nowrap',
+              )}>
+              {tab.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </div>
   );
 }
