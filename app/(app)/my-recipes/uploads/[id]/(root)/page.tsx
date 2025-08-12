@@ -29,7 +29,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <>
-      <UploadRecipeHeader>{recipe.name}</UploadRecipeHeader>
+      <UploadRecipeHeader recipeId={recipe.id}>{recipe.name}</UploadRecipeHeader>
       <DetailItem
         label="Photo"
         className="mt-8"
