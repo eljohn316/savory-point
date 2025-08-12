@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { RecipeImage } from '@/components/recipe-image';
+import { notFound } from 'next/navigation';
 import { formatDate } from '@/lib/helpers';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { Ingredient, Instruction, Nutrition } from '@/features/recipe/types';
 import { getUploadedRecipe } from '@/features/my-recipes/queries/get-uploaded-recipe';
 import { DetailItem } from '@/features/my-recipes/components/detail-item';
@@ -34,7 +34,7 @@ export default async function Page({ params }: PageProps) {
         label="Photo"
         className="mt-8"
         content={
-          <RecipeImage
+          <CloudinaryImage
             src={recipe.imagePublicId}
             alt={recipe.name}
             height="600"

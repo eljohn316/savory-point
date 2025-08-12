@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { formatDate } from '@/lib/helpers';
-import { RecipeImage } from '@/components/recipe-image';
 import { Button } from '@/components/ui/button';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { getUploadedRecipes } from '@/features/my-recipes/queries/get-uploaded-recipes';
 
 type UploadedRecipeItemProps = {
@@ -13,13 +13,15 @@ export function UploadedRecipeItem({ recipe }: UploadedRecipeItemProps) {
     <div
       key={recipe.id}
       className="py-6 first:pt-0 last:pb-0 sm:flex sm:items-center sm:gap-x-3 sm:py-4 md:gap-x-4">
-      <RecipeImage
+      <CloudinaryImage
         src={recipe.imagePublicId}
         alt={recipe.name}
         height={160}
         width={160}
         crop="fill"
-        className="h-40 w-full rounded-md object-cover sm:size-12 sm:shrink-0"
+        format="webp"
+        quality="auto"
+        className="h-40 w-full rounded-md bg-gray-200 object-cover sm:size-12 sm:shrink-0"
       />
       <div className="mt-6 sm:mt-0 sm:flex sm:flex-1 sm:items-center">
         <div className="flex-1">

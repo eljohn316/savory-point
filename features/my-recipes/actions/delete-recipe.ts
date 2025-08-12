@@ -11,6 +11,7 @@ export async function deleteRecipe(id: string) {
     where: { id },
   });
   await destroy(recipe.imagePublicId);
+  revalidatePath('/');
   revalidatePath('/my-recipes/uploads');
   await setToastCookie({ type: 'success', message: 'Recipe successfully deleted!' });
   redirect('/my-recipes/uploads', RedirectType.replace);

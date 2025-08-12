@@ -1,11 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-
 import { ArrowLeftIcon } from 'lucide-react';
 import { formatDate } from '@/lib/helpers';
 import { CloudinaryImage } from '@/components/cloudinary-image';
-import { RecipeImage } from '@/components/recipe-image';
 import {
   Placeholder,
   PlaceholderTitle,
@@ -78,6 +76,8 @@ export default async function Page({ params }: PageProps) {
               alt={recipe.uploader.name}
               height={40}
               width={40}
+              format="webp"
+              quality="auto"
               className="size-8 flex-none rounded-full"
             />
           ) : (
@@ -103,12 +103,14 @@ export default async function Page({ params }: PageProps) {
           <LikeButton liked={liked} recipeId={recipe.id} />
           <SaveButton saved={saved} recipeId={recipe.id} />
         </div>
-        <RecipeImage
+        <CloudinaryImage
           src={recipe.imagePublicId}
           alt={recipe.name}
           height="600"
           width="960"
           sizes="100vw"
+          format="webp"
+          quality="auto"
           className="h-80 rounded-md bg-gray-200 object-cover sm:h-96"
         />
         <p className="text-gray-700">{recipe.summary}</p>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { RecipeImage } from '@/components/recipe-image';
+import { CloudinaryImage } from '@/components/cloudinary-image';
 import { getUploadedRecipe } from '@/features/my-recipes/queries/get-uploaded-recipe';
 import { UpdateRecipeDetailsForm } from '@/features/my-recipes/components/update-recipe-details-form';
 import { UpdateRecipeIngredientsForm } from '@/features/my-recipes/components/update-recipe-ingredients-form';
@@ -29,13 +29,13 @@ export default async function Page({ params }: PageProps) {
       <UpdateRecipeInstructionsForm instructions={recipe.instructions as Instruction[]} />
       <UpdateRecipeImageForm
         currentImage={
-          <RecipeImage
+          <CloudinaryImage
             src={recipe.imagePublicId}
             alt={recipe.name}
             height="600"
             width="960"
             sizes="100vw"
-            className="h-full rounded-md"
+            className="h-full rounded-md bg-gray-200"
           />
         }
       />
