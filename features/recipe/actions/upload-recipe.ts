@@ -40,11 +40,14 @@ export async function uploadRecipe(
       uploaderId: formData.get('uploaderId'),
     });
 
-    const slug = createSlug(name);
+    const publicId = `recipe-img-${Date.now()}`;
 
     await Promise.all([
-      await upload(image, { public_id: slug, upload_preset: 'savory-point-recipe-preset' }),
-      await prisma.recipe.create({
+      upload(image, {
+        public_id: publicId,
+        upload_preset: 'savory-point-recipe-preset',
+      }),
+      prisma.recipe.create({
         data: {
           name,
           summary,
@@ -55,9 +58,9 @@ export async function uploadRecipe(
           cooking,
           preparation,
           total,
-          slug,
+          slug: createSlug(name),
           uploaderId,
-          imagePublicId: slug,
+          imagePublicId: publicId,
         },
       }),
     ]);

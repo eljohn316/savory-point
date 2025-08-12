@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { upload } from '@/lib/cloudinary';
+import { createSlug } from '@/lib/utils';
 import {
   ActionState,
   actionStateSuccess,
@@ -45,6 +46,7 @@ export async function updateRecipeDetails(
         cooking,
         servings,
         total,
+        slug: createSlug(name),
       },
     });
   } catch (error) {
