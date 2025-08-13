@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/lib/auth-client';
 import { Container } from '@/components/container';
@@ -24,8 +24,14 @@ import { SignoutModal } from '@/features/auth/components/sign-out-modal';
 
 function NavigationLinks() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [showSignoutModal, setShowSignoutModal] = useState(false);
-  const { isPending, data } = useSession();
+  const { isPending, data, refetch } = useSession();
+
+  useEffect(() => {
+    if (pathname === '/' && searchParams.get('account') === 'deleted') refetch();
+  }, [pathname, refetch, searchParams]);
 
   if (isPending) return <Skeleton className="size-10 rounded-md sm:h-10 sm:w-full sm:max-w-80" />;
 

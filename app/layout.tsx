@@ -1,5 +1,6 @@
 import '@/app/globals.css';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Outfit, Neuton } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { Providers } from '@/app/_providers/providers';
@@ -33,7 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${fontSans.variable} ${fontSerif.variable} overflow-y-scroll antialiased`}>
         <Providers>
-          {children}
+          <Suspense>{children}</Suspense>
           <Toaster expand />
         </Providers>
       </body>
