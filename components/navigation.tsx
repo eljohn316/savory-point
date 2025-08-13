@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BellIcon, MenuIcon } from 'lucide-react';
+import { MenuIcon } from 'lucide-react';
 import { useSession } from '@/lib/auth-client';
 import { Container } from '@/components/container';
 import { Logo } from '@/components/logo';
