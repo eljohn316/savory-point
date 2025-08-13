@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getUserbyEmail } from '@/features/auth/queries/get-user-by-email';
 
 export const signupSchema = z
   .object({
@@ -14,12 +15,22 @@ export const signupSchema = z
       .min(1, { message: 'Password is required' })
       .min(8, { message: 'Password must be 8 or more characters long.' }),
   })
-  .superRefine((val, ctx) => {
+  .superRefine(async (val, ctx) => {
     if (val.password !== val.confirmPassword) {
       ctx.addIssue({
         code: 'custom',
         message: "Passwords dont' match",
         path: ['confirmPassword'],
+      });
+
+      return z.never;
+    }
+
+    if (await getUserbyEmail(val.email)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Email already taken',
+        path: ['email'],
       });
     }
   });

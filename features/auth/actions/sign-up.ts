@@ -4,19 +4,8 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { generateDefaultUserAvatar } from '@/lib/utils';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
-import { signupSchema as schema } from '@/features/auth/schema/sign-up';
-import { getUserbyEmail } from '@/features/auth/queries/get-user-by-email';
+import { signupSchema } from '@/features/auth/schema/sign-up';
 import { setToastCookie } from '@/lib/toast-cookies';
-
-const signupSchema = schema.superRefine(async (val, ctx) => {
-  if (await getUserbyEmail(val.email)) {
-    ctx.addIssue({
-      code: 'custom',
-      message: 'Email already taken',
-      path: ['email'],
-    });
-  }
-});
 
 export async function signup(_actionState: ActionState, formData: FormData) {
   try {
