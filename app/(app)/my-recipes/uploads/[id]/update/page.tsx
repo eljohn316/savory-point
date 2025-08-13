@@ -35,7 +35,9 @@ export default async function Page({ params }: PageProps) {
             height="600"
             width="960"
             sizes="100vw"
-            className="h-full rounded-md bg-gray-200"
+            quality="auto"
+            format="webp"
+            className="h-full rounded-md bg-gray-200 object-cover"
           />
         }
       />

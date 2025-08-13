@@ -9,22 +9,10 @@ import {
   actionStateSuccess,
   fromErrorToActionState,
 } from '@/components/form/utils/action-state-utils';
-import { updateRecipeServerSchema } from '@/features/my-recipes/schema/update-recipe';
-import { getRecipeByName } from '@/features/recipe/queries/get-recipe-by-name';
-
-const updateRecipeDetailsSchema = updateRecipeServerSchema
-  .pick({
-    name: true,
-    summary: true,
-    servings: true,
-    cooking: true,
-    preparation: true,
-    total: true,
-  })
-  .refine(async (val) => !(await getRecipeByName(val.name)), {
-    message: 'Recipe name already taken',
-    path: ['name'],
-  });
+import { updateRecipeDetailsSchema } from '@/features/my-recipes/schema/update-recipe-details';
+import { updateRecipeIngredientsSchema } from '@/features/my-recipes/schema/update-recipe-ingredients';
+import { updateRecipeInstructionsSchema } from '@/features/my-recipes/schema/update-recipe-instructions';
+import { updateRecipeImageSchema } from '@/features/my-recipes/schema/update-recipe-image';
 
 export async function updateRecipeDetails(
   id: string,
@@ -57,10 +45,6 @@ export async function updateRecipeDetails(
   return actionStateSuccess('Recipe successfully updated');
 }
 
-const updateRecipeIngredientsSchema = updateRecipeServerSchema.pick({
-  ingredients: true,
-});
-
 export async function updateRecipeIngredients(
   id: string,
   _actionState: ActionState,
@@ -87,10 +71,6 @@ export async function updateRecipeIngredients(
   return actionStateSuccess('Recipe successfully updated');
 }
 
-const updateRecipeInstructionsSchema = updateRecipeServerSchema.pick({
-  instructions: true,
-});
-
 export async function updateRecipeInstructions(
   id: string,
   _actionState: ActionState,
@@ -116,10 +96,6 @@ export async function updateRecipeInstructions(
   revalidatePath('/my-recipes/uploads/[id]', 'page');
   return actionStateSuccess('Recipe successfully updated');
 }
-
-const updateRecipeImageSchema = updateRecipeServerSchema.pick({
-  image: true,
-});
 
 export async function updateRecipeImage(id: string, _actionState: ActionState, formData: FormData) {
   try {

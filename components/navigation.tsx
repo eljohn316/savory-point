@@ -66,10 +66,6 @@ function NavigationLinks() {
     <>
       <SignoutModal open={showSignoutModal} onOpenChange={setShowSignoutModal} />
       <div className="flex items-center gap-x-4 sm:gap-x-6">
-        <button type="button" className="text-gray-400 hover:text-gray-500">
-          <span className="sr-only">Open notifications</span>
-          <BellIcon className="size-5" />
-        </button>
         <DropdownMenu>
           <DropdownMenuTrigger className="overflow-hidden rounded-full outline-none focus:ring-1 focus:ring-emerald-700 focus:ring-offset-2">
             {data.user.image ? (
@@ -116,11 +112,6 @@ function NavigationLinks() {
                 onSelect={() => router.push('/settings')}
                 className="text-base text-gray-600">
                 Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => router.push('/notifications')}
-                className="text-base text-gray-600">
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="my-2" />
