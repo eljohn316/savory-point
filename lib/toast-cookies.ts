@@ -6,6 +6,7 @@ import { TOAST_COOKIE_KEY } from '@/lib/constants';
 type CookieToast = {
   type: 'success' | 'error';
   message: string;
+  scroll?: boolean;
 };
 
 export async function getToastCookie(): Promise<CookieToast | undefined> {
@@ -17,9 +18,9 @@ export async function getToastCookie(): Promise<CookieToast | undefined> {
   return JSON.parse(existingCookie.value);
 }
 
-export async function setToastCookie({ type, message }: CookieToast) {
+export async function setToastCookie(toast: CookieToast) {
   const cookieStore = await cookies();
-  cookieStore.set(TOAST_COOKIE_KEY, JSON.stringify({ type, message }));
+  cookieStore.set(TOAST_COOKIE_KEY, JSON.stringify(toast));
 }
 
 export async function deleteToastCookie() {

@@ -68,7 +68,7 @@ export async function uploadRecipe(
     return fromErrorToActionState(error);
   }
 
-  await setToastCookie({ type: 'success', message: 'Recipe successfully uploaded' });
+  await setToastCookie({ type: 'success', message: 'Recipe successfully uploaded', scroll: true });
   revalidatePath('/');
   redirect('/');
 }

@@ -9,6 +9,7 @@ import { TOAST_COOKIE_KEY } from '@/lib/constants';
 type Toast = {
   type: 'success' | 'error';
   message: string;
+  scroll?: boolean;
 };
 
 export function RedirectToast() {
@@ -22,6 +23,7 @@ export function RedirectToast() {
     const toast = JSON.parse(toastCookie) as Toast;
 
     if (toast.type === 'success') {
+      if (toast.scroll) window.scrollTo({ top: 0, behavior: 'instant' });
       successToast(toast.message);
     } else {
       errorToast(toast.message);
