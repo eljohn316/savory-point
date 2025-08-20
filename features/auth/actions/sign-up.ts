@@ -4,12 +4,13 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { generateDefaultUserAvatar } from '@/lib/utils';
 import { ActionState, fromErrorToActionState } from '@/components/form/utils/action-state-utils';
-import { signupSchema } from '@/features/auth/schema/sign-up';
+import { signupServerSchema } from '@/features/auth/schema/sign-up';
 import { setToastCookie } from '@/lib/toast-cookies';
+import { prisma } from '@/lib/prisma';
 
 export async function signup(_actionState: ActionState, formData: FormData) {
   try {
-    const { firstName, lastName, email, password } = await signupSchema.parseAsync({
+    const { firstName, lastName, email, password } = await signupServerSchema.parseAsync({
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
       email: formData.get('email'),

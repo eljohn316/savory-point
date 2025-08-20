@@ -17,12 +17,12 @@ import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
 import { renderFormErrors } from '@/components/form/utils/render-form-errors';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { signupSchema, SignupValues } from '@/features/auth/schema/sign-up';
+import { signupClientSchema, SignupValues } from '@/features/auth/schema/sign-up';
 import { signup } from '@/features/auth/actions/sign-up';
 
 export function SignupForm() {
   const form = useForm<SignupValues>({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(signupClientSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
