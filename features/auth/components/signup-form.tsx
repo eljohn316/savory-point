@@ -14,8 +14,8 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
 import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
-import { errorToast } from '@/components/ui/sonner';
 import { renderFormErrors } from '@/components/form/utils/render-form-errors';
+import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { signupSchema, SignupValues } from '@/features/auth/schema/sign-up';
 import { signup } from '@/features/auth/actions/sign-up';
@@ -55,16 +55,18 @@ export function SignupForm() {
     onFail: ({ fieldErrors }) => {
       renderFormErrors<SignupValues>(fieldErrors, form);
     },
-    onError: ({ message }) => {
-      errorToast(message);
-    },
   });
 
   return (
     <Form {...form}>
-      <form action={action} onSubmit={handleSignup} className="max-w-md">
+      <form action={action} onSubmit={handleSignup} className="w-full max-w-md">
         <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign up</h3>
-        <div className="mt-10 grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
+        {actionState.status === 'error' && (
+          <Alert variant="error" className="mt-6">
+            {actionState.message}
+          </Alert>
+        )}
+        <div className="mt-8 grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="firstName"

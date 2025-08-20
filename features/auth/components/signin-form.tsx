@@ -45,13 +45,11 @@ export function SigninForm() {
     <Form {...form}>
       <form action={action} onSubmit={handleSignin} className="w-full max-w-sm">
         <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign in</h3>
-
         {actionState.status === 'error' && (
           <Alert variant="error" className="mt-6">
             {actionState.message}
           </Alert>
         )}
-
         <div className="mt-8 space-y-6">
           <FormField
             control={form.control}
