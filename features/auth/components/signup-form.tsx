@@ -62,7 +62,7 @@ export function SignupForm() {
 
   return (
     <Form {...form}>
-      <form action={action} onSubmit={handleSignup}>
+      <form action={action} onSubmit={handleSignup} className="max-w-md">
         <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign up</h3>
         <div className="mt-10 grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2">
           <FormField

@@ -4,7 +4,7 @@ import { CloudinaryImage } from '@/components/cloudinary-image';
 import { getAllRecipes } from '@/features/recipe/queries/get-recipes';
 
 type RecipeCardProps = {
-  recipe: Awaited<ReturnType<typeof getAllRecipes>>[number];
+  recipe: Awaited<ReturnType<typeof getAllRecipes>>['recipes'][number];
 };
 
 export function RecipeCard({ recipe }: RecipeCardProps) {

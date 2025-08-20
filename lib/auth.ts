@@ -3,6 +3,8 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { prisma } from '@/lib/prisma';
 import { hashPassword, verifyPassword } from '@/lib/password';
+import { requestPasswordReset } from '@/lib/email/actions';
+import { type User } from '@/lib/auth-client';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -13,6 +15,9 @@ export const auth = betterAuth({
     password: {
       hash: async (password: string) => await hashPassword(password),
       verify: async ({ hash, password }) => await verifyPassword(hash, password),
+    },
+    sendResetPassword: async ({ user, token }) => {
+      await requestPasswordReset(user as User, token);
     },
   },
   user: {

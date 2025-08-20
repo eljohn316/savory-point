@@ -1,9 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, startTransition, useActionState, useState } from 'react';
+import { FormEvent, startTransition, useActionState } from 'react';
 import { useForm } from 'react-hook-form';
-import { CircleAlertIcon } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/form/form';
 import { FormField } from '@/components/form/form-field';
@@ -14,13 +13,12 @@ import { FormMessage } from '@/components/form/form-message';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PasswordInput } from '@/components/ui/password-input';
+import { Alert } from '@/components/ui/alert';
 import { INITIAL_ACTION_STATE } from '@/components/form/utils/action-state-utils';
-import { useActionFeedback } from '@/components/form/hooks/use-action-feedback';
 import { signinSchema, SigninValues } from '@/features/auth/schema/sign-in';
 import { signin } from '@/features/auth/actions/sign-in';
 
 export function SigninForm() {
-  const [alert, setAlert] = useState<string>();
   const form = useForm<SigninValues>({
     resolver: zodResolver(signinSchema),
     defaultValues: {
@@ -31,13 +29,8 @@ export function SigninForm() {
 
   const [actionState, action, isPending] = useActionState(signin, INITIAL_ACTION_STATE);
 
-  useActionFeedback(actionState, {
-    onError: ({ message }) => setAlert(message),
-  });
-
   function handleSignin(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     form.handleSubmit(({ email, password }) => {
       startTransition(() => {
         const formData = new FormData();
@@ -50,14 +43,13 @@ export function SigninForm() {
 
   return (
     <Form {...form}>
-      <form action={action} onSubmit={handleSignin}>
+      <form action={action} onSubmit={handleSignin} className="w-full max-w-sm">
         <h3 className="text-center text-2xl font-semibold text-gray-900 sm:text-3xl">Sign in</h3>
 
-        {alert && (
-          <div className="mt-6 flex items-center gap-x-4 rounded-md border border-red-700 bg-red-50 p-4">
-            <CircleAlertIcon className="size-4 text-red-800" />
-            <p className="text-sm text-red-800">{alert}</p>
-          </div>
+        {actionState.status === 'error' && (
+          <Alert variant="error" className="mt-6">
+            {actionState.message}
+          </Alert>
         )}
 
         <div className="mt-8 space-y-6">
@@ -79,7 +71,14 @@ export function SigninForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Password</FormLabel>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-emerald-700 decoration-1 hover:underline hover:underline-offset-2">
+                    Forgot password?
+                  </Link>
+                </div>
                 <FormControl>
                   <PasswordInput disabled={isPending} {...field} />
                 </FormControl>
