@@ -4,10 +4,10 @@ import { nextCookies } from 'better-auth/next-js';
 import { hashPassword, verifyPassword } from '@/lib/password';
 import { requestPasswordReset } from '@/lib/email/actions';
 import { type User } from '@/lib/auth-client';
-import { PrismaClient } from '@/generated/prisma';
+import { prisma } from '@/lib/prisma';
 
 export const auth = betterAuth({
-  database: prismaAdapter(new PrismaClient(), {
+  database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
   emailAndPassword: {
