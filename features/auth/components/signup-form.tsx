@@ -23,7 +23,6 @@ import { signup } from '@/features/auth/actions/sign-up';
 export function SignupForm() {
   const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
-    reValidateMode: 'onBlur',
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -37,7 +36,6 @@ export function SignupForm() {
 
   function handleSignup(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     form.handleSubmit(({ firstName, lastName, email, password, confirmPassword }) => {
       startTransition(() => {
         const formData = new FormData();
