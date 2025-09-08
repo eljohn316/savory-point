@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon } from 'lucide-react';
-import { RECIPES_PER_PAGE } from '@/lib/constants';
+import { RECIPES_PER_PAGE, NUM_PAGINATION_LINKS } from '@/lib/constants';
 import { range } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -35,9 +35,7 @@ export function RecipePagination({ totalRecipes }: RecipePaginationProps) {
   );
 
   const paginationLinks = useMemo(() => {
-    const numPaginationLinks = 7;
-
-    if (totalPages <= numPaginationLinks) {
+    if (totalPages <= NUM_PAGINATION_LINKS) {
       return range(1, totalPages);
     } else {
       const FIRST_PAGE = 1;
@@ -50,7 +48,7 @@ export function RecipePagination({ totalRecipes }: RecipePaginationProps) {
       const shouldDisplayRightDots = LAST_PAGE - rightSiblingIndex > 2;
 
       if (!shouldDisplayLeftDots && shouldDisplayRightDots) {
-        return [...range(FIRST_PAGE, numPaginationLinks - 2), 'dots-right', LAST_PAGE];
+        return [...range(FIRST_PAGE, NUM_PAGINATION_LINKS - 2), 'dots-right', LAST_PAGE];
       }
 
       if (shouldDisplayLeftDots && shouldDisplayRightDots) {
@@ -85,6 +83,8 @@ export function RecipePagination({ totalRecipes }: RecipePaginationProps) {
     if (currentPage === totalPages) return;
     router.push(pathname + '?' + createQueryString('page', `${currentPage + 1}`));
   }
+
+  if (totalPages <= 1) return null;
 
   return (
     <nav className="mt-12 flex items-center justify-between border-t border-gray-200 pt-6">
